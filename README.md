@@ -8,7 +8,7 @@ Not every instruction format is supported. For those that aren't, this script gr
 Some instruction formats that may never get support are ones with xmm registers and VEX prefixes
 
 #Supported Instruction Formats
-Atomic (nop, ret, pause, etc...)
+Atomic (nop, ret, pause, etc...)<br>
 OP al/ax/eax, imm8/16/32 (xor ax, 0x1337)
 
 #Supported Instructions (only with the above instruction formats)

@@ -152,7 +152,8 @@ def main
 		elsif /^xlat$/i.match(asm) then xlat (asm)
 		elsif /^xor/i.match(asm) then xor (asm)
 		elsif /^xsetbv/i.match(asm) then xsetbv (asm)
-		elsif /^xtest/i.match(asm) then xtest (asm)																																																																																																																																																																								
+		elsif /^xtest/i.match(asm) then xtest (asm)	
+		elsif /^\[/.match(asm) then modrm8(asm)																																																																																																																																																																							
 		else nasm(asm) end
 	end
 end
@@ -162,612 +163,469 @@ end
 #--------------------------------------------
 
 def aaa instruction
-	puts "37                                       aaa\n\n"
-end
-
+	#ASCII Adjust After Addition
+	puts "37                                       aaa\n\n" end
 def aad instruction
+	#ASCII Adjust AX Before Division
 	puts "D50A                                     aad                 (Default Base 10)\n\n"
 	puts "Alternatives (Machine Code Only):"
-	puts "D5XX                                     aad imm8            (Where XX is the base)\n\n"													
-end
-
+	puts "D5XX                                     aad imm8            (Where XX is the base)\n\n" end
 def aam instruction
+	#ASCII Adjust AX After Multiply
 	puts "D40A                                     aam                 (Default Base 10)\n\n"
 	puts "Alternative Machine Code:"
-	puts "D4XX                                     aam imm8            (Where XX is the base)\n\n"													
-end
-
+	puts "D4XX                                     aam imm8            (Where XX is the base)\n\n" end
 def aas instruction
-	puts "3f                                       aas\n\n"
-end
-
+	#ASCII Adjust AL After Subtraction
+	puts "3f                                       aas\n\n" end
 def adc instruction
+	#Add with Carry
 	if alimm8(instruction, 'adc', '14', '80D0')
 	elsif aximm16(instruction, 'adc', '6615', '6681D0', '14', '80D0')
 	elsif eaximm32(instruction, 'adc', '15', '81D0', '6615', '6681D0', '14', '80D0')		
-	else nasm(instruction) end
-end
-
+	else nasm(instruction) end end
 def add instruction
+	#Add
 	if alimm8(instruction, 'add', '04', '80C0')
 	elsif aximm16(instruction, 'add', '6605', '6681C0', '04', '80C0')
 	elsif eaximm32(instruction, 'add', '05', '81C0', '6605', '6681C0', '04', '80C0')		
-	else nasm(instruction) end
-end
-
+	else nasm(instruction) end end
 def andi instruction
+	#Logical AND
 	if alimm8_b(instruction, 'and', '25', '81E0', '6625', '6681E0', '24', '80E0')
 	elsif aximm16_b(instruction, 'and', '25', '81E0', '6625', '6681E0', '24', '80E0')
 	elsif eaximm32_b(instruction, 'and', '25', '81E0', '6625', '6681E0', '24', '80E0')		
-	else nasm(instruction) end
-end
-
+	else nasm(instruction) end end
 def cbw instruction
-	puts "6698                                     cbw\n\n"
-end
-
+	#Convert Byte to Word
+	puts "6698                                     cbw\n\n" end
 def cwde instruction
-	puts "98                                       cwde\n\n"
-end
-
+	#Convert Word to Doubleword
+	puts "98                                       cwde\n\n" end
 def clac instruction
-	puts "0F01CA                                   clac\n\n"
-end
-
+	#Clear AC Flag in EFLAGS Register
+	puts "0F01CA                                   clac\n\n" end
 def clc instruction
-	puts "F8                                       clc\n\n"
-end
-
-def clc instruction
-	puts "FC                                       cld\n\n"
-end
-
+	#Clear Carry Flag
+	puts "F8                                       clc\n\n" end
+def cld instruction
+	#Clear Direction Flag
+	puts "FC                                       cld\n\n" end
 def cli instruction
-	puts "FA                                       cli\n\n"
-end
-
+	#Clear Interupt Flag
+	puts "FA                                       cli\n\n" end
 def clts instruction
-	puts "0F06                                     clts\n\n"
-end
-
-def clts instruction
-	puts "F5                                       cmc\n\n"
-end
-
+	#Clear Task-Switched Flag in CR0
+	puts "0F06                                     clts\n\n" end
+def cmc instruction
+	#Complement Carry Flag
+	puts "F5                                       cmc\n\n" end
 def cmp instruction
+	#Compare Two Operands
 	if alimm8_c(instruction, 'adc', '3C', '80F8')
 	elsif aximm16_c(instruction, 'adc', '663D', '6681F8')
 	elsif eaximm32_c(instruction, 'adc', '3D', '81F8')		
-	else nasm(instruction) end
-end
-
+	else nasm(instruction) end end
 def cmpsb instruction
-	puts "A6                                       cmpsb\n\n"
-end
-
+	#Compare String Operands (Byte)
+	puts "A6                                       cmpsb\n\n" end
 def cmpsw instruction
-	puts "66A7                                     cmpsw           (WORD PTR ds:[esi],WORD PTR es:[edi])\n\n"
-end
-
+	#Compare String Operands (Word)
+	puts "66A7                                     cmpsw           (WORD PTR ds:[esi],WORD PTR es:[edi])\n\n" end
 def cmpsd instruction
-	puts "A7                                       cmpsd           (DWORD PTR ds:[esi],DWORD PTR es:[edi])\n\n"
-end
-
+	#Compare String Operands (Doubleword)
+	puts "A7                                       cmpsd           (DWORD PTR ds:[esi],DWORD PTR es:[edi])\n\n" end
 def cpuid instruction
-	puts "0FA2                                     CPUID\n\n"
-end
-
+	#CPU Identification
+	puts "0FA2                                     CPUID\n\n" end
 def cwd instruction
-	puts "6699                                     cwd\n\n"
-end
-
+	#Convert Word to Doubleword
+	puts "6699                                     cwd\n\n" end
 def cdq instruction
-	puts "99                                       cdq\n\n"
-end
-
+	#Convert Doubleword to Quadword
+	puts "99                                       cdq\n\n" end
 def daa instruction
-	puts "27                                       daa\n\n"
-end
-
+	#Decimal Adjust AL after Addition
+	puts "27                                       daa\n\n" end
 def das instruction
-	puts "2F                                       das\n\n"
-end
-
+	#Decimal Adjust AL after Subtraction
+	puts "2F                                       das\n\n" end
 def emms instruction
-	puts "0F77                                     emms\n\n"
-end
-
-def emms instruction
-	puts "D9F0                                     f2xm1\n\n"
-end
-
+	#Empty MMX Technology State
+	puts "0F77                                     emms\n\n" end
+def f2xm1 instruction
+	#Compute 2^x-1
+	puts "D9F0                                     f2xm1\n\n" end
 def fabs instruction
-	puts "D9E1                                     fabs\n\n"
-end
-
+	#Absolute Value
+	puts "D9E1                                     fabs\n\n" end
 def faddp instruction
-	puts "DEC1                                     faddp           (faddp  st(1),st)\n\n"
-end
-
+	#Floating Point Add
+	puts "DEC1                                     faddp           (faddp  st(1),st)\n\n" end
 def fchs instruction
-	puts "D9E0                                     fchs\n\n"
-end
-
+	#Change Sign
+	puts "D9E0                                     fchs\n\n" end
 def fclex instruction
-	puts "9BDBE2                                   fclex\n\n"
-end
-
+	#Clear Exceptions
+	puts "9BDBE2                                   fclex\n\n" end
 def fnclex instruction
-	puts "DBE2                                     fnclex\n\n"
-end
-
+	#Clear Exceptions
+	puts "DBE2                                     fnclex\n\n" end
 def fcom instruction
-	puts "D8D1                                     fcom            (st(1))\n\n"
-end
-
+	#Compare Floating Point Values
+	puts "D8D1                                     fcom            (st(1))\n\n" end
 def fcomp instruction
-	puts "D8D9                                     fcomp           (st(1))\n\n"
-end
-
+	#Compare Floating Point Values and Pop
+	puts "D8D9                                     fcomp           (st(1))\n\n" end
 def fcompp instruction
-	puts "DED9                                     fcompp\n\n"
-end
-
+	#Compare Floating Point Values and Pop Twice
+	puts "DED9                                     fcompp\n\n" end
 def fcos instruction
-	puts "D9FF                                     fcos\n\n"
-end
-
+	#Cosine
+	puts "D9FF                                     fcos\n\n" end
 def fdecstp instruction
-	puts "D9F6                                     fdecstp\n\n"
-end
-
+	#Decrement Stack-Top Pointer
+	puts "D9F6                                     fdecstp\n\n" end
 def fdivp instruction
-	puts "DEF9                                     fdivp           (st(1),st)\n\n"
-end
-
+	#Divide
+	puts "DEF9                                     fdivp           (st(1),st)\n\n" end
 def fdivrp instruction
-	puts "DEF1                                     fdivrp          (st(1),st)\n\n"
-end
-
+	#Reverese Divide
+	puts "DEF1                                     fdivrp          (st(1),st)\n\n" end
 def fincstp instruction
-	puts "D9F7                                     fincstp\n\n"
-end
-
+	#Increment Stack-Top Pointer
+	puts "D9F7                                     fincstp\n\n" end
 def finit instruction
-	puts "9BDBE3                                   finit\n\n"
-end
-
+	#Initialize Floating-Point Unit
+	puts "9BDBE3                                   finit\n\n" end
 def fninit instruction
-	puts "DBE3                                     fninit\n\n"
-end
-
+	#Initialize Floating-Point Unit
+	puts "DBE3                                     fninit\n\n" end
 def fld1 instruction
-	puts "D9E8                                     fld1\n\n"
-end
-
+	#Load Constant (Push +1.0 onto the FPU register stack)
+	puts "D9E8                                     fld1\n\n" end
 def fldl2t instruction
-	puts "D9E9                                     fldl2t\n\n"
-end
-
+	#Load Constant (Push log2,10 onto the FPU register stack)
+	puts "D9E9                                     fldl2t\n\n" end
 def fldl2e instruction
-	puts "D9EA                                     fldl2e\n\n"
-end
-
+	#Load Constant (Push log2,e onto the FPU register stack)
+	puts "D9EA                                     fldl2e\n\n" end
 def fldpi instruction
-	puts "D9EB                                     fldpi\n\n"
-end
-
+	#Load Constant (Push pi onto the FPU register stack)
+	puts "D9EB                                     fldpi\n\n" end
 def fldlg2 instruction
-	puts "D9EC                                     fldlg2\n\n"
-end
-
+	#Load Constant (Push log10,2 onto the FPU register stack)
+	puts "D9EC                                     fldlg2\n\n" end
 def fldln2 instruction
-	puts "D9ED                                     fldln2\n\n"
-end
-
+	#Load Constant (Push log e,2 onto the FPU register stack)
+	puts "D9ED                                     fldln2\n\n" end
 def fldz instruction
-	puts "D9EE                                     fldz\n\n"
-end
-
+	#Load Constant (Push +0.0 onto the FPU register stack)
+	puts "D9EE                                     fldz\n\n" end
 def fmulp instruction
-	puts "DEC9                                     fmulp           (st(1),st)\n\n"
-end
-
+	#Multiply
+	puts "DEC9                                     fmulp           (st(1),st)\n\n" end
 def fnop instruction
-	puts "D9D0                                     fnop\n\n"
-end
-
+	#Floating Point NOP
+	puts "D9D0                                     fnop\n\n" end
 def fpatan instruction
-	puts "D9F3                                     fpatan\n\n"
-end
-
+	#Partial Arctangent
+	puts "D9F3                                     fpatan\n\n" end
 def fprem instruction
-	puts "D9F8                                     fprem\n\n"
-end
-
+	#Partial Remainder
+	puts "D9F8                                     fprem\n\n" end
 def fprem1 instruction
-	puts "D9F5                                     fprem1\n\n"
-end
-
+	#Partial Remainder
+	puts "D9F5                                     fprem1\n\n" end
 def fptan instruction
-	puts "D9F2                                     fptan\n\n" 
-end
-
+	#Partial Tangent
+	puts "D9F2                                     fptan\n\n" end
 def frndint instruction
-	puts "D9FC                                     frndint\n\n" 
-end
-
+	#Round to Integer
+	puts "D9FC                                     frndint\n\n" end
 def fscale instruction
-	puts "D9FD                                     fscale\n\n" 
-end
-
+	#Scale
+	puts "D9FD                                     fscale\n\n" end
 def fsin instruction
-	puts "D9FE                                     fsin\n\n" 
-end
-
+	#Sine
+	puts "D9FE                                     fsin\n\n" end
 def fsincos instruction
-	puts "D9FB                                     fsincos\n\n" 
-end
-
+	#Sine and Cosine
+	puts "D9FB                                     fsincos\n\n" end
 def fsqrt instruction
-	puts "D9FA                                     fsqrt\n\n" 
-end
-
+	#Square Root
+	puts "D9FA                                     fsqrt\n\n" end
 def fstswax instruction
-	puts "9BDFE0                                   fstsw ax\n\n" 
-end
-
+	#Store x87 FPU Status Word
+	puts "9BDFE0                                   fstsw ax\n\n" end
 def fnstswax instruction
-	puts "DFE0                                     fnstsw ax\n\n" 
-end
-
+	#Store x87 FPU Status Word (without checking for pending unmasked floating-point exceptions)
+	puts "DFE0                                     fnstsw ax\n\n" end
 def fsubp instruction
-	puts "DEE9                                     fsubp\n\n" 
-end
-
+	#Subtract
+	puts "DEE9                                     fsubp\n\n" end
 def fsubrp instruction
-	puts "DEE1                                     fsubrp\n\n" 
-end
-
+	#Reverse Subtract
+	puts "DEE1                                     fsubrp\n\n" end
 def ftst instruction
-	puts "D9E4                                     ftst\n\n" 
-end
-
+	#Test
+	puts "D9E4                                     ftst\n\n" end
 def fucom instruction
-	puts "DDE1                                     fucom           (st(1))\n\n" 
-end
-
+	#Unordered Compare Floating Point Values
+	puts "DDE1                                     fucom           (st(1))\n\n" end
 def fucomp instruction
-	puts "DDE9                                     fucomp          (st(1))\n\n" 
-end
-
+	#Unordered Compare Floating Point Values and pop register stack
+	puts "DDE9                                     fucomp          (st(1))\n\n" end
 def fucompp instruction
-	puts "DAE9                                     fucompp\n\n" 
-end
-
+	#Unordered Compare Floating Point Values and pop register stack twice
+	puts "DAE9                                     fucompp\n\n" end
 def fxam instruction
-	puts "D9E5                                     fxam\n\n" 
-end
-
+	#Examine ModR/M
+	puts "D9E5                                     fxam\n\n" end
 def fxch instruction
-	puts "D9C9                                     fxch            (st(1))\n\n" 
-end
-
+	#Exchange Register Contents
+	puts "D9C9                                     fxch            (st(1))\n\n" end
 def fxtract instruction
-	puts "D9F4                                     fxtract\n\n" 
-end
-
+	#Extract Exponent and Significand
+	puts "D9F4                                     fxtract\n\n" end
 def fyl2x instruction
-	puts "D9F1                                     fyl2x\n\n" 
-end
-
+	#Compute y * log2, x
+	puts "D9F1                                     fyl2x\n\n" end
 def fyl2xp1 instruction
-	puts "D9F9                                     fyl2xp1\n\n" 
-end
-
+	#Compute y * log2(x+1)
+	puts "D9F9                                     fyl2xp1\n\n" end
 def hlt instruction
-	puts "F4                                       hlt\n\n" 
-end
-
+	#Halt
+	puts "F4                                       hlt\n\n" end
 def IN instruction
+	#Input from Port
 	if alimm8_d(instruction, 'adc', 'E4', 'E5')		
-	else nasm(instruction) end
-end
-
+	else nasm(instruction) end end
 def insb instruction
-	puts "6C                                       insb            (BYTE PTR es:[edi],dx)\n\n" 
-end
-
+	#Input from Port to String (Byte)
+	puts "6C                                       insb            (BYTE PTR es:[edi],dx)\n\n"  end
 def insw instruction
-	puts "666D                                     insw            (WORD PTR es:[edi],dx)\n\n"
-end
-
+	#Input from Port to String (Word)
+	puts "666D                                     insw            (WORD PTR es:[edi],dx)\n\n" end
 def insd instruction
-	puts "6D                                       insd            (DWORD PTR es:[edi],dx)\n\n"
-end
-
+	#Input from Port to String (DWword)
+	puts "6D                                       insd            (DWORD PTR es:[edi],dx)\n\n" end
 def into instruction
-	puts "CE                                       into\n\n"
-end
-
+	#Call to Interrupt Procedure
+	puts "CE                                       into\n\n" end
 def invd instruction
-	puts "0F08                                     invd\n\n"
-end
-
+	#Invalidate Internal Caches
+	puts "0F08                                     invd\n\n" end
 def iret instruction
-	puts "CF                                       %s\n\n" % instruction
-end
-
+	#Interrupt Return
+	puts "CF                                       %s\n\n" % instruction end
 def iretw instruction
-	puts "66CF                                     iretw\n\n"
-end
-
+	#Interrupt Return (Word)
+	puts "66CF                                     iretw\n\n" end
 def lahf instruction
-	puts "9F                                       lahf\n\n"
-end
-
+	#Load Status Flags into AH Register
+	puts "9F                                       lahf\n\n" end
 def leave instruction
-	puts "C9                                       leave\n\n"
-end
-
+	#High Level Procedure Exit
+	puts "C9                                       leave\n\n" end
 def leavew instruction
-	puts "66C9                                     leavew\n\n"
-end
-
+	#High Level Procedure Exit (Word)
+	puts "66C9                                     leavew\n\n" end
 def lfence instruction
-	fence('lfence', '0FAE', 'E8')
-end
-
+	#Load Fence
+	fence('lfence', '0FAE', 'E8') end
 def lodsb instruction
-	puts "AC                                       lodsb\n\n"
-end
-
+	#Load String (Byte)
+	puts "AC                                       lodsb\n\n" end
 def lodsw instruction
-	puts "66AD                                     lodsw\n\n"
-end
-
+	#Load String (Word)
+	puts "66AD                                     lodsw\n\n" end
 def lodsd instruction
-	puts "AD                                       lodsd\n\n"
-end
-
+	#Load String (Doubleword)
+	puts "AD                                       lodsd\n\n" end
 def mfence instruction
-	fence('mfence', '0FAE', 'F0')
-end
-
+	#Memory Fence
+	fence('mfence', '0FAE', 'F0') end
 def monitor instruction
-	puts "0F01C8                                   monitor\n\n"
-end
-
+	#Set Up Monitor Address
+	puts "0F01C8                                   monitor\n\n" end
 def movsb instruction
-	puts "A4                                       movsb\n\n"
-end
-
+	#Move Data from String to String (Byte)
+	puts "A4                                       movsb\n\n" end
 def movsw instruction
-	puts "66A5                                     movsw\n\n"
-end
-
+	#Move Data from String to String (Word)
+	puts "66A5                                     movsw\n\n" end
 def movsd instruction
-	puts "A5                                       movsd\n\n"
-end
-
+	#Move Data from String to String (Doubleword)
+	puts "A5                                       movsd\n\n" end
 def mwait instruction
-	puts "0F01C9                                   mwait\n\n"
-end
-
+	#Monitor Wait
+	puts "0F01C9                                   mwait\n\n" end
 def nop instruction
-	puts "90                                       nop\n\n"
-end
-
+	#No Operation
+	puts "90                                       nop\n\n" end
 def OR instruction
+	#Logical Inclusive OR
 	if alimm8_e(instruction, 'or', '0D', '81C8', '660D', '6681C8', '0C', '80C8')
 	elsif aximm16_e(instruction, 'or', '0D', '81C8', '660D', '6681C8', '0C', '80C8')
 	elsif eaximm32_e(instruction, 'or', '0D', '81C8', '660D', '6681C8', '0C', '80C8')		
-	else nasm(instruction) end
-end
-
+	else nasm(instruction) end end
 def outsb instruction
-	puts "6E                                       outsb\n\n"
-end
-
+	#Output String to Port (Byte)
+	puts "6E                                       outsb\n\n" end
 def outsw instruction
-	puts "666F                                     outsw\n\n"
-end
-
+	#Output String to Port (Word)
+	puts "666F                                     outsw\n\n" end
 def outsd instruction
-	puts "6F                                       outsd\n\n"
-end
-
+	#Output String to Port (Doubleword)
+	puts "6F                                       outsd\n\n" end
 def pause instruction
-	puts "F390                                     pause\n\n"
-end
-
+	#Spin Loop Hint
+	puts "F390                                     pause\n\n" end
 def popaw instruction
-	puts "6661                                     popaw\n\n"
-end
-
+	#Pop All General-Purpose Registers (Word)
+	puts "6661                                     popaw\n\n" end
 def popa instruction
-	puts "61                                       %s\n\n" % instruction
-end
-
+	#Pop All General-Purpose Registers
+	puts "61                                       %s\n\n" % instruction end
 def popfw instruction
-	puts "669D                                     popfw\n\n"
-end
-
+	#Pop Stack into EFLAGS Registers (Word)
+	puts "669D                                     popfw\n\n" end
 def popf instruction
-	puts "9D                                       %s\n\n" % instruction
-end
-
+	#Pop Stack into EFLAGS Registers
+	puts "9D                                       %s\n\n" % instruction end
 def pushaw instruction
-	puts "6660                                     pushaw\n\n"
-end
-
+	#Push All General-Purpose Registers (Word)
+	puts "6660                                     pushaw\n\n" end
 def pusha instruction
-	puts "60                                       %s\n\n" % instruction
-end
-
+	#Push All General-Purpose Registers
+	puts "60                                       %s\n\n" % instruction end
 def pushfw instruction
-	puts "669C                                     pushfw\n\n"
-end
-
+	#Push EFLAGS Register onto the Stack (Word)
+	puts "669C                                     pushfw\n\n" end
 def pushf instruction
-	puts "9C                                       %s\n\n" % instruction
-end
-
+	#Push EFLAGS Register onto the Stack
+	puts "9C                                       %s\n\n" % instruction end
 def rdmsr instruction
-	puts "0F32                                     rdmsr\n\n"
-end
-
+	#Read from Model Specific Register
+	puts "0F32                                     rdmsr\n\n" end
 def rdpmc instruction
-	puts "0F33                                     rdpmc\n\n"
-end
-
+	#Read Performance-Monitoring Counters
+	puts "0F33                                     rdpmc\n\n" end
 def rdtsc instruction
-	puts "0F31                                     rdtsc\n\n"
-end
-
+	#Read Time-Stamp Counter
+	puts "0F31                                     rdtsc\n\n" end
 def rdtscp instruction
-	puts "0F01F9                                   rdtscp\n\n"
-end
-
+	#Read Time-Stamp Counter and Processor ID
+	puts "0F01F9                                   rdtscp\n\n" end
 def ret instruction
-	puts "C3                                       ret\n\n"
-end
-
+	#Return from Procedure
+	puts "C3                                       ret\n\n" end
 def retf instruction
-	puts "CB                                       retf\n\n"
-end
-
+	#Return from Procedure (Far)
+	puts "CB                                       retf\n\n" end
 def rsm instruction
-	puts "0FAA                                     rsm\n\n"
-end
-
+	#Resume from System Management Mode
+	puts "0FAA                                     rsm\n\n" end
 def sahf instruction
-	puts "9E                                       sahf\n\n"
-end
-
+	#Store AH into Flags
+	puts "9E                                       sahf\n\n" end
 def sbb instruction
+	#Integer Subtraction with Borrow
 	if alimm8_e(instruction, 'sbb', '1D', '81D8', '661D', '6681D8', '1C', '80D8')
 	elsif aximm16_e(instruction, 'sbb', '1D', '81D8', '661D', '6681D8', '1C', '80D8')
 	elsif eaximm32_e(instruction, 'sbb', '1D', '81D8', '661D', '6681D8', '1C', '80D8')		
-	else nasm(instruction) end
-end
-
+	else nasm(instruction) end end
 def scasb instruction
-	puts "AE                                       scasb\n\n"
-end
-
+	#Scan String (Byte)
+	puts "AE                                       scasb\n\n" end
 def scasw instruction
-	puts "66AF                                     scasw\n\n"
-end
-
+	#Scan String (Word)
+	puts "66AF                                     scasw\n\n" end
 def scasd instruction
-	puts "AF                                       scasd\n\n"
-end
-
+	#Scan String (Doubleword)
+	puts "AF                                       scasd\n\n" end
 def sfence instruction
-	fence('sfence', '0FAE', 'F8')
-end
-
+	#Store Fence
+	fence('sfence', '0FAE', 'F8') end
 def stac instruction
-	puts "0F01CB                                   stac\n\n"
-end
-
+	#Set AC Flag in EFLAGS Register
+	puts "0F01CB                                   stac\n\n" end
 def stc instruction
-	puts "F9                                       stc\n\n"
-end
-
+	#Set Carry Flag
+	puts "F9                                       stc\n\n" end
 def std instruction
-	puts "FD                                       std\n\n"
-end
-
+	#Set Direction Flag
+	puts "FD                                       std\n\n" end
 def sti instruction
-	puts "FB                                       sti\n\n"
-end
-
+	#Set Interrupt Flag
+	puts "FB                                       sti\n\n" end
 def stosb instruction
-	puts "AA                                       stosb\n\n"
-end
-
+	#Store String (Byte)
+	puts "AA                                       stosb\n\n" end
 def stosw instruction
-	puts "66AB                                     stosw\n\n"
-end
-
+	#Store String (Word)
+	puts "66AB                                     stosw\n\n" end
 def stosd instruction
-	puts "AB                                       stosd\n\n"
-end
-
+	#Store String (Doubleword)
+	puts "AB                                       stosd\n\n" end
 def sub instruction
+	#Subtract
 	if alimm8_e(instruction, 'sub', '2D', '81E8', '662D', '6681E8', '2C', '80E8')
 	elsif aximm16_e(instruction, 'sub', '2D', '81E8', '662D', '6681E8', '2C', '80E8')
 	elsif eaximm32_e(instruction, 'sub', '2D', '81E8', '662D', '6681E8', '2C', '80E8')		
-	else nasm(instruction) end
-end
-
+	else nasm(instruction) end end
 def swapgs instruction
-	puts "0F01F8                                   swapgs\n\n"
-end
-
+	#Swap GS Base Register
+	puts "0F01F8                                   swapgs\n\n" end
 def syscall instruction
-	puts "0F05                                     syscall\n\n"
-end
-
+	#Fast System Call
+	puts "0F05                                     syscall\n\n" end
 def sysenter instruction
-	puts "0F34                                     sysenter\n\n"
-end
-
+	#Fast System Call
+	puts "0F34                                     sysenter\n\n" end
 def sysexit instruction
-	puts "0F35                                     sysexit\n\n"
-end
-
+	#Fast Return from Fast System Call
+	puts "0F35                                     sysexit\n\n" end
 def sysret instruction
-	puts "0F07                                     sysret\n\n"
-end
-
+	#Return From Fast System Call
+	puts "0F07                                     sysret\n\n" end
 def test instruction
+	#Logical Compare
 	if alimm8_c(instruction, 'test', 'A8', 'F6C0')
 	elsif aximm16_c(instruction, 'test', '66A9', '66F7C0')
 	elsif eaximm32_c(instruction, 'test', 'A9', 'F7C0')		
-	else nasm(instruction) end
-end
-
+	else nasm(instruction) end end
 def ud2 instruction
-	puts "0F0B                                     ud2\n\n"
-end
-
+	#Undefined Instruction
+	puts "0F0B                                     ud2\n\n" end
 def wait instruction
-	puts "9B                                       wait\n\n"
-end
-
+	#Wait
+	puts "9B                                       wait\n\n" end
 def wbinvd instruction
-	puts "0F09                                     wbinvd\n\n"
-end
-
+	#Write Back and Invalidate Cache
+	puts "0F09                                     wbinvd\n\n" end
 def wrmsr instruction
-	puts "0F30                                     wrmsr\n\n"
-end
-
+	#Write to Model Specific Register
+	puts "0F30                                     wrmsr\n\n" end
 def xgetbv instruction
-	puts "0F01D0                                   xgetbv\n\n"
-end
-
+	#Get Value of Extended Control Register
+	puts "0F01D0                                   xgetbv\n\n" end
 def xlat instruction
-	puts "D7                                       xlat            (BYTE PTR ds:[ebx])\n\n"
-end
-
+	#Table Look-up Translation
+	puts "D7                                       xlat            (BYTE PTR ds:[ebx])\n\n" end
 def xor instruction
+	#Logical Exlusive OR
 	if alimm8_c(instruction, 'test', '34', '80F0')
 	elsif aximm16_c(instruction, 'test', '6635', '6681F0')
 	elsif eaximm32_c(instruction, 'test', '35', '81F0')		
-	else nasm(instruction) end
-end
-
+	else nasm(instruction) end end
 def xsetbv instruction
-	puts "0F01D1                                       xsetbv\n\n"
-end
-
+	#Set Extended Control Register
+	puts "0F01D1                                       xsetbv\n\n" end
 def xtest instruction
-	puts "0F01D6                                       xtest\n\n"
-end
+	#Test If in Transactional Execution
+	puts "0F01D6                                       xtest\n\n" end
 
 #------------------------------------
 # 	Format Operand Data Subs  		#
@@ -1100,6 +958,40 @@ def fence (instruction, m1, m2)
 	end
 	puts
 end
+
+def modrm8 (instruction)
+	#is it just a register as the pointer
+	if extracted = /^\[[^\]]*?(e[acdbs][xip])[^\]]*?\]/i.match(instruction)
+		register = extracted.captures[0]
+		offset = '0'
+		multiplier = '1'
+	end
+	if extracted = /^\[[^\]]*?[^x*]{2}(\d+)[^\]]*?\]/i.match(instruction)
+		offset = extracted.captures[0]	
+	end		
+	if extracted = /^\[[^\]]*?(0x[0-9a-f]+)[^\]]*?\]/i.match(instruction)
+		offset = extracted.captures[0]
+	end
+	if extracted = /^\[[^\]]*?\*\s*([1248])[^\]]*?\]/i.match(instruction)
+		multiplier = extracted.captures[0]
+	end
+	#All Values parsed:
+	puts "Register: %s" % register
+	puts "Offset: %s" % offset
+	puts "Multiplier %s" % multiplier		
+
+end
+#[register, a number, a multiplier], in any order
+
+#any register
+#1 and 4 byte offsets for number
+#multipliers of 1, 2, 4, and 8
+#esp can't have multipier
+
+#register = eax, ecx, edx, ebx, ebp, esp, esi, edi
+#number = 0x[a-f0-9] or \d
+#multiplier = register\s\*\s[1248], were register isn't esp
+
 
 #--------------------------------
 # 	Other Helper Routines		#

@@ -183,6 +183,8 @@ def adc instruction
 	if alimm8(instruction, 'adc', '14', '80D0')
 	elsif aximm16(instruction, 'adc', '6615', '6681D0', '14', '80D0')
 	elsif eaximm32(instruction, 'adc', '15', '81D0', '6615', '6681D0', '14', '80D0')		
+	elsif eaximm32(instruction, 'adc', '15', '81D0', '6615', '6681D0', '14', '80D0')
+	elsif modrm8imm(instruction, 'adc', '80', '2')
 	else nasm(instruction) end end
 def add instruction
 	#Add
@@ -959,39 +961,161 @@ def fence (instruction, m1, m2)
 	puts
 end
 
-def modrm8 (instruction)
+def modrm8imm (instruction, op, m1, num)
+	#instruction - full unparsed instruction
+	#op - instruction name
+	#m1 - machine code for it
+	#num - the encoded instruction within the modr/m (i.e ADC r/m8,imm8 is /2)
+
+	#Doesn't yet do alternates
+	#Incorrectly parses disp8 as unsinged for now
+
+	def disp_to_dec (disp)
+		#This routine takes a decimal OR hexidecimal string value and returns the integer
+		if /^0x/i.match(disp)
+			disp = disp.gsub(/0x(.+)/, '\1')
+			disp = disp.to_i(16)
+		else
+			disp = disp.to_i
+		end
+		return disp
+	end
+
 	#is it just a register as the pointer
-	if extracted = /^\[[^\]]*?(e[acdbs][xip])[^\]]*?\]/i.match(instruction)
+	if extracted = /byte.+?\[[^\]]*?(e[acdbs][xip])[^\]]*?\]\s*?,\s*?((0x)?[a-f0-9]+)$/i.match(instruction)
 		register = extracted.captures[0]
+		s_operand = imm8(extracted.captures[1])
 		offset = '0'
-		multiplier = '1'
+		multiplier = '0'
+		mreg = ''
 	end
-	if extracted = /^\[[^\]]*?[^x*]{2}(\d+)[^\]]*?\]/i.match(instruction)
-		offset = extracted.captures[0]	
-	end		
-	if extracted = /^\[[^\]]*?(0x[0-9a-f]+)[^\]]*?\]/i.match(instruction)
+	#Is there a decimal formatted offset
+	if extracted = /byte.+?\[[^\]]*?[^x*]{2}(\d+)[^\]]*?\]\s*?,\s*?((0x)?[a-f0-9]+)$/i.match(instruction)
 		offset = extracted.captures[0]
+		s_operand = imm8(extracted.captures[1])			
+	end		
+	#Is there a hex formatted offset
+	if extracted = /byte.+?\[[^\]]*?(0x[0-9a-f]+)[^\]]*?\]\s*?,\s*?((0x)?[a-f0-9]+)$/i.match(instruction)
+		offset = extracted.captures[0]
+		s_operand = imm8(extracted.captures[1])		
 	end
-	if extracted = /^\[[^\]]*?\*\s*([1248])[^\]]*?\]/i.match(instruction)
-		multiplier = extracted.captures[0]
+	#Is there a scale
+	if extracted = /byte.+?\[[^\]]*?(e[acdbs][xip])\s*?\*\s*?([1248])[^\]]*?\]\s*?,\s*?((0x)?[a-f0-9]+)$/i.match(instruction)
+		mreg = extracted.captures[0] #register multiplied
+		multiplier = extracted.captures[1]
+		s_operand = imm8(extracted.captures[2])		
+		if instruction !~ /.+?e[acdbs][xip].+e[acdbs][xip]/i
+			register = 'none'
+		end
 	end
+	#If it's just the register, then process it and leave
+	if extracted = /([abcd][hl])\s*,\s*((0x)?[a-f0-9]+)$/i.match(instruction)
+		#mod = 2 (11xxxxxx) / 192
+		#op = num (xxoooxxx) / num * 8
+		#register = (xxxxxrrr)
+		modrm = 192 + (num.to_i * 8)
+		register = extracted.captures[0]
+		s_operand = imm8(extracted.captures[1])
+		if register == 'cl' then modrm = modrm + 1
+		elsif register == 'dl' then modrm = modrm + 2
+		elsif register == 'bl' then modrm = modrm + 3
+		elsif register == 'ah' then modrm = modrm + 4
+		elsif register == 'ch' then modrm = modrm + 5
+		elsif register == 'dh' then modrm = modrm + 6
+		elsif register == 'bh' then modrm = modrm + 7	
+		end									
+		modrm = modrm.to_s(16)	
+		printf("%-32s %20s\n\n", m1 + modrm + s_operand, instruction)
+		return 1
+	end
+	#Otherwise, let's process some pointers
 	#All Values parsed:
 	puts "Register: %s" % register
 	puts "Offset: %s" % offset
-	puts "Multiplier %s" % multiplier		
+	puts "Multiplier %s" % multiplier
+	puts "Multiplied Register %s" % mreg
+
+	sib = 0 #default
+	#Process Mod (ModR/M)
+	if disp_to_dec(offset) > 255 then modrm = 128
+		elsif disp_to_dec(offset) > 0 then modrm = 64
+		else modrm = 0
+	end
+	#Process Instruction (ModR/M)
+	modrm = modrm + (num.to_i * 8)
+	if multiplier == '0' then
+		#Process Register (ModR/M)
+		if disp_to_dec(offset) == 0 then 			#If no offset
+			if register == 'ecx' then modrm = modrm + 1
+				elsif register == 'edx' then modrm = modrm + 2
+				elsif register == 'ebx' then modrm = modrm + 3
+				elsif register == 'esi' then modrm = modrm + 6
+				elsif register == 'edi' then modrm = modrm + 7
+			end
+		else 
+			if register == 'ecx' then modrm = modrm + 1		#otherwise, disp8 and disp32 are same for this
+				elsif register == 'edx' then modrm = modrm + 2
+				elsif register == 'ebx' then modrm = modrm + 3
+				elsif register == 'ebp' then modrm = modrm + 5
+				elsif register == 'esi' then modrm = modrm + 6
+				elsif register == 'edi' then modrm = modrm + 7
+			end
+		end
+	else
+		#Proccess Scale (SIB)
+		modrm = modrm + 4	#Activate SIB byte in ModR/M
+		if multiplier == '2' then sib = 64
+			elsif multiplier == '4' then sib = 128
+			elsif multiplier == '8' then sib = 192
+		end
+		#Process The Index/Register (SIB)
+		if mreg == 'ecx' then sib = sib + 8
+			elsif mreg == 'edx' then sib = sib + 16
+			elsif mreg == 'ebx' then sib = sib + 24
+			elsif mreg == 'ebp' then sib = sib + 30
+			elsif mreg == 'esi' then sib = sib + 38
+			elsif mreg == 'edi' then sib = sib + 46
+		end
+		if register == 'ecx' then sib = sib + 1
+			elsif register == 'edx' then sib = sib + 2
+			elsif register == 'ebx' then sib = sib + 3
+			elsif register == 'esp' then sib = sib + 4
+			elsif register == 'none' then sib = sib + 5
+			elsif register == 'esi' then sib = sib + 6
+			elsif register == 'edi' then sib = sib + 7
+		end
+		sib = zeropad(sib.to_s(16), 2)
+		#Process [*] r32 for no base register
+		if register == 'none'
+			if multiplier == '2' then sib = sib + '00'
+				elsif multiplier == '4' then sib = sib + '00000000'
+				elsif multiplier == '8' then sib = sib + '00000000'
+				else sib = sib + '00000000'
+			end
+		end
+
+	end
+	modrm = zeropad(modrm.to_s(16), 2)
+
+	puts "offset is %i" % disp_to_dec(offset)
+	if disp_to_dec(offset) > 255 then
+		s_operand = littleend(zeropad(imm32(offset),8)) + s_operand
+	elsif disp_to_dec(offset) != 0 then
+		s_operand = littleend(zeropad(imm8(offset),2)) + s_operand
+	end	
+	if multiplier == '0' then
+		printf("\nAssembly Alternatives\n%-32s %20s", m1 + modrm + s_operand, instruction)
+	else
+		printf("\nAssembly Alternatives\n%-32s %20s", m1 + modrm + sib + s_operand, instruction)		
+	end
+
+
+	#return 1
+
+	#alternate disp32
+		#mod 00, rm 100, SS 00, Index 100, r32 101
 
 end
-#[register, a number, a multiplier], in any order
-
-#any register
-#1 and 4 byte offsets for number
-#multipliers of 1, 2, 4, and 8
-#esp can't have multipier
-
-#register = eax, ecx, edx, ebx, ebp, esp, esi, edi
-#number = 0x[a-f0-9] or \d
-#multiplier = register\s\*\s[1248], were register isn't esp
-
 
 #--------------------------------
 # 	Other Helper Routines		#

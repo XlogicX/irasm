@@ -1,6 +1,17 @@
 #!/usr/bin/ruby
 
+#--------------------------------------------
+# 	Process for each instruction			#
+#--------------------------------------------
+# 1. Parse instruction name (happens in main) and pass control to instruction function (with same name)
+# 2. Instruction function passes machine codes to subfunctions that support the encoding used
+# => It's the subfunctions that are responsible for checking which machine encoding is used,
+# => This is becuase these subfunctions are instruction agnostic; they just process the structure
+
 def main
+#--------------------------------------------
+# 	Read Each Instruction From Input		#
+#--------------------------------------------
 	while 1 do
 		print 'irasm > '
 		asm = gets.chomp
@@ -794,7 +805,7 @@ def eaximm32_b (instruction, op, m1, m2, m3, m4, m5, m6)
 	#	m1 is the explicit machine code
 	#	m2 is the r/m16, imm16 version of the machine code
 	#	m3 is the al, imm8 version of the machine code
-	#Is it: OP ax, imm16?
+	#Is it: OP eax, imm32?
 	if extracted = /^\w+\s+eax,\s*((0x)?[a-f0-9]+)$/i.match(instruction)
 		s_operand = imm32(extracted.captures[0])
 		printf("%-32s %20s", m1 + littleend(s_operand), instruction)
@@ -849,7 +860,7 @@ def eaximm32_c (instruction, op, m1, m2)
 	#	op is the opcode (adc, xor, cmp, ec...)
 	#	m1 is the explicit machine code
 	#	m2 is the r/m16, imm16 version of the machine code
-	#Is it: OP ax, imm16?
+	#Is it: OP eax, imm32?
 	if extracted = /^\w+\s+eax,\s*((0x)?[a-f0-9]+)$/i.match(instruction)
 		s_operand = imm32(extracted.captures[0])
 		printf("%-32s %20s", m1 + littleend(s_operand), instruction)
@@ -929,7 +940,7 @@ def eaximm32_e (instruction, op, m1, m2, m3, m4, m5, m6)
 	#	m1 is the explicit machine code
 	#	m2 is the r/m16, imm16 version of the machine code
 	#	m3 is the al, imm8 version of the machine code
-	#Is it: OP ax, imm16?
+	#Is it: OP ax, imm32?
 	if extracted = /^\w+\s+eax,\s*((0x)?[a-f0-9]+)$/i.match(instruction)
 		s_operand = imm32(extracted.captures[0])
 		printf("%-32s %20s", m1 + littleend(s_operand), instruction)
@@ -969,6 +980,32 @@ def modrm8imm (instruction, op, m1, num)
 
 	#Doesn't yet do alternates
 	#Incorrectly parses disp8 as unsinged for now
+	#Errors on just integer offset
+	#Investigate *2 cases (assemblers choose reg+reg not reg*2) (FIXED)
+	#	And related, just mreg * n issues (0 disp needed if no disp specified)
+	#	805468110b  adc byte [ebp * 2 + 0x11], 11 (incorrect)
+	#	80542d110b	adc byte [ebp * 2 + 0x11], 11 (correct)	
+	#	But then there's [reg + reg] that arent
+	#		adc byte [eax + eax], 11
+	#			80100b      adc byte [eax + eax], 11 (incorrect)
+	#			8014000b	adc byte [eax + eax], 11 (correct)
+	#		The issue is that 2nd reg is not correctly considered scaled (by 1)
+	#	An esp with scale * 1 can still be encoded
+
+	#This is a very complicated type of subroutine, below is a summary of how Mod/RM is worked through
+	# 1. Extract register, offset, multiplier, and register being multiplied (if applicable to all)
+	# 2. Based on offset size (none, 8bit, 32bit), set 2 bit MOD bits in MODRM
+	# 3. calculate instruction (from num argument) and add those 3 bits to MODRM
+	# 4. If there's no Scale
+	#		add 3 bit Register to MODRM
+	#    Otherwise
+	#       a. Add SIB bits (100) to MODRM
+	# 		b. Based on 'multiplier', adjust 2 scale bits in SIB byte
+	#		c. add the 3 bits of the multiplied register to SIB byte
+	#		d. add the 3 bits of the 'added' register to the SIB byte
+	#		e. If no multiplier
+	#			add appropriate displacements with 0's [MUST REVIEW THIS POSSIBLY BAD LOGIC]
+	#		f. Add displacements (of appropriate size) if they exist
 
 	def disp_to_dec (disp)
 		#This routine takes a decimal OR hexidecimal string value and returns the integer
@@ -989,16 +1026,27 @@ def modrm8imm (instruction, op, m1, num)
 		multiplier = '0'
 		mreg = ''
 	end
+
+	#Parse offset
+	negative = 0
 	#Is there a decimal formatted offset
-	if extracted = /byte.+?\[[^\]]*?[^x*]{2}(\d+)[^\]]*?\]\s*?,\s*?((0x)?[a-f0-9]+)$/i.match(instruction)
+	if extracted = /byte.+?\[[^\]]*?(?<![x*\s]{2})(\d+)[^\]]*?\]\s*?,\s*?((0x)?[a-f0-9]+)$/i.match(instruction)
 		offset = extracted.captures[0]
-		s_operand = imm8(extracted.captures[1])			
+		s_operand = imm8(extracted.captures[1])	
+	end		
+	if extracted = /byte.+?\[[^\]]*?-\s*?\d+/i.match(instruction) then
+		negative = 1
 	end		
 	#Is there a hex formatted offset
 	if extracted = /byte.+?\[[^\]]*?(0x[0-9a-f]+)[^\]]*?\]\s*?,\s*?((0x)?[a-f0-9]+)$/i.match(instruction)
 		offset = extracted.captures[0]
-		s_operand = imm8(extracted.captures[1])		
+		s_operand = imm8(extracted.captures[1])
 	end
+	if extracted = /byte.+?\[[^\]]*?-\s*(0x[0-9a-f]+)/i.match(instruction) then
+		negative = 1		
+	end
+	puts "negative value?: %i" % negative
+
 	#Is there a scale
 	if extracted = /byte.+?\[[^\]]*?(e[acdbs][xip])\s*?\*\s*?([1248])[^\]]*?\]\s*?,\s*?((0x)?[a-f0-9]+)$/i.match(instruction)
 		mreg = extracted.captures[0] #register multiplied
@@ -1006,6 +1054,12 @@ def modrm8imm (instruction, op, m1, num)
 		s_operand = imm8(extracted.captures[2])		
 		if instruction !~ /.+?e[acdbs][xip].+e[acdbs][xip]/i
 			register = 'none'
+		end
+		#If multiplied register is scaled by 1, and there is no base register, then just use register as base
+		if mreg != '' and  multiplier == '1' and register == 'none' then 
+			register = mreg 	#base register is now the scaled register
+			mreg = ''			#there is no longer a scaled register
+			multiplier = '0'	#there is no longer a scale
 		end
 	end
 	#If it's just the register, then process it and leave
@@ -1035,31 +1089,45 @@ def modrm8imm (instruction, op, m1, num)
 	puts "Multiplier %s" % multiplier
 	puts "Multiplied Register %s" % mreg
 
+	# Set Flags
+	if register == 'esp' then esp_areg = 1 end
+	if register == 'ebp' then ebp_areg = 1 end
+
+	puts "esp areg is %s" % esp_areg
+	puts "ebp areg is %s" % ebp_areg
+
+	if !register and !multiplier and !mreg and offset then
+		s_operand = littleend(zeropad(imm32(offset),8)) + s_operand
+		printf("\nAssembly Alternatives\n%-32s %20s\n", m1 + '15' + s_operand, instruction)
+		return
+	end
+
+	if mreg == 'esp' then 
+		printf("\nesp is an invalid Scaled Index\n") 
+		return
+	end
+
 	sib = 0 #default
 	#Process Mod (ModR/M)
-	if disp_to_dec(offset) > 255 then modrm = 128
-		elsif disp_to_dec(offset) > 0 then modrm = 64
+	if disp_to_dec(offset) > 4294967040 then modrm = 64
+		elsif disp_to_dec(offset) > 2147483647 and negative == 1 then modrm = 128
+		elsif disp_to_dec(offset) < 2147483648 and disp_to_dec(offset) > 128 and negative == 1 then modrm = 128 
+		elsif disp_to_dec(offset) < 129 and disp_to_dec(offset) > 0 and negative == 1 then modrm = 64
+		elsif disp_to_dec(offset) > 1 and disp_to_dec(offset) < 128 and negative == 0 then modrm = 64
+		elsif disp_to_dec(offset) > 127 and negative == 0 then modrm = 128
 		else modrm = 0
 	end
+
 	#Process Instruction (ModR/M)
 	modrm = modrm + (num.to_i * 8)
-	if multiplier == '0' then
+	if multiplier == '0' and !esp_areg then
 		#Process Register (ModR/M)
-		if disp_to_dec(offset) == 0 then 			#If no offset
-			if register == 'ecx' then modrm = modrm + 1
-				elsif register == 'edx' then modrm = modrm + 2
-				elsif register == 'ebx' then modrm = modrm + 3
-				elsif register == 'esi' then modrm = modrm + 6
-				elsif register == 'edi' then modrm = modrm + 7
-			end
-		else 
-			if register == 'ecx' then modrm = modrm + 1		#otherwise, disp8 and disp32 are same for this
-				elsif register == 'edx' then modrm = modrm + 2
-				elsif register == 'ebx' then modrm = modrm + 3
-				elsif register == 'ebp' then modrm = modrm + 5
-				elsif register == 'esi' then modrm = modrm + 6
-				elsif register == 'edi' then modrm = modrm + 7
-			end
+		if register == 'ecx' then modrm = modrm + 1
+			elsif register == 'edx' then modrm = modrm + 2
+			elsif register == 'ebx' then modrm = modrm + 3
+			elsif register == 'ebp' and disp_to_dec(offset) > 0 then modrm = modrm + 5
+			elsif register == 'esi' then modrm = modrm + 6
+			elsif register == 'edi' then modrm = modrm + 7
 		end
 	else
 		#Proccess Scale (SIB)
@@ -1072,41 +1140,75 @@ def modrm8imm (instruction, op, m1, num)
 		if mreg == 'ecx' then sib = sib + 8
 			elsif mreg == 'edx' then sib = sib + 16
 			elsif mreg == 'ebx' then sib = sib + 24
-			elsif mreg == 'ebp' then sib = sib + 30
-			elsif mreg == 'esi' then sib = sib + 38
-			elsif mreg == 'edi' then sib = sib + 46
+			elsif mreg == 'ebp' then sib = sib + 40
+			elsif mreg == 'esi' then sib = sib + 48
+			elsif mreg == 'edi' then sib = sib + 56
 		end
 		if register == 'ecx' then sib = sib + 1
 			elsif register == 'edx' then sib = sib + 2
 			elsif register == 'ebx' then sib = sib + 3
 			elsif register == 'esp' then sib = sib + 4
-			elsif register == 'none' then sib = sib + 5
 			elsif register == 'esi' then sib = sib + 6
 			elsif register == 'edi' then sib = sib + 7
 		end
-		sib = zeropad(sib.to_s(16), 2)
-		#Process [*] r32 for no base register
-		if register == 'none'
-			if multiplier == '2' then sib = sib + '00'
-				elsif multiplier == '4' then sib = sib + '00000000'
-				elsif multiplier == '8' then sib = sib + '00000000'
-				else sib = sib + '00000000'
+		if register == 'none' and multiplier == '2' then 
+			if mreg == 'eax' then sib = 0
+				elsif mreg == 'ecx' then sib = 9
+				elsif mreg == 'edx' then sib = 18
+				elsif mreg == 'ebx' then sib = 27
+				elsif mreg == 'ebp' then sib = 45	
+				elsif mreg == 'esi' then sib = 54
+				elsif mreg == 'edi' then sib = 63
 			end
-		end
-
+		end	
+		if ebp_areg then sib = sib + 5 end 
+		if esp_areg and multiplier == '0' then sib = sib + 32 end
+		sib = zeropad(sib.to_s(16), 2)
 	end
-	modrm = zeropad(modrm.to_s(16), 2)
 
 	puts "offset is %i" % disp_to_dec(offset)
-	if disp_to_dec(offset) > 255 then
+	if disp_to_dec(offset) > 4294967040 and not negative == 1 then
+		#32bit conversion to 8bit 2's compliment
+		offset = 4294967296 - disp_to_dec(offset).to_i	#Get absolute number
+		offset = offset.to_s		
+		offset = 256 - disp_to_dec(offset).to_i			#2's compliment	8bit	
+		offset = offset.to_s
+		puts "Offset is %i" % disp_to_dec(offset)
+		s_operand = littleend(zeropad(imm8(offset),2)) + s_operand		
+	elsif disp_to_dec(offset) > 2147483647 and negative == 1 then
+		puts "Invalid negative displacement"
+		return
+	elsif disp_to_dec(offset) < 2147483648 and disp_to_dec(offset) > 128 and negative == 1	then
+		#32bit 2's compliment
+		offset = 4294967296 - disp_to_dec(offset).to_i	#2's compliment
+		offset = offset.to_s
+		puts "Offset is %i" % disp_to_dec(offset)
 		s_operand = littleend(zeropad(imm32(offset),8)) + s_operand
-	elsif disp_to_dec(offset) != 0 then
+	elsif disp_to_dec(offset) < 129 and disp_to_dec(offset) > 0 and negative == 1 then
+		#8bit 2's compliment
+		offset = 256 - disp_to_dec(offset).to_i			#2's compliment
+		offset = offset.to_s
+		s_operand = littleend(zeropad(imm8(offset),2)) + s_operand	
+	elsif disp_to_dec(offset) > 1 and disp_to_dec(offset) < 128 and negative == 0 then
+		#8bit
 		s_operand = littleend(zeropad(imm8(offset),2)) + s_operand
-	end	
-	if multiplier == '0' then
-		printf("\nAssembly Alternatives\n%-32s %20s", m1 + modrm + s_operand, instruction)
+	elsif disp_to_dec(offset) > 127 and negative == 0 then
+		#32bit
+		s_operand = littleend(zeropad(imm32(offset),8)) + s_operand
+	elsif disp_to_dec(offset) == 0 then
+		if ebp_areg then 
+			modrm = modrm + 64
+			if multiplier == '0' then modrm = modrm + 5 end
+			s_operand = '00' + s_operand
+		end
+	end
+
+	modrm = zeropad(modrm.to_s(16), 2)
+
+	if multiplier == '0' and !esp_areg then
+		printf("\nAssembly Alternatives\n%-32s %20s\n", m1 + modrm + s_operand, instruction)
 	else
-		printf("\nAssembly Alternatives\n%-32s %20s", m1 + modrm + sib + s_operand, instruction)		
+		printf("\nAssembly Alternatives\n%-32s %20s\n", m1 + modrm + sib + s_operand, instruction)		
 	end
 
 

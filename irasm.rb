@@ -979,8 +979,7 @@ def modrm8imm (instruction, op, m1, num)
 	#num - the encoded instruction within the modr/m (i.e ADC r/m8,imm8 is /2)
 
 	#Doesn't yet do alternates
-	#Incorrectly parses disp8 as unsinged for now
-	#Errors on just integer offset
+	#Recommended [base + scacle + disp], different order will have silent errors
 	#Investigate *2 cases (assemblers choose reg+reg not reg*2) (FIXED)
 	#	And related, just mreg * n issues (0 disp needed if no disp specified)
 	#	805468110b  adc byte [ebp * 2 + 0x11], 11 (incorrect)
@@ -1062,6 +1061,23 @@ def modrm8imm (instruction, op, m1, num)
 			multiplier = '0'	#there is no longer a scale
 		end
 	end
+	#Have to handle implicit * 1 with kid gloves, ie adc byte [eax + ebp], 88
+	#For the regex, if there's a register followed by adding another register that does not have a scale after it
+	if extracted = /byte.+?\[[^\]]*?(e[acdbs][xip])\s*?\+\s*?(e[acdbs][xip])[^*]+$/i.match(instruction) then
+		reg_a = extracted.captures[0]	#Get first register
+		reg_b = extracted.captures[1]	#Get second register
+		puts "reg1 is %s" % reg_a
+		puts "reg2 is %s" % reg_b
+		if reg_b == 'esp' then			#esp can't be scaled / can't be 2nd register
+			mreg = reg_a				#make first register the scaled one
+			register = reg_b			#make second register the base one
+		else
+			mreg = reg_b				#first is fine as base
+			register = reg_a			#second is fine as scaled
+		end
+		multiplier = '1'				#scale will always be '1' here; as it's implied by not have a scale for second reg
+	end
+
 	#If it's just the register, then process it and leave
 	if extracted = /([abcd][hl])\s*,\s*((0x)?[a-f0-9]+)$/i.match(instruction)
 		#mod = 2 (11xxxxxx) / 192
@@ -1082,12 +1098,20 @@ def modrm8imm (instruction, op, m1, num)
 		printf("%-32s %20s\n\n", m1 + modrm + s_operand, instruction)
 		return 1
 	end
+
+
 	#Otherwise, let's process some pointers
 	#All Values parsed:
 	puts "Register: %s" % register
 	puts "Offset: %s" % offset
 	puts "Multiplier %s" % multiplier
 	puts "Multiplied Register %s" % mreg
+
+	#if ebp *2, base reg is ebp, scaled reg is ebp * 1
+	if register == 'none' and mreg == 'ebp' and multiplier == '2' then
+		register = 'ebp'
+		multiplier = '1'
+	end 
 
 	# Set Flags
 	if register == 'esp' then esp_areg = 1 end
@@ -1096,6 +1120,7 @@ def modrm8imm (instruction, op, m1, num)
 	puts "esp areg is %s" % esp_areg
 	puts "ebp areg is %s" % ebp_areg
 
+	#if all we have is the displacement, the we are ready to output the machine code for it
 	if !register and !multiplier and !mreg and offset then
 		s_operand = littleend(zeropad(imm32(offset),8)) + s_operand
 		printf("\nAssembly Alternatives\n%-32s %20s\n", m1 + '15' + s_operand, instruction)
@@ -1163,10 +1188,15 @@ def modrm8imm (instruction, op, m1, num)
 		end	
 		if ebp_areg then sib = sib + 5 end 
 		if esp_areg and multiplier == '0' then sib = sib + 32 end
-		sib = zeropad(sib.to_s(16), 2)
+	end
+	#if there's no base register, and not scaled esp, then add 5 to SIB (for the [*] no base register)
+	#	32-bit displacement also needed (handled in displacement processing later)
+	if register == 'none' and (multiplier == '4' or multiplier == '8') then
+		sib = sib + 5
 	end
 
 	puts "offset is %i" % disp_to_dec(offset)
+	#if there's no base register, and not scaled esp, then 32-bit displacemnet needed
 	if disp_to_dec(offset) > 4294967040 and not negative == 1 then
 		#32bit conversion to 8bit 2's compliment
 		offset = 4294967296 - disp_to_dec(offset).to_i	#Get absolute number
@@ -1174,7 +1204,10 @@ def modrm8imm (instruction, op, m1, num)
 		offset = 256 - disp_to_dec(offset).to_i			#2's compliment	8bit	
 		offset = offset.to_s
 		puts "Offset is %i" % disp_to_dec(offset)
-		s_operand = littleend(zeropad(imm8(offset),2)) + s_operand		
+		if register == 'none' and (multiplier == '4' or multiplier == '8') then
+			s_operand = littleend(zeropad(imm32(offset),8)) + s_operand
+			modrm = modrm - 64
+		else s_operand = littleend(zeropad(imm8(offset),2)) + s_operand	end	
 	elsif disp_to_dec(offset) > 2147483647 and negative == 1 then
 		puts "Invalid negative displacement"
 		return
@@ -1183,26 +1216,38 @@ def modrm8imm (instruction, op, m1, num)
 		offset = 4294967296 - disp_to_dec(offset).to_i	#2's compliment
 		offset = offset.to_s
 		puts "Offset is %i" % disp_to_dec(offset)
-		s_operand = littleend(zeropad(imm32(offset),8)) + s_operand
+		if register == 'none' and (multiplier == '4' or multiplier == '8') then modrm = modrm - 128 end
+		s_operand = littleend(zeropad(imm32(offset),8)) + s_operand	
 	elsif disp_to_dec(offset) < 129 and disp_to_dec(offset) > 0 and negative == 1 then
 		#8bit 2's compliment
 		offset = 256 - disp_to_dec(offset).to_i			#2's compliment
 		offset = offset.to_s
-		s_operand = littleend(zeropad(imm8(offset),2)) + s_operand	
+		if register == 'none' and (multiplier == '4' or multiplier == '8') then
+			s_operand = littleend(zeropad(imm32(offset),8)) + s_operand
+			modrm = modrm - 64
+		else s_operand = littleend(zeropad(imm8(offset),2)) + s_operand	end		
 	elsif disp_to_dec(offset) > 1 and disp_to_dec(offset) < 128 and negative == 0 then
 		#8bit
-		s_operand = littleend(zeropad(imm8(offset),2)) + s_operand
+		if register == 'none' and (multiplier == '4' or multiplier == '8') then
+			s_operand = littleend(zeropad(imm32(offset),8)) + s_operand
+			modrm = modrm - 64
+		else s_operand = littleend(zeropad(imm8(offset),2)) + s_operand	end	
 	elsif disp_to_dec(offset) > 127 and negative == 0 then
 		#32bit
-		s_operand = littleend(zeropad(imm32(offset),8)) + s_operand
+		if register == 'none' and (multiplier == '4' or multiplier == '8') then modrm = modrm - 128 end
+		s_operand = littleend(zeropad(imm32(offset),8)) + s_operand			
 	elsif disp_to_dec(offset) == 0 then
+		if register == 'none' and (multiplier == '4' or multiplier == '8') then
+			s_operand = littleend(zeropad(imm32(offset),8)) + s_operand
+		end			
 		if ebp_areg then 
 			modrm = modrm + 64
 			if multiplier == '0' then modrm = modrm + 5 end
 			s_operand = '00' + s_operand
-		end
+		end	
 	end
 
+	sib = zeropad(sib.to_s(16), 2)
 	modrm = zeropad(modrm.to_s(16), 2)
 
 	if multiplier == '0' and !esp_areg then

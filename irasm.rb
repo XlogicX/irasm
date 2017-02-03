@@ -702,7 +702,8 @@ def alimm8 (instruction, op, m1, m2)	#OP AL, imm8
 		s_operand = imm8(extracted.captures[0]) #validate sanity of imm8
 		printf("%-32s %20s", m1 + s_operand, instruction)
 		puts "\nAssembly Alternatives:"
-		printf("%-32s %20s %20s", m2 + s_operand, instruction, "(r/m8, imm8)\n")		
+		instruction_alt = objdump(m2 + s_operand)
+		printf("%-32s %20s %20s", m2 + s_operand, instruction_alt, "(r/m8, imm8)\n")		
 		return 1
 	end
 end
@@ -718,10 +719,12 @@ def aximm16 (instruction, op, m1, m2, m3, m4)	#OP AX, imm16
 		s_operand = imm16(extracted.captures[0])
 		printf("%-32s %20s", m1 + littleend(s_operand), instruction)
 		puts "\nAssembly Alternatives:"
-		printf("%-32s %20s %20s", m2 + littleend(s_operand), instruction, "(r/m16, imm16)\n")
+		instruction_alt = objdump(m2 + littleend(s_operand))
+		printf("%-32s %20s %20s", m2 + littleend(s_operand), instruction_alt, "(r/m16, imm16)\n")
 		if extracted_i = /00(..)/i.match(s_operand)
 			instruction = instruction.gsub(/ax/i, 'al')
-			printf("%-32s %20s %20s", m3 + extracted_i.captures[0], instruction, "(al, imm8)\n")		
+			instruction_alt = objdump(m3 + extracted_i.captures[0])
+			printf("%-32s %20s %20s", m3 + extracted_i.captures[0], instruction_alt, "(al, imm8)\n")		
 		end
 		puts "\n"
 		return 1
@@ -739,16 +742,21 @@ def eaximm32 (instruction, op, m1, m2, m3, m4, m5, m6)	#OP EAX, imm32
 		s_operand = imm32(extracted.captures[0])
 		printf("%-32s %20s", m1 + littleend(s_operand), instruction)
 		puts "\nAssembly Alternatives:"
-		printf("%-32s %20s %20s", m2 + littleend(s_operand), instruction, "(r/m32, imm32)\n")
+		instruction_alt = objdump(m2 + littleend(s_operand))
+		printf("%-32s %20s %20s", m2 + littleend(s_operand), instruction_alt, "(r/m32, imm32)\n")
 		if extracted_i = /0000(....)/i.match(s_operand)
 			instruction = instruction.gsub(/eax/i, 'ax')
-		    printf("%-32s %20s %20s", m3 + littleend(extracted_i.captures[0]), instruction, "(r/m16, imm16)\n")			
-			printf("%-32s %20s %20s", m4 + littleend(extracted_i.captures[0]), instruction, "(ax, imm16)\n")		
+			instruction_alt = objdump(m3 + littleend(extracted_i.captures[0]))
+		    printf("%-32s %20s %20s", m3 + littleend(extracted_i.captures[0]), instruction_alt, "(r/m16, imm16)\n")
+		    instruction_alt = objdump(m4 + littleend(extracted_i.captures[0]))			
+			printf("%-32s %20s %20s", m4 + littleend(extracted_i.captures[0]), instruction_alt, "(ax, imm16)\n")		
 		end		
 		if extracted_i = /000000(..)/i.match(s_operand)
 			instruction = instruction.gsub(/ax/i, 'al')
-			printf("%-32s %20s %20s", m5 + extracted_i.captures[0], instruction, "(al, imm8)\n")
-			printf("%-32s %20s %20s", m6 + extracted_i.captures[0], instruction, "(r/m8, imm8)\n")		
+			instruction_alt = objdump(m5 + extracted_i.captures[0])
+			printf("%-32s %20s %20s", m5 + extracted_i.captures[0], instruction_alt, "(al, imm8)\n")
+			instruction_alt = objdump(m6 + extracted_i.captures[0])
+			printf("%-32s %20s %20s", m6 + extracted_i.captures[0], instruction_alt, "(r/m8, imm8)\n")		
 		end
 		puts "\n"
 		return 1
@@ -766,11 +774,16 @@ def alimm8_b (instruction, op, m1, m2, m3, m4, m5, m6)	#OP AL, imm8
 		s_operand = imm8(extracted.captures[0]) #validate sanity of imm8
 		printf("%-32s %20s", m5 + s_operand, instruction)
 		puts "\nAssembly Alternatives:"
-		printf("%-32s %20s %20s", m6 + s_operand, instruction, "(r/m8, imm8)\n")
-		printf("%-32s %20s %20s", m3 + littleend('ff' + s_operand), instruction, "(ax, imm16)\n")
-		printf("%-32s %20s %20s", m4 + littleend('ff' + s_operand), instruction, "(r/m16, imm16)\n")
-		printf("%-32s %20s %20s", m1 + littleend('ffffff' + s_operand), instruction, "(eax, imm32)\n")
-		printf("%-32s %20s %20s", m2 + littleend('ffffff' + s_operand), instruction, "(r/m32, imm32)\n")
+		instruction_alt = objdump(m6 + s_operand)
+		printf("%-32s %20s %20s", m6 + s_operand, instruction_alt, "(r/m8, imm8)\n")
+		instruction_alt = objdump(m3 + littleend('ff' + s_operand))
+		printf("%-32s %20s %20s", m3 + littleend('ff' + s_operand), instruction_alt, "(ax, imm16)\n")
+		instruction_alt = objdump(m4 + littleend('ff' + s_operand))
+		printf("%-32s %20s %20s", m4 + littleend('ff' + s_operand), instruction_alt, "(r/m16, imm16)\n")
+		instruction_alt = objdump(m1 + littleend('ffffff' + s_operand))
+		printf("%-32s %20s %20s", m1 + littleend('ffffff' + s_operand), instruction_alt, "(eax, imm32)\n")
+		instruction_alt = objdump(m2 + littleend('ffffff' + s_operand))
+		printf("%-32s %20s %20s", m2 + littleend('ffffff' + s_operand), instruction_alt, "(r/m32, imm32)\n")
 
 		return 1
 	end
@@ -787,14 +800,19 @@ def aximm16_b (instruction, op, m1, m2, m3, m4, m5, m6)
 		s_operand = imm16(extracted.captures[0])
 		printf("%-32s %20s", m3 + littleend(s_operand), instruction)
 		puts "\nAssembly Alternatives:"
-		printf("%-32s %20s %20s", m4 + littleend(s_operand), instruction, "(r/m16, imm16)\n")
-		printf("%-32s %20s %20s", m1 + littleend('ffff' + s_operand), instruction, "(eax, imm32)\n")
-		printf("%-32s %20s %20s", m2 + littleend('ffff' + s_operand), instruction, "(r/m32, imm32)\n")
+		instruction_alt = objdump(m4 + littleend(s_operand))
+		printf("%-32s %20s %20s", m4 + littleend(s_operand), instruction_alt, "(r/m16, imm16)\n")
+		instruction_alt = objdump(m1 + littleend('ffff' + s_operand))
+		printf("%-32s %20s %20s", m1 + littleend('ffff' + s_operand), instruction_alt, "(eax, imm32)\n")
+		instruction_alt = objdump(m2 + littleend('ffff' + s_operand))
+		printf("%-32s %20s %20s", m2 + littleend('ffff' + s_operand), instruction_alt, "(r/m32, imm32)\n")
 		if extracted_i = /ff(..)/i.match(s_operand)
 			instruction = instruction.gsub(/ax/i, 'al')
 			instruction = instruction.gsub(/xff/i, 'x')
-			printf("%-32s %20s %20s", m5 + extracted_i.captures[0], instruction, "(al, imm8)\n")
-			printf("%-32s %20s %20s", m6 + extracted_i.captures[0], instruction, "(r/m8, imm8)\n")		
+			instruction_alt = objdump(m5 + extracted_i.captures[0])
+			printf("%-32s %20s %20s", m5 + extracted_i.captures[0], instruction_alt, "(al, imm8)\n")
+			instruction_alt = objdump(m6 + extracted_i.captures[0])
+			printf("%-32s %20s %20s", m6 + extracted_i.captures[0], instruction_alt, "(r/m8, imm8)\n")		
 		end
 		puts "\n"
 		return 1
@@ -812,14 +830,19 @@ def eaximm32_b (instruction, op, m1, m2, m3, m4, m5, m6)
 		s_operand = imm32(extracted.captures[0])
 		printf("%-32s %20s", m1 + littleend(s_operand), instruction)
 		puts "\nAssembly Alternatives:"
-		printf("%-32s %20s %20s", m2 + littleend(s_operand), instruction, "(r/m32, imm32)\n")
+		instruction_alt = objdump(m2 + littleend(s_operand))
+		printf("%-32s %20s %20s", m2 + littleend(s_operand), instruction_alt, "(r/m32, imm32)\n")
 		if extracted_i = /ffff(....)/i.match(s_operand)		
-			printf("%-32s %20s %20s", m3 + littleend(extracted_i.captures[0]), instruction, "(ax, imm16)\n")
-		    printf("%-32s %20s %20s", m4 + littleend(extracted_i.captures[0]), instruction, "(r/m16, imm16)\n")			
+			instruction_alt = objdump(m3 + littleend(extracted_i.captures[0]))
+			printf("%-32s %20s %20s", m3 + littleend(extracted_i.captures[0]), instruction_alt, "(ax, imm16)\n")
+			instruction_alt = objdump(m4 + littleend(extracted_i.captures[0]))
+		    printf("%-32s %20s %20s", m4 + littleend(extracted_i.captures[0]), instruction_alt, "(r/m16, imm16)\n")			
 		end		
 		if extracted_i = /ffffff(..)/i.match(s_operand)		
-			printf("%-32s %20s %20s", m5 + extracted_i.captures[0], instruction, "(al, imm8)\n")
-			printf("%-32s %20s %20s", m6 + extracted_i.captures[0], instruction, "(r/m8, imm8)\n")		
+			instruction_alt = objdump(m5 + extracted_i.captures[0])
+			printf("%-32s %20s %20s", m5 + extracted_i.captures[0], instruction_alt, "(al, imm8)\n")
+			instruction_alt = objdump(m6 + extracted_i.captures[0])
+			printf("%-32s %20s %20s", m6 + extracted_i.captures[0], instruction_alt, "(r/m8, imm8)\n")		
 		end
 		puts "\n"
 		return 1
@@ -837,7 +860,8 @@ def alimm8_c (instruction, op, m1, m2)	#OP AL, imm8
 		s_operand = imm8(extracted.captures[0]) #validate sanity of imm8
 		printf("%-32s %20s", m1 + s_operand, instruction)
 		puts "\nAssembly Alternatives:"
-		printf("%-32s %20s %20s", m2 + s_operand, instruction, "(r/m8, imm8)\n")		
+		instruction_int = objdump(m2 + s_operand)
+		printf("%-32s %20s %20s", m2 + s_operand, instruction_int, "(r/m8, imm8)\n")		
 		return 1
 	end
 end
@@ -852,7 +876,8 @@ def aximm16_c (instruction, op, m1, m2)
 		s_operand = imm16(extracted.captures[0])
 		printf("%-32s %20s", m1 + littleend(s_operand), instruction)
 		puts "\nAssembly Alternatives:"
-		printf("%-32s %20s %20s", m2 + littleend(s_operand), instruction, "(r/m16, imm16)\n")
+		instruction_int = objdump(m2 + littleend(s_operand))
+		printf("%-32s %20s %20s", m2 + littleend(s_operand), instruction_int, "(r/m16, imm16)\n")
 		return 1
 	end
 end
@@ -867,7 +892,8 @@ def eaximm32_c (instruction, op, m1, m2)
 		s_operand = imm32(extracted.captures[0])
 		printf("%-32s %20s", m1 + littleend(s_operand), instruction)
 		puts "\nAssembly Alternatives:"
-		printf("%-32s %20s %20s", m2 + littleend(s_operand), instruction, "(r/m32, imm32)\n")
+		instruction_int = objdump(m2 + littleend(s_operand))
+		printf("%-32s %20s %20s", m2 + littleend(s_operand), instruction_int, "(r/m32, imm32)\n")
 		return 1
 	end
 end
@@ -903,11 +929,16 @@ def alimm8_e (instruction, op, m1, m2, m3, m4, m5, m6)	#OP AL, imm8
 		s_operand = imm8(extracted.captures[0]) #validate sanity of imm8
 		printf("%-32s %20s", m5 + s_operand, instruction)
 		puts "\nAssembly Alternatives:"
-		printf("%-32s %20s %20s", m6 + s_operand, instruction, "(r/m8, imm8)\n")
-		printf("%-32s %20s %20s", m3 + littleend('00' + s_operand), instruction, "(ax, imm16)\n")
-		printf("%-32s %20s %20s", m4 + littleend('00' + s_operand), instruction, "(r/m16, imm16)\n")
-		printf("%-32s %20s %20s", m1 + littleend('000000' + s_operand), instruction, "(eax, imm32)\n")
-		printf("%-32s %20s %20s", m2 + littleend('000000' + s_operand), instruction, "(r/m32, imm32)\n")
+		instruction_alt = objdump(m6 + s_operand)
+		printf("%-32s %20s %20s", m6 + s_operand, instruction_alt, "(r/m8, imm8)\n")
+		instruction_alt = objdump(m3 + littleend('00' + s_operand))
+		printf("%-32s %20s %20s", m3 + littleend('00' + s_operand), instruction_alt, "(ax, imm16)\n")
+		instruction_alt = objdump(m4 + littleend('00' + s_operand))
+		printf("%-32s %20s %20s", m4 + littleend('00' + s_operand), instruction_alt, "(r/m16, imm16)\n")
+		instruction_alt = objdump(m1 + littleend('000000' + s_operand))
+		printf("%-32s %20s %20s", m1 + littleend('000000' + s_operand), instruction_alt, "(eax, imm32)\n")
+		instruction_alt = objdump(m2 + littleend('000000' + s_operand))
+		printf("%-32s %20s %20s", m2 + littleend('000000' + s_operand), instruction_alt, "(r/m32, imm32)\n")
 
 		return 1
 	end
@@ -924,12 +955,17 @@ def aximm16_e (instruction, op, m1, m2, m3, m4, m5, m6)
 		s_operand = imm16(extracted.captures[0])
 		printf("%-32s %20s", m3 + littleend(s_operand), instruction)
 		puts "\nAssembly Alternatives:"
-		printf("%-32s %20s %20s", m4 + littleend(s_operand), instruction, "(r/m16, imm16)\n")
-		printf("%-32s %20s %20s", m1 + littleend('0000' + s_operand), instruction, "(eax, imm32)\n")
-		printf("%-32s %20s %20s", m2 + littleend('0000' + s_operand), instruction, "(r/m32, imm32)\n")
+		instruction_alt = objdump(m4 + littleend(s_operand))
+		printf("%-32s %20s %20s", m4 + littleend(s_operand), instruction_alt, "(r/m16, imm16)\n")
+		instruction_alt = objdump(m1 + littleend('0000' + s_operand))
+		printf("%-32s %20s %20s", m1 + littleend('0000' + s_operand), instruction_alt, "(eax, imm32)\n")
+		instruction_alt = objdump(m2 + littleend('0000' + s_operand))
+		printf("%-32s %20s %20s", m2 + littleend('0000' + s_operand), instruction_alt, "(r/m32, imm32)\n")
 		if extracted_i = /00(..)/i.match(s_operand)
-			printf("%-32s %20s %20s", m5 + extracted_i.captures[0], instruction, "(al, imm8)\n")
-			printf("%-32s %20s %20s", m6 + extracted_i.captures[0], instruction, "(r/m8, imm8)\n")		
+			instruction_alt = objdump(m5 + extracted_i.captures[0])
+			printf("%-32s %20s %20s", m5 + extracted_i.captures[0], instruction_alt, "(al, imm8)\n")
+			instruction_alt = objdump(m6 + extracted_i.captures[0])
+			printf("%-32s %20s %20s", m6 + extracted_i.captures[0], instruction_alt, "(r/m8, imm8)\n")		
 		end
 		puts "\n"
 		return 1
@@ -947,14 +983,19 @@ def eaximm32_e (instruction, op, m1, m2, m3, m4, m5, m6)
 		s_operand = imm32(extracted.captures[0])
 		printf("%-32s %20s", m1 + littleend(s_operand), instruction)
 		puts "\nAssembly Alternatives:"
-		printf("%-32s %20s %20s", m2 + littleend(s_operand), instruction, "(r/m32, imm32)\n")
-		if extracted_i = /0000(....)/i.match(s_operand)		
-			printf("%-32s %20s %20s", m3 + littleend(extracted_i.captures[0]), instruction, "(ax, imm16)\n")			
-		    printf("%-32s %20s %20s", m4 + littleend(extracted_i.captures[0]), instruction, "(r/m16, imm16)\n")			
+		instruction_alt = objdump(m2 + littleend(s_operand))
+		printf("%-32s %20s %20s", m2 + littleend(s_operand), instruction_alt, "(r/m32, imm32)\n")
+		if extracted_i = /0000(....)/i.match(s_operand)
+			instruction_alt = objdump(m3 + littleend(extracted_i.captures[0]))
+			printf("%-32s %20s %20s", m3 + littleend(extracted_i.captures[0]), instruction_alt, "(ax, imm16)\n")
+			instruction_alt = objdump(m4 + littleend(extracted_i.captures[0]))			
+		    printf("%-32s %20s %20s", m4 + littleend(extracted_i.captures[0]), instruction_alt, "(r/m16, imm16)\n")			
 		end		
-		if extracted_i = /000000(..)/i.match(s_operand)		
-			printf("%-32s %20s %20s", m5 + extracted_i.captures[0], instruction, "(al, imm8)\n")
-			printf("%-32s %20s %20s", m6 + extracted_i.captures[0], instruction, "(r/m8, imm8)\n")		
+		if extracted_i = /000000(..)/i.match(s_operand)	
+			instruction_alt = objdump(m5 + extracted_i.captures[0])	
+			printf("%-32s %20s %20s", m5 + extracted_i.captures[0], instruction_alt, "(al, imm8)\n")
+			instruction_alt = objdump(m6 + extracted_i.captures[0])
+			printf("%-32s %20s %20s", m6 + extracted_i.captures[0], instruction_alt, "(r/m8, imm8)\n")		
 		end
 		puts "\n"
 		return 1
@@ -969,7 +1010,7 @@ def fence (instruction, m1, m2)
 	printf("%-32s %20s\n\n", m1 + m2, instruction)
 	puts "Alternatives (Machine Code Only):"
 	for i in 1..7
-			printf("%-32s %20s\n", (m1 + (m2.hex.to_s(10).to_i + i).to_s(16)).upcase, instruction)
+		printf("%-32s %20s\n", (m1 + (m2.hex.to_s(10).to_i + i).to_s(16)).upcase, instruction)
 	end
 	puts
 end
@@ -1019,7 +1060,7 @@ def modrm8imm (instruction, op, m1, num)
 		end									
 		modrm = modrm.to_s(16)	
 		printf("%-32s %20s\n\n", m1 + modrm + s_operand, instruction)
-		return
+		return 1
 	end	
 
 	negative = 0	#Default, will be changed if subtraction of disp found
@@ -1065,38 +1106,39 @@ def modrm8imm (instruction, op, m1, num)
 	if extracted = /byte.+?\[[^\]]*?(e[acdbs][xip])\s*?\+\s*?(e[acdbs][xip])[^*]+$/i.match(instruction) then
 		reg_a = extracted.captures[0]	#parse first register
 		reg_b = extracted.captures[1]	#parse second register
+		tworegs = 1
 	end	
 
 	#PROCESSING
-	modrm, sib, s_operand, esp_areg, multiplier, register, mreg = pointer(negative, reg_a, reg_b, register, s_operand, offset, multiplier, mreg, m1, instruction, num)
+	modrm_p, sib_p, s_operand_p, esp_areg_p, multiplier_p, register_p, mreg_p = pointer(negative, reg_a, reg_b, register, s_operand, offset, multiplier, mreg, m1, instruction, num)
 
 	###############################
 	#   OUTPUT STANDARD RESULTS   #
 	###############################	
-	if multiplier == '0' and !esp_areg then
-		printf("%-32s %20s\n\n", m1 + modrm + s_operand, instruction)
-	elsif !register and !multiplier and !mreg and offset then
-		printf("%-32s %20s\n\n", m1 + modrm + s_operand, instruction)
-	elsif modrm == 'error' then return 1
-	else printf("%-32s %20s\n\n", m1 + modrm + sib + s_operand, instruction) end
+	if multiplier_p == '0' and !esp_areg_p then
+		printf("%-32s %20s\n\n", m1 + modrm_p + s_operand_p, instruction)
+	elsif !register_p and !multiplier_p and !mreg_p and offset then
+		printf("%-32s %20s\n\n", m1 + modrm_p + s_operand_p, instruction)
+	elsif modrm_p == 'error' then return 1
+	else printf("%-32s %20s\n\n", m1 + modrm_p + sib_p + s_operand_p, instruction) end
 
 	###############################
 	#  OUTPUT ALTERNATE RESULTS   #
 	###############################	
 	#Force commutative property
-	puts "register %s" % register
-	puts "mreg %s" % mreg
-	if register != 'esp' and mreg != 'esp' then		#If it's machine possible to swap registers
-		register, mreg = mreg, register			#swapem
-		puts "register %s" % register
-		puts "mreg %s" % mreg
+	if reg_a != 'esp' and reg_b != 'esp' and tworegs == 1 and reg_a != reg_b then		#If it's machine possible to swap registers
+		reg_a, reg_b = reg_b, reg_a		#swapem
 		#Re-Process
-		modrm, sib, s_operand, esp_areg, multiplier = pointer(negative, reg_a, reg_b, register, s_operand, offset, multiplier, mreg, m1, instruction, num)
-		if modrm == 'error' then return 1
-		else printf("%-32s %20s (Forced commutative property)\n\n", m1 + modrm + sib + s_operand, instruction) end
+		modrm_p, sib_p, s_operand_p, esp_areg_p, multiplier_p, register_p, mreg_p = pointer(negative, reg_a, reg_b, register, s_operand, offset, multiplier, mreg, m1, instruction, num)
+		if modrm_p == 'error' then return 1
+		else 
+			instruction_alt = objdump(m1+modrm_p+sib_p + s_operand_p)
+			printf("%-32s %20s (Forced commutative property)\n\n", m1 + modrm_p + sib_p + s_operand_p, instruction_alt)
+		end
+		reg_a, reg_b = reg_b, reg_a		#swapem back
 	end	
 
-	return
+	return 1
 
 end
 
@@ -1325,6 +1367,22 @@ def nasm (data)
 	machine_code = machine_code.chomp
 	puts "Decoded with the help of Nasm:\n%s\t%s\n\n" % [machine_code, data]
 	system('rm tmp tmp.asm')
+end
+
+def objdump (data)
+	cmd = `objdump -v 2> /dev/null`
+	if /objdump/i.match(cmd) then
+		file = File.open("tmp.m", "w")	
+		file.write(data)
+		file.close
+		cmd = 'cat tmp.m | xxd -r -p > tmp'
+		system(cmd)
+		cmd = `objdump -M intel -D -b binary -mi386 tmp`
+		if extracted = /^.+?<\.data>:\n\s+\S+\s+([0-9a-f]{2}\s)+\s+(.+)$/s.match(cmd) then
+			return extracted[2]
+		end
+	end
+	system('rm tmp tmp.m')
 end
 
 main

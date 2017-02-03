@@ -1,5 +1,7 @@
 #!/usr/bin/ruby
 
+$debug = 0
+
 #--------------------------------------------
 # 	Process for each instruction			#
 #--------------------------------------------
@@ -980,16 +982,6 @@ def modrm8imm (instruction, op, m1, num)
 
 	#Doesn't yet do alternates
 	#Recommended [base + scacle + disp], different order will have silent errors
-	#Investigate *2 cases (assemblers choose reg+reg not reg*2) (FIXED)
-	#	And related, just mreg * n issues (0 disp needed if no disp specified)
-	#	805468110b  adc byte [ebp * 2 + 0x11], 11 (incorrect)
-	#	80542d110b	adc byte [ebp * 2 + 0x11], 11 (correct)	
-	#	But then there's [reg + reg] that arent
-	#		adc byte [eax + eax], 11
-	#			80100b      adc byte [eax + eax], 11 (incorrect)
-	#			8014000b	adc byte [eax + eax], 11 (correct)
-	#		The issue is that 2nd reg is not correctly considered scaled (by 1)
-	#	An esp with scale * 1 can still be encoded
 
 	#This is a very complicated type of subroutine, below is a summary of how Mod/RM is worked through
 	# 1. Extract register, offset, multiplier, and register being multiplied (if applicable to all)
@@ -1006,78 +998,9 @@ def modrm8imm (instruction, op, m1, num)
 	#			add appropriate displacements with 0's [MUST REVIEW THIS POSSIBLY BAD LOGIC]
 	#		f. Add displacements (of appropriate size) if they exist
 
-	def disp_to_dec (disp)
-		#This routine takes a decimal OR hexidecimal string value and returns the integer
-		if /^0x/i.match(disp)
-			disp = disp.gsub(/0x(.+)/, '\1')
-			disp = disp.to_i(16)
-		else
-			disp = disp.to_i
-		end
-		return disp
-	end
-
-	#is it just a register as the pointer
-	if extracted = /byte.+?\[[^\]]*?(e[acdbs][xip])[^\]]*?\]\s*?,\s*?((0x)?[a-f0-9]+)$/i.match(instruction)
-		register = extracted.captures[0]
-		s_operand = imm8(extracted.captures[1])
-		offset = '0'
-		multiplier = '0'
-		mreg = ''
-	end
-
-	#Parse offset
-	negative = 0
-	#Is there a decimal formatted offset
-	if extracted = /byte.+?\[[^\]]*?(?<![x*\s]{2})(\d+)[^\]]*?\]\s*?,\s*?((0x)?[a-f0-9]+)$/i.match(instruction)
-		offset = extracted.captures[0]
-		s_operand = imm8(extracted.captures[1])	
-	end		
-	if extracted = /byte.+?\[[^\]]*?-\s*?\d+/i.match(instruction) then
-		negative = 1
-	end		
-	#Is there a hex formatted offset
-	if extracted = /byte.+?\[[^\]]*?(0x[0-9a-f]+)[^\]]*?\]\s*?,\s*?((0x)?[a-f0-9]+)$/i.match(instruction)
-		offset = extracted.captures[0]
-		s_operand = imm8(extracted.captures[1])
-	end
-	if extracted = /byte.+?\[[^\]]*?-\s*(0x[0-9a-f]+)/i.match(instruction) then
-		negative = 1		
-	end
-	puts "negative value?: %i" % negative
-
-	#Is there a scale
-	if extracted = /byte.+?\[[^\]]*?(e[acdbs][xip])\s*?\*\s*?([1248])[^\]]*?\]\s*?,\s*?((0x)?[a-f0-9]+)$/i.match(instruction)
-		mreg = extracted.captures[0] #register multiplied
-		multiplier = extracted.captures[1]
-		s_operand = imm8(extracted.captures[2])		
-		if instruction !~ /.+?e[acdbs][xip].+e[acdbs][xip]/i
-			register = 'none'
-		end
-		#If multiplied register is scaled by 1, and there is no base register, then just use register as base
-		if mreg != '' and  multiplier == '1' and register == 'none' then 
-			register = mreg 	#base register is now the scaled register
-			mreg = ''			#there is no longer a scaled register
-			multiplier = '0'	#there is no longer a scale
-		end
-	end
-	#Have to handle implicit * 1 with kid gloves, ie adc byte [eax + ebp], 88
-	#For the regex, if there's a register followed by adding another register that does not have a scale after it
-	if extracted = /byte.+?\[[^\]]*?(e[acdbs][xip])\s*?\+\s*?(e[acdbs][xip])[^*]+$/i.match(instruction) then
-		reg_a = extracted.captures[0]	#Get first register
-		reg_b = extracted.captures[1]	#Get second register
-		puts "reg1 is %s" % reg_a
-		puts "reg2 is %s" % reg_b
-		if reg_b == 'esp' then			#esp can't be scaled / can't be 2nd register
-			mreg = reg_a				#make first register the scaled one
-			register = reg_b			#make second register the base one
-		else
-			mreg = reg_b				#first is fine as base
-			register = reg_a			#second is fine as scaled
-		end
-		multiplier = '1'				#scale will always be '1' here; as it's implied by not have a scale for second reg
-	end
-
+	###############################
+	#           PARSING           #
+	###############################	
 	#If it's just the register, then process it and leave
 	if extracted = /([abcd][hl])\s*,\s*((0x)?[a-f0-9]+)$/i.match(instruction)
 		#mod = 2 (11xxxxxx) / 192
@@ -1096,16 +1019,163 @@ def modrm8imm (instruction, op, m1, num)
 		end									
 		modrm = modrm.to_s(16)	
 		printf("%-32s %20s\n\n", m1 + modrm + s_operand, instruction)
-		return 1
+		return
+	end	
+
+	negative = 0	#Default, will be changed if subtraction of disp found
+	reg_a = ''		#Default, will populate for an edge case
+	reg_b = ''		#Default, will populate for an edge case
+
+	#is it just a register as the pointer
+	if extracted = /byte.+?\[[^\]]*?(e[acdbs][xip])[^\]]*?\]\s*?,\s*?((0x)?[a-f0-9]+)$/i.match(instruction)
+		register = extracted.captures[0]
+		s_operand = imm8(extracted.captures[1])
+		offset = '0'
+		multiplier = '0'
+		mreg = ''
 	end
 
+	#Parse offset
+	#Is there a decimal formatted offset
+	if extracted = /byte.+?\[[^\]]*?(?<![x*\s]{2})(\d+)[^\]]*?\]\s*?,\s*?((0x)?[a-f0-9]+)$/i.match(instruction)
+		offset = extracted.captures[0]				#parse disp
+		s_operand = imm8(extracted.captures[1])		#parse imm
+	end		
+	if extracted = /byte.+?\[[^\]]*?-\s*?\d+/i.match(instruction) then negative = 1 end		#parse negative value
+	#Is there a hex formatted offset
+	if extracted = /byte.+?\[[^\]]*?(0x[0-9a-f]+)[^\]]*?\]\s*?,\s*?((0x)?[a-f0-9]+)$/i.match(instruction)
+		offset = extracted.captures[0]				#parse disp
+		s_operand = imm8(extracted.captures[1])		#parse imm
+	end
+	if extracted = /byte.+?\[[^\]]*?-\s*(0x[0-9a-f]+)/i.match(instruction) then negative = 1 end #parse negative value
+	if $debug == 1 then puts "negative value?: %i" % negative end
 
-	#Otherwise, let's process some pointers
+	#Is there a scale
+	if extracted = /byte.+?\[[^\]]*?(e[acdbs][xip])\s*?\*\s*?([1248])[^\]]*?\]\s*?,\s*?((0x)?[a-f0-9]+)$/i.match(instruction)
+		mreg = extracted.captures[0] 				#parse scaled register
+		multiplier = extracted.captures[1]			#parse scale
+		s_operand = imm8(extracted.captures[2])		#parse imm
+		if instruction !~ /.+?e[acdbs][xip].+e[acdbs][xip]/i	#parse possibility of no base register
+			register = 'none'
+		end
+	end
+
+	#Have to handle implicit * 1 with kid gloves, ie adc byte [eax + ebp], 88
+	#For the regex, if there's a register followed by adding another register that does not have a scale after it
+	if extracted = /byte.+?\[[^\]]*?(e[acdbs][xip])\s*?\+\s*?(e[acdbs][xip])[^*]+$/i.match(instruction) then
+		reg_a = extracted.captures[0]	#parse first register
+		reg_b = extracted.captures[1]	#parse second register
+	end	
+
+	#PROCESSING
+	modrm, sib, s_operand, esp_areg, multiplier, register, mreg = pointer(negative, reg_a, reg_b, register, s_operand, offset, multiplier, mreg, m1, instruction, num)
+
+	###############################
+	#   OUTPUT STANDARD RESULTS   #
+	###############################	
+	if multiplier == '0' and !esp_areg then
+		printf("%-32s %20s\n\n", m1 + modrm + s_operand, instruction)
+	elsif !register and !multiplier and !mreg and offset then
+		printf("%-32s %20s\n\n", m1 + modrm + s_operand, instruction)
+	elsif modrm == 'error' then return 1
+	else printf("%-32s %20s\n\n", m1 + modrm + sib + s_operand, instruction) end
+
+	###############################
+	#  OUTPUT ALTERNATE RESULTS   #
+	###############################	
+	#Force commutative property
+	puts "register %s" % register
+	puts "mreg %s" % mreg
+	if register != 'esp' and mreg != 'esp' then		#If it's machine possible to swap registers
+		register, mreg = mreg, register			#swapem
+		puts "register %s" % register
+		puts "mreg %s" % mreg
+		#Re-Process
+		modrm, sib, s_operand, esp_areg, multiplier = pointer(negative, reg_a, reg_b, register, s_operand, offset, multiplier, mreg, m1, instruction, num)
+		if modrm == 'error' then return 1
+		else printf("%-32s %20s (Forced commutative property)\n\n", m1 + modrm + sib + s_operand, instruction) end
+	end	
+
+	return
+
+end
+
+#--------------------------------
+# 	Other Helper Routines		#
+#--------------------------------
+
+def zeropad (data, bytes)
+	#A function that adds leading zeros for the specified amount
+	#of bytes. Maybe this could be a sprintf equiv...
+	len = data.length		
+	zeros = bytes - len
+	data = '0' * zeros + data
+	return data
+end
+
+def littleend (data)
+	#This function reverses bytes to be little-endian
+	returndata = ''
+	while extracted = /.+(..)$/i.match(data) do
+		returndata = returndata + extracted.captures[0]
+		data = data.gsub(/(.+)..$/i, '\1')
+	end
+	returndata = "%s%s" % [returndata, data]
+	return returndata
+end
+
+def disp_to_dec (disp)
+	#This routine takes a decimal OR hexidecimal string value and returns the integer
+	if /^0x/i.match(disp)
+		disp = disp.gsub(/0x(.+)/, '\1')
+		disp = disp.to_i(16)
+	else
+		disp = disp.to_i
+	end
+	return disp
+end
+
+def pointer (negative, reg_a, reg_b, register, s_operand, offset, multiplier, mreg, m1, instruction, num)
+	#If multiplied register is scaled by 1, and there is no base register, then just use register as base
+	if mreg != '' and  multiplier == '1' and register == 'none' then 
+		register = mreg 	#base register is now the scaled register
+		mreg = ''			#there is no longer a scaled register
+		multiplier = '0'	#there is no longer a scale
+	end
+	#Handle ESP scale exception, unless it's * 1, and make it base and make the base scaled by * 1
+	if mreg == 'esp' then
+		if multiplier == '1' and register != 'esp' then
+			mreg = register
+			register = 'esp'
+		else 
+			printf("\nesp is an invalid Scaled Index\n") 
+			return ["error", '0', '0', '0', '0', '0']
+		end
+	end	
+
+	#Have to handle implicit * 1 with kid gloves, ie adc byte [eax + ebp], 88
+	if reg_a != '' and reg_b != '' then
+		if $debug == 1 then puts "reg1 is %s" % reg_a end
+		if $debug == 1 then puts "reg2 is %s" % reg_b end
+		if reg_a == 'esp' and reg_b == 'esp' then
+			printf("\nesp is an invalid Scaled Index\n") 
+			return ["error", '0', '0', '0', '0', '0']
+		end
+		if reg_b == 'esp' then			#esp can't be scaled / can't be 2nd register
+			mreg = reg_a				#make first register the scaled one
+			register = reg_b			#make second register the base one
+		else
+			mreg = reg_b				#first is fine as base
+			register = reg_a			#second is fine as scaled
+		end
+		multiplier = '1'				#scale will always be '1' here; as it's implied by not have a scale for second reg
+	end
+
 	#All Values parsed:
-	puts "Register: %s" % register
-	puts "Offset: %s" % offset
-	puts "Multiplier %s" % multiplier
-	puts "Multiplied Register %s" % mreg
+	if $debug == 1 then puts "Register: %s" % register end
+	if $debug == 1 then puts "Offset: %s" % offset end
+	if $debug == 1 then puts "Multiplier %s" % multiplier end
+	if $debug == 1 then puts "Multiplied Register %s" % mreg end
 
 	#if ebp *2, base reg is ebp, scaled reg is ebp * 1
 	if register == 'none' and mreg == 'ebp' and multiplier == '2' then
@@ -1117,19 +1187,14 @@ def modrm8imm (instruction, op, m1, num)
 	if register == 'esp' then esp_areg = 1 end
 	if register == 'ebp' then ebp_areg = 1 end
 
-	puts "esp areg is %s" % esp_areg
-	puts "ebp areg is %s" % ebp_areg
+	if $debug == 1 then puts "esp areg is %s" % esp_areg end
+	if $debug == 1 then puts "ebp areg is %s" % ebp_areg end
 
 	#if all we have is the displacement, the we are ready to output the machine code for it
 	if !register and !multiplier and !mreg and offset then
 		s_operand = littleend(zeropad(imm32(offset),8)) + s_operand
-		printf("\nAssembly Alternatives\n%-32s %20s\n", m1 + '15' + s_operand, instruction)
-		return
-	end
-
-	if mreg == 'esp' then 
-		printf("\nesp is an invalid Scaled Index\n") 
-		return
+		sib = 0
+		return ['15', sib, s_operand, esp_areg, multiplier, register, mreg]
 	end
 
 	sib = 0 #default
@@ -1191,11 +1256,9 @@ def modrm8imm (instruction, op, m1, num)
 	end
 	#if there's no base register, and not scaled esp, then add 5 to SIB (for the [*] no base register)
 	#	32-bit displacement also needed (handled in displacement processing later)
-	if register == 'none' and (multiplier == '4' or multiplier == '8') then
-		sib = sib + 5
-	end
+	if register == 'none' and (multiplier == '4' or multiplier == '8') then sib = sib + 5 end
 
-	puts "offset is %i" % disp_to_dec(offset)
+	if $debug == 1 then puts "offset is %i" % disp_to_dec(offset) end
 	#if there's no base register, and not scaled esp, then 32-bit displacemnet needed
 	if disp_to_dec(offset) > 4294967040 and not negative == 1 then
 		#32bit conversion to 8bit 2's compliment
@@ -1203,19 +1266,19 @@ def modrm8imm (instruction, op, m1, num)
 		offset = offset.to_s		
 		offset = 256 - disp_to_dec(offset).to_i			#2's compliment	8bit	
 		offset = offset.to_s
-		puts "Offset is %i" % disp_to_dec(offset)
+		if $debug == 1 then puts "Offset is %i" % disp_to_dec(offset) end
 		if register == 'none' and (multiplier == '4' or multiplier == '8') then
 			s_operand = littleend(zeropad(imm32(offset),8)) + s_operand
 			modrm = modrm - 64
 		else s_operand = littleend(zeropad(imm8(offset),2)) + s_operand	end	
 	elsif disp_to_dec(offset) > 2147483647 and negative == 1 then
 		puts "Invalid negative displacement"
-		return
+		return ["error", '0', '0', '0', '0', '0']
 	elsif disp_to_dec(offset) < 2147483648 and disp_to_dec(offset) > 128 and negative == 1	then
 		#32bit 2's compliment
 		offset = 4294967296 - disp_to_dec(offset).to_i	#2's compliment
 		offset = offset.to_s
-		puts "Offset is %i" % disp_to_dec(offset)
+		if $debug == 1 then puts "Offset is %i" % disp_to_dec(offset) end
 		if register == 'none' and (multiplier == '4' or multiplier == '8') then modrm = modrm - 128 end
 		s_operand = littleend(zeropad(imm32(offset),8)) + s_operand	
 	elsif disp_to_dec(offset) < 129 and disp_to_dec(offset) > 0 and negative == 1 then
@@ -1249,43 +1312,7 @@ def modrm8imm (instruction, op, m1, num)
 
 	sib = zeropad(sib.to_s(16), 2)
 	modrm = zeropad(modrm.to_s(16), 2)
-
-	if multiplier == '0' and !esp_areg then
-		printf("\nAssembly Alternatives\n%-32s %20s\n", m1 + modrm + s_operand, instruction)
-	else
-		printf("\nAssembly Alternatives\n%-32s %20s\n", m1 + modrm + sib + s_operand, instruction)		
-	end
-
-
-	#return 1
-
-	#alternate disp32
-		#mod 00, rm 100, SS 00, Index 100, r32 101
-
-end
-
-#--------------------------------
-# 	Other Helper Routines		#
-#--------------------------------
-
-def zeropad (data, bytes)
-	#A function that adds leading zeros for the specified amount
-	#of bytes. Maybe this could be a sprintf equiv...
-	len = data.length		
-	zeros = bytes - len
-	data = '0' * zeros + data
-	return data
-end
-
-def littleend (data)
-	#This function reverses bytes to be little-endian
-	returndata = ''
-	while extracted = /.+(..)$/i.match(data) do
-		returndata = returndata + extracted.captures[0]
-		data = data.gsub(/(.+)..$/i, '\1')
-	end
-	returndata = "%s%s" % [returndata, data]
-	return returndata
+	return [modrm, sib, s_operand, esp_areg, multiplier, register, mreg]
 end
 
 def nasm (data)

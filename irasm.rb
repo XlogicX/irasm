@@ -1365,24 +1365,29 @@ def nasm (data)
 	system(cmd)
 	machine_code = `xxd -ps -g 16 tmp`
 	machine_code = machine_code.chomp
-	puts "Decoded with the help of Nasm:\n%s\t%s\n\n" % [machine_code, data]
+	puts "%s\t%s\t(Provided by Nasm)\n\n" % [machine_code, data]
 	system('rm tmp tmp.asm')
 end
 
 def objdump (data)
 	cmd = `objdump -v 2> /dev/null`
-	if /objdump/i.match(cmd) then
+	cmd2 = `gobjdump -v 2> /dev/null`
+	if /objdump/i.match(cmd) or /objdump/i.match(cmd2) then
 		file = File.open("tmp.m", "w")	
 		file.write(data)
 		file.close
 		cmd = 'cat tmp.m | xxd -r -p > tmp'
 		system(cmd)
-		cmd = `objdump -M intel -D -b binary -mi386 tmp`
+		if /objdump/i.match(cmd)
+			cmd = `objdump -M intel -D -b binary -mi386 tmp`
+		else
+			cmd = `gobjdump -M intel -D -b binary -mi386 tmp`			
+		end
 		if extracted = /^.+?<\.data>:\n\s+\S+\s+([0-9a-f]{2}\s)+\s+(.+)$/s.match(cmd) then
 			return extracted[2]
 		end
-	end
 	system('rm tmp tmp.m')
+	end
 end
 
 main

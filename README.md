@@ -10,6 +10,7 @@ Some instruction formats that may never get support are ones with xmm registers 
 #Supported Instruction Formats
 Atomic (nop, ret, pause, etc...)<br>
 OP al/ax/eax, imm8/16/32 (xor ax, 0x1337)
+OP MODR/M, imm8
 
 #Supported Instructions (only with the above instruction formats)
 aad, aam, aas, adc, add, and, cbw, cwde, clac, clc, cld, cli, clts, cmc, cmp, cmpsb, cmpsw, cmpsd, cpuid, cwd, cdq, daa, das, emms, f2xm1, fabs, faddp, fchs, fclex, fnclex, fcom, fcomp, fcompp, fcos, fdecstp, fdivp, fdivrp, fincstp, finit, fninit, fld1, fldl2t, fldl2e, fldpi, fldlg2, fldln2, fldz, fmulp, fnop, fpatan, fprem, fprem1, fptan, frndint, fscale, fsin, fsincos, fsqrt, fstsw ax, fnstsw ax, fsubp, fsubrp, ftst, fucom, fucomp, fucompp, fxam, fxch, fxtract, fyl2x, fyl2xp1, hlt, in, insb, insw, insd, into, invd, iretw, iretd, iret, lahf, leave, leavew, lfence, lock, lodsb, lodsw, lodsd, mfence, monitor, movsb, movsw, movsd, mwait, nop, or, outsb, outsw, outsd, pause, popaw, popad, popa, popfw, popfd, popf, pushaw, pushad, pusha, pushfw, pushfd, pushf, rdmsr, rdpmc, rdtsc, rdtscp, ret, retf, rsm, sahf, sbb, scasb, scasw, scasd, sfence, stac, stc, std, sti, stosb, stosw, stosd, sub, swapgs, syscall, sysenter, sysexit, sysret, test, ud2, fwait, wait, wbinvd, wrmsr, xgetbv, xlat, xor, xsetbv, and xtest

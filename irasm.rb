@@ -653,7 +653,7 @@ def imm8 data
 		data = data.gsub(/0x(.+)/, '\1')
 	end
 	if data.to_s.length > 2
-		puts "Source operand to large for destination register"
+		puts "Error, likely source operand is too large for destination register"
 		exit
 	end
 	data = zeropad(data, 2)
@@ -1124,41 +1124,18 @@ def modrm8imm (instruction, op, m1, num)
 
 	###############################
 	#  OUTPUT ALTERNATE RESULTS   #
-	###############################	
-	#Force commutative property
-	if reg_a != 'esp' and reg_b != 'esp' and tworegs == 1 and reg_a != reg_b then		#If it's machine possible to swap registers
-		reg_a, reg_b = reg_b, reg_a		#swapem
-		#Re-Process
-		modrm_p, sib_p, s_operand_p, esp_areg_p, multiplier_p, register_p, mreg_p = pointer(negative, reg_a, reg_b, register, s_operand, offset, multiplier, mreg, m1, instruction, num)
-		if modrm_p == 'error' then return 1
-		else 
-			instruction_alt = objdump(m1+modrm_p+sib_p + s_operand_p)
-			printf("%-32s %20s (Forced commutative property)\n\n", m1 + modrm_p + sib_p + s_operand_p, instruction_alt)
-		end
-		reg_a, reg_b = reg_b, reg_a		#swapem back
-	end	
+	###############################
+	#Try to force commutative property
+	fcpmodrm8imm(reg_a, reg_b, tworegs, modrm_p, sib_p, s_operand_p, esp_areg_p, multiplier_p, register_p, mreg_p, negative, register, s_operand, offset, multiplier, mreg, m1, instruction, num)
 	#Gratuitous disp (convert 1 byte disp to 4 byte disp)
-	#This routine requires disp to be in 0xhex format
-	if (disp_to_dec(offset) < 128 and negative != '1') or (disp_to_dec(offset) < 129 and negative == '1')
-		if extracted = /^[0-9]/i.match(offset) then 		#If decimal (not hex) formatted
-			offset = "0x%s" % imm8(offset)						#change it to hex format
-		end
-		#manually put offset in 0xhex format for processing rest
-		if extracted = /.+([0-9a-f]{2})/i.match(offset) then
-			s_operand_p = littleend(signed_pad(offset, negative)) + s_operand		#sign extend the disp
-			modrm_p = zeropad(((modrm_p.to_i(16).to_s(10)).to_i + 64).to_s(16), 2)	#modify modrm to be disp32 instead of disp8
-			if !register_p and !multiplier_p and !mreg_p and offset then			#if it's just the offset
-				#Don't do anything, it's actually already supposed to be encoded as disp32
-			elsif multiplier_p == '0' and !esp_areg_p then
-				instruction_alt = objdump(m1 + modrm_p + s_operand_p)
-				printf("%-32s %20s\n\n", m1 + modrm_p + s_operand_p, instruction_alt)
-			elsif modrm_p == 'error' then return 1
-			else 
-				instruction_alt = objdump(m1 + modrm_p + sib_p + s_operand_p)
-				printf("%-32s %20s\n\n", m1 + modrm_p + sib_p + s_operand_p, instruction_alt) 
-			end
-		end			
-	end
+	disp8to32modrm8imm(offset, negative, s_operand_p, s_operand, modrm_p, register_p, multiplier_p, mreg_p, esp_areg_p, m1, sib_p)
+	#If there is no displacement, make a displacement of 0x00...
+	addnullmodrm8imm(offset, modrm_p, m1, sib_p, s_operand_p)
+	#Force communative property with added null disp8 (if possible)
+	addnullfcpmodrm8imm(reg_a, reg_b, tworegs, modrm_p, sib_p, s_operand_p, esp_areg_p, multiplier_p, register_p, mreg_p, negative, register, s_operand, offset, multiplier, mreg, m1, instruction, num)
+	#SIB Doubles (Base register must be same as scaled register at scale of 1, disp required even if zero)
+	sibdoublemodrm8imm(tworegs, reg_a, reg_b, modrm_p, sib_p, offset, s_operand_p, m1, negative, s_operand)
+
 	return 1
 
 end
@@ -1170,7 +1147,7 @@ end
 def zeropad (data, bytes)
 	#A function that adds leading zeros for the specified amount
 	#of bytes. Maybe this could be a sprintf equiv...
-	len = data.length		
+	len = data.length	
 	zeros = bytes - len
 	data = '0' * zeros + data
 	return data
@@ -1216,8 +1193,6 @@ def disp_to_dec (disp)
 	end
 	return disp
 end
-
-
 
 def pointer (negative, reg_a, reg_b, register, s_operand, offset, multiplier, mreg, m1, instruction, num)
 	#If multiplied register is scaled by 1, and there is no base register, then just use register as base
@@ -1352,11 +1327,8 @@ def pointer (negative, reg_a, reg_b, register, s_operand, offset, multiplier, mr
 	if $debug == 1 then puts "offset is %i" % disp_to_dec(offset) end
 	#if there's no base register, and not scaled esp, then 32-bit displacemnet needed
 	if disp_to_dec(offset) > 4294967040 and not negative == 1 then
-		#32bit conversion to 8bit 2's compliment
-		offset = 4294967296 - disp_to_dec(offset).to_i	#Get absolute number
-		offset = offset.to_s		
-		offset = 256 - disp_to_dec(offset).to_i			#2's compliment	8bit	
-		offset = offset.to_s
+		#32bit conversion to 8bit 2's compliment	
+		offset = (256 - disp_to_dec((4294967296 - disp_to_dec(offset).to_i).to_s).to_i).to_s #Get absolute number and 2's compliment 8bit	
 		if $debug == 1 then puts "Offset is %i" % disp_to_dec(offset) end
 		if register == 'none' and (multiplier == '4' or multiplier == '8') then
 			s_operand = littleend(zeropad(imm32(offset),8)) + s_operand
@@ -1367,15 +1339,13 @@ def pointer (negative, reg_a, reg_b, register, s_operand, offset, multiplier, mr
 		return ["error", '0', '0', '0', '0', '0']
 	elsif disp_to_dec(offset) < 2147483648 and disp_to_dec(offset) > 128 and negative == 1	then
 		#32bit 2's compliment
-		offset = 4294967296 - disp_to_dec(offset).to_i	#2's compliment
-		offset = offset.to_s
+		offset = (4294967296 - disp_to_dec(offset).to_i).to_s	#2's compliment
 		if $debug == 1 then puts "Offset is %i" % disp_to_dec(offset) end
 		if register == 'none' and (multiplier == '4' or multiplier == '8') then modrm = modrm - 128 end
 		s_operand = littleend(zeropad(imm32(offset),8)) + s_operand	
 	elsif disp_to_dec(offset) < 129 and disp_to_dec(offset) > 0 and negative == 1 then
 		#8bit 2's compliment
-		offset = 256 - disp_to_dec(offset).to_i			#2's compliment
-		offset = offset.to_s
+		offset = (256 - disp_to_dec(offset).to_i).to_s			#2's compliment
 		if register == 'none' and (multiplier == '4' or multiplier == '8') then
 			s_operand = littleend(zeropad(imm32(offset),8)) + s_operand
 			modrm = modrm - 64
@@ -1404,6 +1374,105 @@ def pointer (negative, reg_a, reg_b, register, s_operand, offset, multiplier, mr
 	sib = zeropad(sib.to_s(16), 2)
 	modrm = zeropad(modrm.to_s(16), 2)
 	return [modrm, sib, s_operand, esp_areg, multiplier, register, mreg]
+end
+
+def fcpmodrm8imm (reg_a, reg_b, tworegs, modrm_p, sib_p, s_operand_p, esp_areg_p, multiplier_p, register_p, mreg_p, negative, register, s_operand, offset, multiplier, mreg, m1, instruction, num)
+	#Force commutative property
+	if reg_a != 'esp' and reg_b != 'esp' and tworegs == 1 and reg_a != reg_b then		#If it's machine possible to swap registers
+		reg_a, reg_b = reg_b, reg_a		#swapem
+		#Re-Process
+		modrm_p, sib_p, s_operand_p, esp_areg_p, multiplier_p, register_p, mreg_p = pointer(negative, reg_a, reg_b, register, s_operand, offset, multiplier, mreg, m1, instruction, num)
+		if modrm_p == 'error' then return 1
+		else 
+			instruction_alt = objdump(m1+modrm_p+sib_p + s_operand_p)
+			printf("%-32s %20s (Forced commutative property)\n\n", m1 + modrm_p + sib_p + s_operand_p, instruction_alt)
+		end
+	end
+end
+
+def disp8to32modrm8imm (offset, negative, s_operand_p, s_operand, modrm_p, register_p, multiplier_p, mreg_p, esp_areg_p, m1, sib_p)
+	#Gratuitous disp (convert 1 byte disp to 4 byte disp)
+	#This routine requires disp to be in 0xhex format
+	if (disp_to_dec(offset) < 128 and negative != '1') or (disp_to_dec(offset) < 129 and negative == '1')
+		if extracted = /^[0-9]/i.match(offset) then 		#If decimal (not hex) formatted
+			offset = "0x%s" % imm8(offset)						#change it to hex format
+		end
+		if extracted = /.+([0-9a-f]{2})/i.match(offset) then
+			s_operand_p = littleend(signed_pad(offset, negative)) + s_operand		#sign extend the disp
+			if disp_to_dec(offset) == 0 then
+				modrm_p = zeropad(((modrm_p.to_i(16).to_s(10)).to_i + 128).to_s(16), 2)	#modify modrm to be disp32 instead of no disp
+			else
+				modrm_p = zeropad(((modrm_p.to_i(16).to_s(10)).to_i + 64).to_s(16), 2)	#modify modrm to be disp32 instead of disp8
+			end
+			if !register_p and !multiplier_p and !mreg_p and offset then			#if it's just the offset
+				#Don't do anything, it's actually already supposed to be encoded as disp32
+			elsif multiplier_p == '0' and !esp_areg_p then
+				instruction_alt = objdump(m1 + modrm_p + s_operand_p)
+				printf("%-32s %20s (disp8 -> disp32 extended)\n\n", m1 + modrm_p + s_operand_p, instruction_alt)
+			elsif modrm_p == 'error' then return 1
+			else 
+				instruction_alt = objdump(m1 + modrm_p + sib_p + s_operand_p)
+				printf("%-32s %20s (disp8 -> disp32 extended)\n\n", m1 + modrm_p + sib_p + s_operand_p, instruction_alt) 
+			end
+		end			
+	end
+end
+
+def addnullmodrm8imm (offset, modrm_p, m1, sib_p, s_operand_p)
+	#If there is no displacement, make a displacement of 0x00...
+	if disp_to_dec(offset) == 0 then
+		modrm_p = zeropad(((modrm_p.to_i(16).to_s(10)).to_i + 64).to_s(16), 2)	#modify to be disp8
+		instruction_alt = objdump(m1+modrm_p + sib_p + '00' + s_operand_p)
+		printf("%-32s %20s (Additional null disp8)\n\n", m1 + modrm_p + sib_p + '00' + s_operand_p, instruction_alt)
+	end
+end
+
+def addnullfcpmodrm8imm (reg_a, reg_b, tworegs, modrm_p, sib_p, s_operand_p, esp_areg_p, multiplier_p, register_p, mreg_p, negative, register, s_operand, offset, multiplier, mreg, m1, instruction, num)
+	#Force communative property with added null disp8 (if possible)
+	if reg_a != 'esp' and reg_b != 'esp' and tworegs == 1 and reg_a != reg_b and disp_to_dec(offset) == 0 then	#If it's machine possible to swap registers and there's no offset
+		reg_a, reg_b = reg_b, reg_a		#swapem
+		#Re-Process
+		modrm_p, sib_p, s_operand_p, esp_areg_p, multiplier_p, register_p, mreg_p = pointer(negative, reg_a, reg_b, register, s_operand, offset, multiplier, mreg, m1, instruction, num)
+		if modrm_p == 'error' then return 1
+		else 
+			modrm_p = zeropad(((modrm_p.to_i(16).to_s(10)).to_i + 64).to_s(16), 2)	#modify to be disp8
+			instruction_alt = objdump(m1+modrm_p + sib_p + '00' + s_operand_p)
+			printf("%-32s %20s (Forced commutative property, Additional null disp8)\n\n", m1 + modrm_p + sib_p + '00' + s_operand_p, instruction_alt)
+		end
+	end
+end
+
+def sibdoublemodrm8imm (tworegs, reg_a, reg_b, modrm_p, sib_p, offset, s_operand_p, m1, negative, s_operand)
+	#SIB Doubles (Base register must be same as scaled register at scale of 1, disp required even if zero)
+	if tworegs == 1 and reg_a == reg_b then
+		modrm_p = '14'
+		if reg_a == 'eax' then sib_p = '45'
+		elsif reg_a == 'ecx' then sib_p = '4D'
+		elsif reg_a == 'edx' then sib_p = '55'
+		elsif reg_a == 'ebx' then sib_p = '5D'
+		elsif reg_a == 'ebp' then sib_p = '6D'
+		elsif reg_a == 'esi' then sib_p = '75'
+		elsif reg_a == 'edi' then sib_p = '7D'
+		end
+
+		if disp_to_dec(offset) == 0 then
+			s_operand_p = '00000000' + s_operand_p
+			instruction_alt = objdump(m1 + modrm_p + sib_p + s_operand_p)
+			printf("%-32s %20s (SIB Double)\n\n", m1 + modrm_p + sib_p + s_operand_p, instruction_alt)
+		else
+			if (disp_to_dec(offset) < 128 and negative != '1') or (disp_to_dec(offset) < 129 and negative == '1')
+				if extracted = /^[0-9]/i.match(offset) then 		#If decimal (not hex) formatted
+					offset = "0x%s" % imm8(offset)						#change it to hex format
+				end
+				if extracted = /^0?x?([0-9a-f]{2}$)/i.match(offset) then
+					s_operand_p = littleend(signed_pad(offset, negative)) + s_operand		#sign extend the disp
+				end
+			end
+			#Make s_operand_p disp32
+			instruction_alt = objdump(m1 + modrm_p + sib_p + s_operand_p)
+			printf("%-32s %20s (SIB Double)\n\n", m1 + modrm_p + sib_p + s_operand_p, instruction_alt)
+		end
+	end
 end
 
 def nasm (data)

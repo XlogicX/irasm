@@ -1137,7 +1137,28 @@ def modrm8imm (instruction, op, m1, num)
 		end
 		reg_a, reg_b = reg_b, reg_a		#swapem back
 	end	
-
+	#Gratuitous disp (convert 1 byte disp to 4 byte disp)
+	#This routine requires disp to be in 0xhex format
+	if (disp_to_dec(offset) < 128 and negative != '1') or (disp_to_dec(offset) < 129 and negative == '1')
+		if extracted = /^[0-9]/i.match(offset) then 		#If decimal (not hex) formatted
+			offset = "0x%s" % imm8(offset)						#change it to hex format
+		end
+		#manually put offset in 0xhex format for processing rest
+		if extracted = /.+([0-9a-f]{2})/i.match(offset) then
+			s_operand_p = littleend(signed_pad(offset, negative)) + s_operand		#sign extend the disp
+			modrm_p = zeropad(((modrm_p.to_i(16).to_s(10)).to_i + 64).to_s(16), 2)	#modify modrm to be disp32 instead of disp8
+			if !register_p and !multiplier_p and !mreg_p and offset then			#if it's just the offset
+				#Don't do anything, it's actually already supposed to be encoded as disp32
+			elsif multiplier_p == '0' and !esp_areg_p then
+				instruction_alt = objdump(m1 + modrm_p + s_operand_p)
+				printf("%-32s %20s\n\n", m1 + modrm_p + s_operand_p, instruction_alt)
+			elsif modrm_p == 'error' then return 1
+			else 
+				instruction_alt = objdump(m1 + modrm_p + sib_p + s_operand_p)
+				printf("%-32s %20s\n\n", m1 + modrm_p + sib_p + s_operand_p, instruction_alt) 
+			end
+		end			
+	end
 	return 1
 
 end
@@ -1152,6 +1173,25 @@ def zeropad (data, bytes)
 	len = data.length		
 	zeros = bytes - len
 	data = '0' * zeros + data
+	return data
+end
+
+def fpad (data, bytes)
+	#A function that adds leading zeros for the specified amount
+	len = data.length
+	ffff = bytes - len
+	data = 'f' * ffff + data
+	return data
+end
+
+def signed_pad (data, negative)
+	#Takes a signed byte and pads it to 32 bits (signed)
+	data = imm8(data)	#remove 0x prefix
+	if negative == 1 
+		data = fpad((256 - (data.to_i(16).to_s(10)).to_i).to_s(16), 8)
+	else
+		data = zeropad(data, 8)
+	end
 	return data
 end
 
@@ -1176,6 +1216,8 @@ def disp_to_dec (disp)
 	end
 	return disp
 end
+
+
 
 def pointer (negative, reg_a, reg_b, register, s_operand, offset, multiplier, mreg, m1, instruction, num)
 	#If multiplied register is scaled by 1, and there is no base register, then just use register as base
@@ -1234,9 +1276,16 @@ def pointer (negative, reg_a, reg_b, register, s_operand, offset, multiplier, mr
 
 	#if all we have is the displacement, the we are ready to output the machine code for it
 	if !register and !multiplier and !mreg and offset then
-		s_operand = littleend(zeropad(imm32(offset),8)) + s_operand
-		sib = 0
-		return ['15', sib, s_operand, esp_areg, multiplier, register, mreg]
+		if negative == 1 then
+			offset = (256 - disp_to_dec(offset).to_i).to_s			#2's compliment	8bit	
+			s_operand = littleend(fpad(imm8(offset),8)) + s_operand #the 0xff pad it to disp32
+			sib = 0
+			return ['15', sib, s_operand, esp_areg, multiplier, register, mreg]
+		else
+			s_operand = littleend(zeropad(imm32(offset),8)) + s_operand
+			sib = 0
+			return ['15', sib, s_operand, esp_areg, multiplier, register, mreg]
+		end
 	end
 
 	sib = 0 #default
@@ -1245,7 +1294,7 @@ def pointer (negative, reg_a, reg_b, register, s_operand, offset, multiplier, mr
 		elsif disp_to_dec(offset) > 2147483647 and negative == 1 then modrm = 128
 		elsif disp_to_dec(offset) < 2147483648 and disp_to_dec(offset) > 128 and negative == 1 then modrm = 128 
 		elsif disp_to_dec(offset) < 129 and disp_to_dec(offset) > 0 and negative == 1 then modrm = 64
-		elsif disp_to_dec(offset) > 1 and disp_to_dec(offset) < 128 and negative == 0 then modrm = 64
+		elsif disp_to_dec(offset) > 0 and disp_to_dec(offset) < 128 and negative == 0 then modrm = 64
 		elsif disp_to_dec(offset) > 127 and negative == 0 then modrm = 128
 		else modrm = 0
 	end
@@ -1331,7 +1380,7 @@ def pointer (negative, reg_a, reg_b, register, s_operand, offset, multiplier, mr
 			s_operand = littleend(zeropad(imm32(offset),8)) + s_operand
 			modrm = modrm - 64
 		else s_operand = littleend(zeropad(imm8(offset),2)) + s_operand	end		
-	elsif disp_to_dec(offset) > 1 and disp_to_dec(offset) < 128 and negative == 0 then
+	elsif disp_to_dec(offset) > 0 and disp_to_dec(offset) < 128 and negative == 0 then
 		#8bit
 		if register == 'none' and (multiplier == '4' or multiplier == '8') then
 			s_operand = littleend(zeropad(imm32(offset),8)) + s_operand
@@ -1373,15 +1422,15 @@ def objdump (data)
 	cmd = `objdump -v 2> /dev/null`
 	cmd2 = `gobjdump -v 2> /dev/null`
 	if /objdump/i.match(cmd) or /objdump/i.match(cmd2) then
-		file = File.open("tmp.m", "w")	
+		file = File.open("tmp.m", "w")
 		file.write(data)
 		file.close
-		cmd = 'cat tmp.m | xxd -r -p > tmp'
-		system(cmd)
+		cmd3 = 'cat tmp.m | xxd -r -p > tmp'
+		system(cmd3)
 		if /objdump/i.match(cmd)
 			cmd = `objdump -M intel -D -b binary -mi386 tmp`
 		else
-			cmd = `gobjdump -M intel -D -b binary -mi386 tmp`			
+			cmd = `gobjdump -M intel -D -b binary -mi386 tmp`	
 		end
 		if extracted = /^.+?<\.data>:\n\s+\S+\s+([0-9a-f]{2}\s)+\s+(.+)$/s.match(cmd) then
 			return extracted[2]

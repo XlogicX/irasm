@@ -110,6 +110,7 @@ def main
 		elsif /^lodsb$/i.match(asm) then lodsb (asm)
 		elsif /^lodsw$/i.match(asm) then lodsw (asm)
 		elsif /^lodsd$/i.match(asm) then lodsd (asm)
+		elsif /^mov/i.match(asm) then mov (asm)			
 		elsif /^mfence$/i.match(asm) then mfence (asm)							
 		elsif /^monitor$/i.match(asm) then monitor (asm)
 		elsif /^movsb$/i.match(asm) then movsb (asm)		#m,m forms are bullshit
@@ -130,19 +131,27 @@ def main
 		elsif /^pushad?$/i.match(asm) then pusha (asm)			
 		elsif /^pushfw$/i.match(asm) then pushfw (asm)
 		elsif /^pushfd?$/i.match(asm) then pushf (asm)
+		elsif /^rcl/i.match(asm) then rcl (asm)
+		elsif /^rcr/i.match(asm) then rcr (asm)					
 		elsif /^rdmsr$/i.match(asm) then rdmsr (asm)
 		elsif /^rdpmc$/i.match(asm) then rdpmc (asm)
 		elsif /^rdtsc$/i.match(asm) then rdtsc (asm)
 		elsif /^rdtscp$/i.match(asm) then rdtscp (asm)
 		elsif /^ret$/i.match(asm) then ret (asm)
 		elsif /^retf$/i.match(asm) then retf (asm)
+		elsif /^rol/i.match(asm) then rol (asm)	
+		elsif /^ror/i.match(asm) then ror (asm)						
 		elsif /^rsm$/i.match(asm) then rsm (asm)
 		elsif /^sahf$/i.match(asm) then sahf (asm)
+		elsif /^sal/i.match(asm) then sal (asm)	
+		elsif /^sar/i.match(asm) then sar (asm)						
 		elsif /^sbb/i.match(asm) then sbb (asm)			
 		elsif /^scasb$/i.match(asm) then scasb (asm)			#m,m forms are bullshit
 		elsif /^scasw$/i.match(asm) then scasw (asm)			#...
 		elsif /^scasd$/i.match(asm) then scasd (asm)			#...
-		elsif /^sfence$/i.match(asm) then sfence (asm)	
+		elsif /^sfence$/i.match(asm) then sfence (asm)
+		elsif /^shl/i.match(asm) then shl (asm)	
+		elsif /^shr/i.match(asm) then shr (asm)						
 		elsif /^stac$/i.match(asm) then stac (asm)	
 		elsif /^stc$/i.match(asm) then stc (asm)
 		elsif /^std$/i.match(asm) then std (asm)
@@ -242,7 +251,7 @@ def cmp instruction
 	if alimm8_c(instruction, 'cmp', '3C', '80F8')
 	elsif aximm16_c(instruction, 'cmp', '663D', '6681F8')
 	elsif eaximm32_c(instruction, 'cmp', '3D', '81F8')
-	elsif modrm8imm(instruction, 'cmp', '80', '2')	
+	elsif modrm8imm(instruction, 'cmp', '80', '7')	
 	else nasm(instruction) end end
 def cmpsb instruction
 	#Compare String Operands (Byte)
@@ -738,7 +747,8 @@ def alimm8 (instruction, op, m1, m2)	#OP AL, imm8
 		printf("%-32s %20s", m1 + s_operand, instruction)
 		puts "\nAssembly Alternatives:"
 		instruction_alt = objdump(m2 + s_operand)
-		printf("%-32s %20s %20s", m2 + s_operand, instruction_alt, "(r/m8, imm8)\n")		
+		printf("%-32s %20s %20s", m2 + s_operand, instruction_alt, "(r/m8, imm8)\n")	
+		sanity_check(m1 + s_operand, instruction)	#See if this output matches nasms
 		return 1
 	end
 end
@@ -762,6 +772,7 @@ def aximm16 (instruction, op, m1, m2, m3, m4)	#OP AX, imm16
 			printf("%-32s %20s %20s", m3 + extracted_i.captures[0], instruction_alt, "(al, imm8)\n")		
 		end
 		puts "\n"
+		sanity_check(m1 + littleend(s_operand), instruction)	#See if this output matches nasms		
 		return 1
 	end
 end
@@ -794,6 +805,7 @@ def eaximm32 (instruction, op, m1, m2, m3, m4, m5, m6)	#OP EAX, imm32
 			printf("%-32s %20s %20s", m6 + extracted_i.captures[0], instruction_alt, "(r/m8, imm8)\n")		
 		end
 		puts "\n"
+		sanity_check(m1 + littleend(s_operand), instruction)	#See if this output matches nasms		
 		return 1
 	end
 end
@@ -819,7 +831,7 @@ def alimm8_b (instruction, op, m1, m2, m3, m4, m5, m6)	#OP AL, imm8
 		printf("%-32s %20s %20s", m1 + littleend('ffffff' + s_operand), instruction_alt, "(eax, imm32)\n")
 		instruction_alt = objdump(m2 + littleend('ffffff' + s_operand))
 		printf("%-32s %20s %20s", m2 + littleend('ffffff' + s_operand), instruction_alt, "(r/m32, imm32)\n")
-
+		sanity_check(m5 + s_operand, instruction)	#See if this output matches nasms
 		return 1
 	end
 end
@@ -850,6 +862,7 @@ def aximm16_b (instruction, op, m1, m2, m3, m4, m5, m6)
 			printf("%-32s %20s %20s", m6 + extracted_i.captures[0], instruction_alt, "(r/m8, imm8)\n")		
 		end
 		puts "\n"
+		sanity_check(m3 + littleend(s_operand), instruction)	#See if this output matches nasms
 		return 1
 	end
 end
@@ -880,6 +893,7 @@ def eaximm32_b (instruction, op, m1, m2, m3, m4, m5, m6)
 			printf("%-32s %20s %20s", m6 + extracted_i.captures[0], instruction_alt, "(r/m8, imm8)\n")		
 		end
 		puts "\n"
+		sanity_check(m1 + littleend(s_operand), instruction)	#See if this output matches nasms		
 		return 1
 	end
 end
@@ -897,6 +911,7 @@ def alimm8_c (instruction, op, m1, m2)	#OP AL, imm8
 		puts "\nAssembly Alternatives:"
 		instruction_int = objdump(m2 + s_operand)
 		printf("%-32s %20s %20s", m2 + s_operand, instruction_int, "(r/m8, imm8)\n")		
+		sanity_check(m1 + s_operand, instruction)	#See if this output matches nasms	
 		return 1
 	end
 end
@@ -913,6 +928,7 @@ def aximm16_c (instruction, op, m1, m2)
 		puts "\nAssembly Alternatives:"
 		instruction_int = objdump(m2 + littleend(s_operand))
 		printf("%-32s %20s %20s", m2 + littleend(s_operand), instruction_int, "(r/m16, imm16)\n")
+		sanity_check(m1 + littleend(s_operand), instruction)	#See if this output matches nasms	
 		return 1
 	end
 end
@@ -929,6 +945,7 @@ def eaximm32_c (instruction, op, m1, m2)
 		puts "\nAssembly Alternatives:"
 		instruction_int = objdump(m2 + littleend(s_operand))
 		printf("%-32s %20s %20s", m2 + littleend(s_operand), instruction_int, "(r/m32, imm32)\n")
+		sanity_check(m1 + littleend(s_operand), instruction)	#See if this output matches nasms
 		return 1
 	end
 end
@@ -949,6 +966,7 @@ def alimm8_d (instruction, op, m1, m2)	#OP AL, imm8
 		end		
 		s_operand = imm8(extracted.captures[0]) #validate sanity of imm8
 		printf("%-32s %20s\n\n", m1 + s_operand, instruction)	
+		sanity_check(m1 + s_operand, instruction)	#See if this output matches nasms
 		return 1
 	end
 end
@@ -974,7 +992,7 @@ def alimm8_e (instruction, op, m1, m2, m3, m4, m5, m6)	#OP AL, imm8
 		printf("%-32s %20s %20s", m1 + littleend('000000' + s_operand), instruction_alt, "(eax, imm32)\n")
 		instruction_alt = objdump(m2 + littleend('000000' + s_operand))
 		printf("%-32s %20s %20s", m2 + littleend('000000' + s_operand), instruction_alt, "(r/m32, imm32)\n")
-
+		sanity_check(m5 + s_operand, instruction)	#See if this output matches nasms
 		return 1
 	end
 end
@@ -1002,6 +1020,7 @@ def aximm16_e (instruction, op, m1, m2, m3, m4, m5, m6)
 			instruction_alt = objdump(m6 + extracted_i.captures[0])
 			printf("%-32s %20s %20s", m6 + extracted_i.captures[0], instruction_alt, "(r/m8, imm8)\n")		
 		end
+		sanity_check(m3 + littleend(s_operand), instruction)	#See if this output matches nasms
 		puts "\n"
 		return 1
 	end
@@ -1033,6 +1052,7 @@ def eaximm32_e (instruction, op, m1, m2, m3, m4, m5, m6)
 			printf("%-32s %20s %20s", m6 + extracted_i.captures[0], instruction_alt, "(r/m8, imm8)\n")		
 		end
 		puts "\n"
+		sanity_check(m1 + littleend(s_operand), instruction)	#See if this output matches nasms
 		return 1
 	end
 end
@@ -1048,6 +1068,8 @@ def fence (instruction, m1, m2)
 		printf("%-32s %20s\n", (m1 + (m2.hex.to_s(10).to_i + i).to_s(16)).upcase, instruction)
 	end
 	puts
+	sanity_check(m1 + m2, instruction)	#See if this output matches nasms
+	return 1
 end
 
 def modrm8imm (instruction, op, m1, num)
@@ -1169,10 +1191,15 @@ def modrm8imm (instruction, op, m1, num)
 	###############################	
 	if multiplier_p == '0' and !esp_areg_p then
 		printf("%-32s %20s\n\n", m1 + modrm_p + s_operand_p, instruction)
+		sanity_check(m1 + modrm_p + s_operand_p, instruction)	#See if this output matches nasms
 	elsif !register_p and !multiplier_p and !mreg_p and offset then
 		printf("%-32s %20s\n\n", m1 + modrm_p + s_operand_p, instruction)
+		sanity_check(m1 + modrm_p + s_operand_p, instruction)	#See if this output matches nasms
 	elsif modrm_p == 'error' then return 1
-	else printf("%-32s %20s\n\n", m1 + modrm_p + sib_p + s_operand_p, instruction) end
+	else 
+		printf("%-32s %20s\n\n", m1 + modrm_p + sib_p + s_operand_p, instruction)
+		sanity_check(m1 + modrm_p + sib_p + s_operand_p, instruction)	#See if this output matches nasms
+	end
 
 	###############################
 	#  OUTPUT ALTERNATE RESULTS   #
@@ -1541,6 +1568,24 @@ def nasm (data)
 	machine_code = `xxd -ps -g 16 tmp`
 	machine_code = machine_code.chomp
 	puts "%s\t%s\t(Provided by Nasm)\n\n" % [machine_code, data]
+	system('rm tmp tmp.asm')
+end
+
+def sanity_check (code, data)
+	file = File.open("tmp.asm", "w")
+	file.write("[BITS 32]\n" + data + "\n")
+	file.close
+	cmd = 'nasm -f bin tmp.asm'
+	system(cmd)
+	machine_code = `xxd -ps -g 16 tmp`
+	machine_code = machine_code.chomp
+	#puts "machine code: %s" % machine_code
+	#puts "my code: %s" % code
+	if machine_code.upcase != code.upcase then
+		puts "My output doesn't match that of nasm, something may be wrong here\n"
+	else
+		#puts "The Machine Code Matched"
+	end
 	system('rm tmp tmp.asm')
 end
 

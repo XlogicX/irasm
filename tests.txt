@@ -250,3 +250,100 @@ adc byte [eax+4294967292], 88
 
 Pointer Alternative Tests
 ====================
+adc byte [eax + ebx], 0x88
+adc byte [esp + eax], 0x88
+adc byte [eax + ebp], 0x88
+adc byte [ebp + eax], 0x88
+adc byte [eax + esp * 2], 0x88
+adc byte [eax + 130], 0x88
+adc byte [eax - 130], 0x88
+adc byte [eax + 5], 0x88
+adc byte [eax - 5], 0x88
+adc byte [eax], 0x88
+adc byte [ebp + 0x33], 0x88
+adc byte [ebp + 0x33333333], 0x88
+adc byte [esp], 88
+adc byte [eax * 1], 88
+adc byte [eax * 4], 88
+adc byte [ebp * 4], 88
+adc byte [eax * 8], 88
+adc byte [ebp * 8], 88
+adc byte [eax + ebp], 88
+adc byte [ebp + ebp], 88
+adc byte [eax * 4 + 0x77], 88
+adc byte [ebp * 4 + 0x77], 88
+adc byte [ebp * 8 + 0x77], 88
+
+byte/d?word and all r/m, imm8 Tests:
+==================================
+adc byte [eax + ebx], 88
+adc word [eax + ebx], 88
+adc dword [eax + ebx], 88
+add byte [eax + ebx], 88
+add word [eax + ebx], 88
+add dword [eax + ebx], 88
+and byte [eax + ebx], 88
+and word [eax + ebx], 88
+and dword [eax + ebx], 88
+cmp byte [eax + ebx], 88
+cmp word [eax + ebx], 88
+cmp dword [eax + ebx], 88
+mov byte [eax + ebx], 88
+mov word [eax + ebx], 88
+mov dword [eax + ebx], 88
+or byte [eax + ebx], 88
+or word [eax + ebx], 88
+or dword [eax + ebx], 88
+rcl byte [eax + ebx], 88
+rcl word [eax + ebx], 88
+rcl dword [eax + ebx], 88
+rcr byte [eax + ebx], 88
+rcr word [eax + ebx], 88
+rcr dword [eax + ebx], 88
+rol byte [eax + ebx], 88
+rol word [eax + ebx], 88
+rol dword [eax + ebx], 88
+ror byte [eax + ebx], 88
+ror word [eax + ebx], 88
+ror dword [eax + ebx], 88
+sal byte [eax + ebx], 88
+sal word [eax + ebx], 88
+sal dword [eax + ebx], 88
+sar byte [eax + ebx], 88
+sar word [eax + ebx], 88
+sar dword [eax + ebx], 88
+sbb byte [eax + ebx], 88
+sbb word [eax + ebx], 88
+sbb dword [eax + ebx], 88
+shl byte [eax + ebx], 88
+shl word [eax + ebx], 88
+shl dword [eax + ebx], 88
+shr byte [eax + ebx], 88
+shr word [eax + ebx], 88
+shr dword [eax + ebx], 88
+sub byte [eax + ebx], 88
+sub word [eax + ebx], 88
+sub dword [eax + ebx], 88
+test byte [eax + ebx], 88
+test word [eax + ebx], 88
+test dword [eax + ebx], 88
+xor byte [eax + ebx], 88
+xor word [eax + ebx], 88
+xor dword [eax + ebx], 88
+
+OP AReg, Imm Tests:
+==================
+adc al, 88
+adc ax, 0x1234
+adc eax, 0x12345678
+and al, 88
+and ax, 0x1234
+and eax, 0x12345678
+cmp al, 88
+cmp ax, 0x1234
+cmp eax, 0x12345678
+in al, 88
+or al, 88
+or ax, 0x1234
+or eax, 0x12345678
+mfence

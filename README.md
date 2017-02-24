@@ -8,22 +8,22 @@ Not every instruction format is supported. For those that aren't, this script gr
 Some instruction formats that may never get support are ones with xmm registers and VEX prefixes
 
 # Supported Instruction Formats
-Atomic (nop, ret, pause, etc...)
-OP al, imm8 (xor al, 0x13)
-OP ax, imm16 (xor ax, 0x1337)
-OP eax, imm32 (xor eax, 0x13371337)
-OP r/m8, imm8 (adc byte [eax + ebx + 0x1337], 66)
-OP r/m16, imm8 (adc word [eax + ebx + 0x1337], 0x22)
-OP r/m32, imm8 (adc dword [eax + ebx + 0x1337], 0x22)
-OP r/m16, imm16 (adc word [eax + ebx + 0x1337], 0x4444) (Without alternates still)
+Atomic (nop, ret, pause, etc...)<br>
+OP al, imm8 (xor al, 0x13)<br>
+OP ax, imm16 (xor ax, 0x1337)<br>
+OP eax, imm32 (xor eax, 0x13371337)<br>
+OP r/m8, imm8 (adc byte [eax + ebx + 0x1337], 66)<br>
+OP r/m16, imm8 (adc word [eax + ebx + 0x1337], 0x22)<br>
+OP r/m32, imm8 (adc dword [eax + ebx + 0x1337], 0x22)<br>
+OP r/m16, imm16 (adc word [eax + ebx + 0x1337], 0x4444) (Without alternates still)<br>
 OP r/m32, imm32 (adc dword [eax + ebx + 0x1337], 0x88888888) (Without alternates still)
 
 ## Remaining Formats (to call script 'public')
-OP r/m8, r8 (xor al, ah)
-OP r/m16, r16 (xor ax, ax)
-OP r/m32, r32 (xor eax, eax)
-OP r8, r/m8 (xor al, ah)
-OP r16, r/m16 (xor ax, ax)
+OP r/m8, r8 (xor al, ah)<br>
+OP r/m16, r16 (xor ax, ax)<br>
+OP r/m32, r32 (xor eax, eax)<br>
+OP r8, r/m8 (xor al, ah)<br>
+OP r16, r/m16 (xor ax, ax)<br>
 OP r32, r/m32 (xor eax, eax)
 
 # Supported Instructions (only with the above instruction formats)

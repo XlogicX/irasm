@@ -1,0 +1,252 @@
+Pointer tests:
+===============
+adc byte [0x01], 88
+adc byte [1], 88
+adc byte [eax - 3000000000], 88
+adc byte [eax - 130], 88
+adc byte [eax - 120], 88
+adc byte [eax + 120], 88
+adc byte [eax + 130], 88
+adc byte [eax + 3000000000], 88
+adc byte [eax], 88
+adc byte [esp], 88
+adc byte [ebp], 88
+adc byte [eax * 1], 88
+adc byte [esp * 1], 88
+adc byte [ebp * 1], 88
+adc byte [eax * 2], 88
+adc byte [esp * 2], 88
+adc byte [ebp * 2], 88
+adc byte [eax * 4], 88
+adc byte [esp * 4], 88
+adc byte [ebp * 4], 88
+adc byte [eax * 8], 88
+adc byte [esp * 8], 88
+adc byte [ebp * 8], 88
+adc byte [eax + eax * 1], 88
+adc byte [esp + eax * 1], 88
+adc byte [ebp + eax * 1], 88
+adc byte [eax + esp * 1], 88
+adc byte [esp + esp * 1], 88
+adc byte [ebp + esp * 1], 88
+adc byte [eax + ebp * 1], 88
+adc byte [esp + ebp * 1], 88
+adc byte [ebp + ebp * 1], 88
+adc byte [eax + eax], 88
+adc byte [esp + eax], 88
+adc byte [ebp + eax], 88
+adc byte [eax + esp], 88
+adc byte [esp + esp], 88
+adc byte [ebp + esp], 88
+adc byte [eax + ebp], 88
+adc byte [esp + ebp], 88
+adc byte [ebp + ebp], 88
+adc byte [eax + eax * 2], 88
+adc byte [esp + eax * 2], 88
+adc byte [ebp + eax * 2], 88
+adc byte [eax + esp * 2], 88
+adc byte [esp + esp * 2], 88
+adc byte [ebp + esp * 2], 88
+adc byte [eax + ebp * 2], 88
+adc byte [esp + ebp * 2], 88
+adc byte [ebp + ebp * 2], 88
+adc byte [eax + eax * 4], 88
+adc byte [esp + eax * 4], 88
+adc byte [ebp + eax * 4], 88
+adc byte [eax + esp * 4], 88
+adc byte [esp + esp * 4], 88
+adc byte [ebp + esp * 4], 88
+adc byte [eax + ebp * 4], 88
+adc byte [esp + ebp * 4], 88
+adc byte [ebp + ebp * 4], 88
+adc byte [eax + eax * 8], 88
+adc byte [esp + eax * 8], 88
+adc byte [ebp + eax * 8], 88
+adc byte [eax + esp * 8], 88
+adc byte [esp + esp * 8], 88
+adc byte [ebp + esp * 8], 88
+adc byte [eax + ebp * 8], 88
+adc byte [esp + ebp * 8], 88
+adc byte [ebp + ebp * 8], 88
+adc byte [eax + 0x77], 88
+adc byte [esp + 0x77], 88
+adc byte [ebp + 0x77], 88
+adc byte [eax + 0x13371337], 88
+adc byte [esp + 0x13371337], 88
+adc byte [ebp + 0x13371337], 88
+adc byte [eax + eax * 1 + 0x77], 88
+adc byte [esp + eax * 1 + 0x77], 88
+adc byte [ebp + eax * 1 + 0x77], 88
+adc byte [eax + esp * 1 + 0x77], 88
+adc byte [esp + esp * 1 + 0x77], 88
+adc byte [ebp + esp * 1 + 0x77], 88
+adc byte [eax + ebp * 1 + 0x77], 88
+adc byte [esp + ebp * 1 + 0x77], 88
+adc byte [ebp + ebp * 1 + 0x77], 88
+adc byte [eax + eax + 0x77], 88
+adc byte [esp + eax + 0x77], 88
+adc byte [ebp + eax + 0x77], 88
+adc byte [eax + esp + 0x77], 88
+adc byte [esp + esp + 0x77], 88
+adc byte [ebp + esp + 0x77], 88
+adc byte [eax + ebp + 0x77], 88
+adc byte [esp + ebp + 0x77], 88
+adc byte [ebp + ebp + 0x77], 88
+adc byte [eax + eax * 2 + 0x77], 88
+adc byte [esp + eax * 2 + 0x77], 88
+adc byte [ebp + eax * 2 + 0x77], 88
+adc byte [eax + esp * 2 + 0x77], 88
+adc byte [esp + esp * 2 + 0x77], 88
+adc byte [ebp + esp * 2 + 0x77], 88
+adc byte [eax + ebp * 2 + 0x77], 88
+adc byte [esp + ebp * 2 + 0x77], 88
+adc byte [ebp + ebp * 2 + 0x77], 88
+adc byte [eax + eax * 4 + 0x77], 88
+adc byte [esp + eax * 4 + 0x77], 88
+adc byte [ebp + eax * 4 + 0x77], 88
+adc byte [eax + esp * 4 + 0x77], 88
+adc byte [esp + esp * 4 + 0x77], 88
+adc byte [ebp + esp * 4 + 0x77], 88
+adc byte [eax + ebp * 4 + 0x77], 88
+adc byte [esp + ebp * 4 + 0x77], 88
+adc byte [ebp + ebp * 4 + 0x77], 88
+adc byte [eax + eax * 8 + 0x77], 88
+adc byte [esp + eax * 8 + 0x77], 88
+adc byte [ebp + eax * 8 + 0x77], 88
+adc byte [eax + esp * 8 + 0x77], 88
+adc byte [esp + esp * 8 + 0x77], 88
+adc byte [ebp + esp * 8 + 0x77], 88
+adc byte [eax + ebp * 8 + 0x77], 88
+adc byte [esp + ebp * 8 + 0x77], 88
+adc byte [ebp + ebp * 8 + 0x77], 88
+adc byte [eax + eax * 1 + 0x13371337], 88
+adc byte [esp + eax * 1 + 0x13371337], 88
+adc byte [ebp + eax * 1 + 0x13371337], 88
+adc byte [eax + esp * 1 + 0x13371337], 88
+adc byte [esp + esp * 1 + 0x13371337], 88
+adc byte [ebp + esp * 1 + 0x13371337], 88
+adc byte [eax + ebp * 1 + 0x13371337], 88
+adc byte [esp + ebp * 1 + 0x13371337], 88
+adc byte [ebp + ebp * 1 + 0x13371337], 88
+adc byte [eax + eax + 0x13371337], 88
+adc byte [esp + eax + 0x13371337], 88
+adc byte [ebp + eax + 0x13371337], 88
+adc byte [eax + esp + 0x13371337], 88
+adc byte [esp + esp + 0x13371337], 88
+adc byte [ebp + esp + 0x13371337], 88
+adc byte [eax + ebp + 0x13371337], 88
+adc byte [esp + ebp + 0x13371337], 88
+adc byte [ebp + ebp + 0x13371337], 88
+adc byte [eax + eax * 2 + 0x13371337], 88
+adc byte [esp + eax * 2 + 0x13371337], 88
+adc byte [ebp + eax * 2 + 0x13371337], 88
+adc byte [eax + esp * 2 + 0x13371337], 88
+adc byte [esp + esp * 2 + 0x13371337], 88
+adc byte [ebp + esp * 2 + 0x13371337], 88
+adc byte [eax + ebp * 2 + 0x13371337], 88
+adc byte [esp + ebp * 2 + 0x13371337], 88
+adc byte [ebp + ebp * 2 + 0x13371337], 88
+adc byte [eax + eax * 4 + 0x13371337], 88
+adc byte [esp + eax * 4 + 0x13371337], 88
+adc byte [ebp + eax * 4 + 0x13371337], 88
+adc byte [eax + esp * 4 + 0x13371337], 88
+adc byte [esp + esp * 4 + 0x13371337], 88
+adc byte [ebp + esp * 4 + 0x13371337], 88
+adc byte [eax + ebp * 4 + 0x13371337], 88
+adc byte [esp + ebp * 4 + 0x13371337], 88
+adc byte [ebp + ebp * 4 + 0x13371337], 88
+adc byte [eax + eax * 8 + 0x13371337], 88
+adc byte [esp + eax * 8 + 0x13371337], 88
+adc byte [ebp + eax * 8 + 0x13371337], 88
+adc byte [eax + esp * 8 + 0x13371337], 88
+adc byte [esp + esp * 8 + 0x13371337], 88
+adc byte [ebp + esp * 8 + 0x13371337], 88
+adc byte [eax + ebp * 8 + 0x13371337], 88
+adc byte [esp + ebp * 8 + 0x13371337], 88
+adc byte [ebp + ebp * 8 + 0x13371337], 88
+adc byte [eax * 1 + 0x77], 88
+adc byte [esp * 1 + 0x77], 88
+adc byte [ebp * 1 + 0x77], 88
+adc byte [eax * 2 + 0x77], 88
+adc byte [esp * 2 + 0x77], 88
+adc byte [ebp * 2 + 0x77], 88
+adc byte [eax * 4 + 0x77], 88
+adc byte [esp * 4 + 0x77], 88
+adc byte [ebp * 4 + 0x77], 88
+adc byte [eax * 8 + 0x77], 88
+adc byte [esp * 8 + 0x77], 88
+adc byte [ebp * 8 + 0x77], 88
+adc byte [eax * 1 + 0x13371337], 88
+adc byte [esp * 1 + 0x13371337], 88
+adc byte [ebp * 1 + 0x13371337], 88
+adc byte [eax * 2 + 0x13371337], 88
+adc byte [esp * 2 + 0x13371337], 88
+adc byte [ebp * 2 + 0x13371337], 88
+adc byte [eax * 4 + 0x13371337], 88
+adc byte [esp * 4 + 0x13371337], 88
+adc byte [ebp * 4 + 0x13371337], 88
+adc byte [eax * 8 + 0x13371337], 88
+adc byte [esp * 8 + 0x13371337], 88
+adc byte [ebp * 8 + 0x13371337], 88
+
+displacement tests:
+===============
+adc byte [eax - 4294967292], 88
+adc byte [eax - 3000000000], 88
+adc byte [eax - 130], 88
+adc byte [eax - 7], 88
+adc byte [eax + 7], 88
+adc byte [eax + 130], 88
+adc byte [eax + 3000000000], 88
+adc byte [eax - 0xfffffffc], 88
+adc byte [eax - 0xfc], 88
+adc byte [eax - 0x07], 88
+adc byte [eax + 0x07], 88
+adc byte [eax + 0xfc], 88
+adc byte [eax + 0xfffffffc], 88
+adc byte [eax + 4294967292], 88
+adc byte [eax -4294967292], 88
+adc byte [eax -3000000000], 88
+adc byte [eax -130], 88
+adc byte [eax -7], 88
+adc byte [eax +7], 88
+adc byte [eax +130], 88
+adc byte [eax +3000000000], 88
+adc byte [eax -0xfffffffc], 88
+adc byte [eax -0xfc], 88
+adc byte [eax -0x07], 88
+adc byte [eax +0x07], 88
+adc byte [eax +0xfc], 88
+adc byte [eax +0xfffffffc], 88
+adc byte [eax +4294967292], 88
+adc byte [eax- 4294967292], 88
+adc byte [eax- 3000000000], 88
+adc byte [eax- 130], 88
+adc byte [eax- 7], 88
+adc byte [eax+ 7], 88
+adc byte [eax+ 130], 88
+adc byte [eax+ 3000000000], 88
+adc byte [eax- 0xfffffffc], 88
+adc byte [eax- 0xfc], 88
+adc byte [eax- 0x07], 88
+adc byte [eax+ 0x07], 88
+adc byte [eax+ 0xfc], 88
+adc byte [eax+ 0xfffffffc], 88
+adc byte [eax+ 4294967292], 88
+adc byte [eax-4294967292], 88
+adc byte [eax-3000000000], 88
+adc byte [eax-130], 88
+adc byte [eax-7], 88
+adc byte [eax+7], 88
+adc byte [eax+130], 88
+adc byte [eax+3000000000], 88
+adc byte [eax-0xfffffffc], 88
+adc byte [eax-0xfc], 88
+adc byte [eax-0x07], 88
+adc byte [eax+0x07], 88
+adc byte [eax+0xfc], 88
+adc byte [eax+0xfffffffc], 88
+adc byte [eax+4294967292], 88
+
+Pointer Alternative Tests
+====================

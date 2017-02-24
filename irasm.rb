@@ -1130,13 +1130,13 @@ def modrm8imm (instruction, op, m1, num)
 	#Gratuitous disp (convert 1 byte disp to 4 byte disp)
 	disp8to32modrm8imm(offset, negative, s_operand_p, s_operand, modrm_p, register_p, multiplier_p, mreg_p, esp_areg_p, m1, sib_p)
 	#If there is no displacement, make a displacement of 0x00...
-	addnullmodrm8imm(offset, modrm_p, m1, sib_p, s_operand_p)
+	addnullmodrm8imm(offset, modrm_p, m1, sib_p, s_operand_p, register_p)
 	#Force communative property with added null disp8 (if possible)
 	addnullfcpmodrm8imm(reg_a, reg_b, tworegs, modrm_p, sib_p, s_operand_p, esp_areg_p, multiplier_p, register_p, mreg_p, negative, register, s_operand, offset, multiplier, mreg, m1, instruction, num)
 	#SIB Doubles (Base register must be same as scaled register at scale of 1, disp required even if zero)
 	sibdoublemodrm8imm(tworegs, reg_a, reg_b, modrm_p, sib_p, offset, s_operand_p, m1, negative, s_operand)
 
-	return 1
+	#return 1
 
 end
 
@@ -1393,7 +1393,7 @@ end
 def disp8to32modrm8imm (offset, negative, s_operand_p, s_operand, modrm_p, register_p, multiplier_p, mreg_p, esp_areg_p, m1, sib_p)
 	#Gratuitous disp (convert 1 byte disp to 4 byte disp)
 	#This routine requires disp to be in 0xhex format
-	if (disp_to_dec(offset) < 128 and negative != '1') or (disp_to_dec(offset) < 129 and negative == '1')
+	if (disp_to_dec(offset) < 128 and negative != '1') or (disp_to_dec(offset) < 129 and negative == '1') and register_p != 'ebp'
 		if extracted = /^[0-9]/i.match(offset) then 		#If decimal (not hex) formatted
 			offset = "0x%s" % imm8(offset)						#change it to hex format
 		end
@@ -1418,9 +1418,9 @@ def disp8to32modrm8imm (offset, negative, s_operand_p, s_operand, modrm_p, regis
 	end
 end
 
-def addnullmodrm8imm (offset, modrm_p, m1, sib_p, s_operand_p)
+def addnullmodrm8imm (offset, modrm_p, m1, sib_p, s_operand_p, register_p)
 	#If there is no displacement, make a displacement of 0x00...
-	if disp_to_dec(offset) == 0 then
+	if disp_to_dec(offset) == 0 and register_p != 'ebp' then	#If there's no offset and this isn't ebp register (becuase it already requires disp8)
 		modrm_p = zeropad(((modrm_p.to_i(16).to_s(10)).to_i + 64).to_s(16), 2)	#modify to be disp8
 		instruction_alt = objdump(m1+modrm_p + sib_p + '00' + s_operand_p)
 		printf("%-32s %20s (Additional null disp8)\n\n", m1 + modrm_p + sib_p + '00' + s_operand_p, instruction_alt)

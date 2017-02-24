@@ -1130,13 +1130,13 @@ def modrm8imm (instruction, op, m1, num)
 	#Gratuitous disp (convert 1 byte disp to 4 byte disp)
 	disp8to32modrm8imm(offset, negative, s_operand_p, s_operand, modrm_p, register_p, multiplier_p, mreg_p, esp_areg_p, m1, sib_p)
 	#If there is no displacement, make a displacement of 0x00...
-	addnullmodrm8imm(offset, modrm_p, m1, sib_p, s_operand_p, register_p)
+	addnullmodrm8imm(offset, modrm_p, m1, sib_p, s_operand_p, register_p, multiplier_p, esp_areg_p)
 	#Force communative property with added null disp8 (if possible)
 	addnullfcpmodrm8imm(reg_a, reg_b, tworegs, modrm_p, sib_p, s_operand_p, esp_areg_p, multiplier_p, register_p, mreg_p, negative, register, s_operand, offset, multiplier, mreg, m1, instruction, num)
 	#SIB Doubles (Base register must be same as scaled register at scale of 1, disp required even if zero)
 	sibdoublemodrm8imm(tworegs, reg_a, reg_b, modrm_p, sib_p, offset, s_operand_p, m1, negative, s_operand)
 
-	#return 1
+	return 1
 
 end
 
@@ -1393,7 +1393,7 @@ end
 def disp8to32modrm8imm (offset, negative, s_operand_p, s_operand, modrm_p, register_p, multiplier_p, mreg_p, esp_areg_p, m1, sib_p)
 	#Gratuitous disp (convert 1 byte disp to 4 byte disp)
 	#This routine requires disp to be in 0xhex format
-	if (disp_to_dec(offset) < 128 and negative != '1') or (disp_to_dec(offset) < 129 and negative == '1') and register_p != 'ebp'
+	if (disp_to_dec(offset) < 128 and negative != '1') or (disp_to_dec(offset) < 129 and negative == '1') and register_p != 'ebp' and multiplier_p != '4' and multiplier_p != '8' then
 		if extracted = /^[0-9]/i.match(offset) then 		#If decimal (not hex) formatted
 			offset = "0x%s" % imm8(offset)						#change it to hex format
 		end
@@ -1418,18 +1418,23 @@ def disp8to32modrm8imm (offset, negative, s_operand_p, s_operand, modrm_p, regis
 	end
 end
 
-def addnullmodrm8imm (offset, modrm_p, m1, sib_p, s_operand_p, register_p)
+def addnullmodrm8imm (offset, modrm_p, m1, sib_p, s_operand_p, register_p, multiplier_p, esp_areg_p)
 	#If there is no displacement, make a displacement of 0x00...
-	if disp_to_dec(offset) == 0 and register_p != 'ebp' then	#If there's no offset and this isn't ebp register (becuase it already requires disp8)
+	if disp_to_dec(offset) == 0 and register_p != 'ebp' and multiplier_p != '4' and multiplier_p != '8' then	#If there's no offset and this isn't ebp register (becuase it already requires disp8)
 		modrm_p = zeropad(((modrm_p.to_i(16).to_s(10)).to_i + 64).to_s(16), 2)	#modify to be disp8
-		instruction_alt = objdump(m1+modrm_p + sib_p + '00' + s_operand_p)
-		printf("%-32s %20s (Additional null disp8)\n\n", m1 + modrm_p + sib_p + '00' + s_operand_p, instruction_alt)
+		if multiplier_p == '0' and !esp_areg_p then
+			instruction_alt = objdump(m1+modrm_p + '00' + s_operand_p)
+			printf("%-32s %20s (Additional null disp8)\n\n", m1 + modrm_p + '00' + s_operand_p, instruction_alt)
+		else
+			instruction_alt = objdump(m1+modrm_p + sib_p + '00' + s_operand_p)
+			printf("%-32s %20s (Additional null disp8)\n\n", m1 + modrm_p + sib_p + '00' + s_operand_p, instruction_alt)
+		end
 	end
 end
 
 def addnullfcpmodrm8imm (reg_a, reg_b, tworegs, modrm_p, sib_p, s_operand_p, esp_areg_p, multiplier_p, register_p, mreg_p, negative, register, s_operand, offset, multiplier, mreg, m1, instruction, num)
 	#Force communative property with added null disp8 (if possible)
-	if reg_a != 'esp' and reg_b != 'esp' and tworegs == 1 and reg_a != reg_b and disp_to_dec(offset) == 0 then	#If it's machine possible to swap registers and there's no offset
+	if reg_a != 'esp' and reg_b != 'esp' and reg_b != 'ebp' and tworegs == 1 and reg_a != reg_b and disp_to_dec(offset) == 0 then	#If it's machine possible to swap registers and there's no offset
 		reg_a, reg_b = reg_b, reg_a		#swapem
 		#Re-Process
 		modrm_p, sib_p, s_operand_p, esp_areg_p, multiplier_p, register_p, mreg_p = pointer(negative, reg_a, reg_b, register, s_operand, offset, multiplier, mreg, m1, instruction, num)

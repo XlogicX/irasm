@@ -203,13 +203,15 @@ def add instruction
 	#Add
 	if alimm8(instruction, 'add', '04', '80C0')
 	elsif aximm16(instruction, 'add', '6605', '6681C0', '04', '80C0')
-	elsif eaximm32(instruction, 'add', '05', '81C0', '6605', '6681C0', '04', '80C0')		
+	elsif eaximm32(instruction, 'add', '05', '81C0', '6605', '6681C0', '04', '80C0')
+	elsif modrm8imm(instruction, 'add', '80', '0')		
 	else nasm(instruction) end end
 def andi instruction
 	#Logical AND
 	if alimm8_b(instruction, 'and', '25', '81E0', '6625', '6681E0', '24', '80E0')
 	elsif aximm16_b(instruction, 'and', '25', '81E0', '6625', '6681E0', '24', '80E0')
-	elsif eaximm32_b(instruction, 'and', '25', '81E0', '6625', '6681E0', '24', '80E0')		
+	elsif eaximm32_b(instruction, 'and', '25', '81E0', '6625', '6681E0', '24', '80E0')
+	elsif modrm8imm(instruction, 'and', '80', '4')		
 	else nasm(instruction) end end
 def cbw instruction
 	#Convert Byte to Word
@@ -237,9 +239,10 @@ def cmc instruction
 	puts "F5                                       cmc\n\n" end
 def cmp instruction
 	#Compare Two Operands
-	if alimm8_c(instruction, 'adc', '3C', '80F8')
-	elsif aximm16_c(instruction, 'adc', '663D', '6681F8')
-	elsif eaximm32_c(instruction, 'adc', '3D', '81F8')		
+	if alimm8_c(instruction, 'cmp', '3C', '80F8')
+	elsif aximm16_c(instruction, 'cmp', '663D', '6681F8')
+	elsif eaximm32_c(instruction, 'cmp', '3D', '81F8')
+	elsif modrm8imm(instruction, 'cmp', '80', '2')	
 	else nasm(instruction) end end
 def cmpsb instruction
 	#Compare String Operands (Byte)
@@ -464,6 +467,9 @@ def mfence instruction
 def monitor instruction
 	#Set Up Monitor Address
 	puts "0F01C8                                   monitor\n\n" end
+def mov instruction
+	if modrm8imm(instruction, 'mov', 'c6', '0')
+	else nasm(instruction) end end		
 def movsb instruction
 	#Move Data from String to String (Byte)
 	puts "A4                                       movsb\n\n" end
@@ -483,7 +489,8 @@ def OR instruction
 	#Logical Inclusive OR
 	if alimm8_e(instruction, 'or', '0D', '81C8', '660D', '6681C8', '0C', '80C8')
 	elsif aximm16_e(instruction, 'or', '0D', '81C8', '660D', '6681C8', '0C', '80C8')
-	elsif eaximm32_e(instruction, 'or', '0D', '81C8', '660D', '6681C8', '0C', '80C8')		
+	elsif eaximm32_e(instruction, 'or', '0D', '81C8', '660D', '6681C8', '0C', '80C8')
+	elsif modrm8imm(instruction, 'or', '80', '1')			
 	else nasm(instruction) end end
 def outsb instruction
 	#Output String to Port (Byte)
@@ -521,6 +528,18 @@ def pushfw instruction
 def pushf instruction
 	#Push EFLAGS Register onto the Stack
 	puts "9C                                       %s\n\n" % instruction end
+def rcl instruction
+	if modrm8imm(instruction, 'rcl', 'c0', '2')
+	else nasm(instruction) end end		
+def rcr instruction
+	if modrm8imm(instruction, 'rcr', 'c0', '3')
+	else nasm(instruction) end end			
+def rol instruction
+	if modrm8imm(instruction, 'rol', 'c0', '0')
+	else nasm(instruction) end end		
+def ror instruction
+	if modrm8imm(instruction, 'ror', 'c0', '1')
+	else nasm(instruction) end end				
 def rdmsr instruction
 	#Read from Model Specific Register
 	puts "0F32                                     rdmsr\n\n" end
@@ -545,11 +564,18 @@ def rsm instruction
 def sahf instruction
 	#Store AH into Flags
 	puts "9E                                       sahf\n\n" end
+def sal instruction
+	if modrm8imm(instruction, 'sal', 'c0', '6')
+	else nasm(instruction) end end		
+def sar instruction
+	if modrm8imm(instruction, 'sar', 'c0', '7')
+	else nasm(instruction) end end
 def sbb instruction
 	#Integer Subtraction with Borrow
 	if alimm8_e(instruction, 'sbb', '1D', '81D8', '661D', '6681D8', '1C', '80D8')
 	elsif aximm16_e(instruction, 'sbb', '1D', '81D8', '661D', '6681D8', '1C', '80D8')
-	elsif eaximm32_e(instruction, 'sbb', '1D', '81D8', '661D', '6681D8', '1C', '80D8')		
+	elsif eaximm32_e(instruction, 'sbb', '1D', '81D8', '661D', '6681D8', '1C', '80D8')	
+	elsif modrm8imm(instruction, 'sbb', '80', '3')		
 	else nasm(instruction) end end
 def scasb instruction
 	#Scan String (Byte)
@@ -563,6 +589,12 @@ def scasd instruction
 def sfence instruction
 	#Store Fence
 	fence('sfence', '0FAE', 'F8') end
+def shl instruction
+	if modrm8imm(instruction, 'shl', 'c0', '4')
+	else nasm(instruction) end end		
+def shr instruction
+	if modrm8imm(instruction, 'shr', 'c0', '5')
+	else nasm(instruction) end end
 def stac instruction
 	#Set AC Flag in EFLAGS Register
 	puts "0F01CB                                   stac\n\n" end
@@ -588,7 +620,8 @@ def sub instruction
 	#Subtract
 	if alimm8_e(instruction, 'sub', '2D', '81E8', '662D', '6681E8', '2C', '80E8')
 	elsif aximm16_e(instruction, 'sub', '2D', '81E8', '662D', '6681E8', '2C', '80E8')
-	elsif eaximm32_e(instruction, 'sub', '2D', '81E8', '662D', '6681E8', '2C', '80E8')		
+	elsif eaximm32_e(instruction, 'sub', '2D', '81E8', '662D', '6681E8', '2C', '80E8')
+	elsif modrm8imm(instruction, 'sub', '80', '5')			
 	else nasm(instruction) end end
 def swapgs instruction
 	#Swap GS Base Register
@@ -610,6 +643,7 @@ def test instruction
 	if alimm8_c(instruction, 'test', 'A8', 'F6C0')
 	elsif aximm16_c(instruction, 'test', '66A9', '66F7C0')
 	elsif eaximm32_c(instruction, 'test', 'A9', 'F7C0')		
+	elsif modrm8imm(instruction, 'test', 'f6', '0')		
 	else nasm(instruction) end end
 def ud2 instruction
 	#Undefined Instruction
@@ -631,9 +665,10 @@ def xlat instruction
 	puts "D7                                       xlat            (BYTE PTR ds:[ebx])\n\n" end
 def xor instruction
 	#Logical Exlusive OR
-	if alimm8_c(instruction, 'test', '34', '80F0')
-	elsif aximm16_c(instruction, 'test', '6635', '6681F0')
-	elsif eaximm32_c(instruction, 'test', '35', '81F0')		
+	if alimm8_c(instruction, 'xor', '34', '80F0')
+	elsif aximm16_c(instruction, 'xor', '6635', '6681F0')
+	elsif eaximm32_c(instruction, 'xor', '35', '81F0')	
+	elsif modrm8imm(instruction, 'xor', '80', '6')		
 	else nasm(instruction) end end
 def xsetbv instruction
 	#Set Extended Control Register
@@ -1042,6 +1077,23 @@ def modrm8imm (instruction, op, m1, num)
 	###############################
 	#           PARSING           #
 	###############################	
+	#Parse if dest operand is byte, word, or dword
+	if extracted = /(byte|word|dword)/i.match(instruction)
+		datasize = extracted.captures[0]
+		if datasize == 'dword' or datasize == 'word' then	#modify the instruction to be 16/32 bit from 8bit default
+			if m1 == '80' then m1 = '83' end	#adc, add, and, cmp, or, sbb, sub, xor
+			if m1 == 'c0' then m1 = 'c1' end	#rcl, rcr, rol, ror, sal, sar, shl, shr
+			if m1 == 'c6' or m1 == 'f6' then	#test and mov
+				puts "%s not supported for this instruction with imm8 source operand"
+				#Consider the word/dword alternate
+				exit
+			end
+		end
+		if datasize == 'word' then
+			m1 = '66' + m1				#add 16 bit override prefix to instruction
+		end
+	end
+
 	#If it's just the register, then process it and leave
 	if extracted = /([abcd][hl])\s*,\s*((0x)?[a-f0-9]+)$/i.match(instruction)
 		#mod = 2 (11xxxxxx) / 192
@@ -1068,9 +1120,9 @@ def modrm8imm (instruction, op, m1, num)
 	reg_b = ''		#Default, will populate for an edge case
 
 	#is it just a register as the pointer
-	if extracted = /byte.+?\[[^\]]*?(e[acdbs][xip])[^\]]*?\]\s*?,\s*?((0x)?[a-f0-9]+)$/i.match(instruction)
-		register = extracted.captures[0]
-		s_operand = imm8(extracted.captures[1])
+	if extracted = /(byte|word|dword).+?\[[^\]]*?(e[acdbs][xip])[^\]]*?\]\s*?,\s*?((0x)?[a-f0-9]+)$/i.match(instruction)
+		register = extracted.captures[1]
+		s_operand = imm8(extracted.captures[2])
 		offset = '0'
 		multiplier = '0'
 		mreg = ''
@@ -1078,24 +1130,24 @@ def modrm8imm (instruction, op, m1, num)
 
 	#Parse offset
 	#Is there a decimal formatted offset
-	if extracted = /byte.+?\[[^\]]*?(?<![x*\s]{2})(\d+)[^\]]*?\]\s*?,\s*?((0x)?[a-f0-9]+)$/i.match(instruction)
-		offset = extracted.captures[0]				#parse disp
-		s_operand = imm8(extracted.captures[1])		#parse imm
+	if extracted = /(byte|word|dword).+?\[[^\]]*?(?<![x*\s]{2})(\d+)[^\]]*?\]\s*?,\s*?((0x)?[a-f0-9]+)$/i.match(instruction)
+		offset = extracted.captures[1]				#parse disp
+		s_operand = imm8(extracted.captures[2])		#parse imm
 	end		
-	if extracted = /byte.+?\[[^\]]*?-\s*?\d+/i.match(instruction) then negative = 1 end		#parse negative value
+	if extracted = /(byte|word|dword).+?\[[^\]]*?-\s*?\d+/i.match(instruction) then negative = 1 end		#parse negative value
 	#Is there a hex formatted offset
-	if extracted = /byte.+?\[[^\]]*?(0x[0-9a-f]+)[^\]]*?\]\s*?,\s*?((0x)?[a-f0-9]+)$/i.match(instruction)
-		offset = extracted.captures[0]				#parse disp
-		s_operand = imm8(extracted.captures[1])		#parse imm
+	if extracted = /(byte|word|dword).+?\[[^\]]*?(0x[0-9a-f]+)[^\]]*?\]\s*?,\s*?((0x)?[a-f0-9]+)$/i.match(instruction)
+		offset = extracted.captures[1]				#parse disp
+		s_operand = imm8(extracted.captures[2])		#parse imm
 	end
-	if extracted = /byte.+?\[[^\]]*?-\s*(0x[0-9a-f]+)/i.match(instruction) then negative = 1 end #parse negative value
+	if extracted = /(byte|word|dword).+?\[[^\]]*?-\s*(0x[0-9a-f]+)/i.match(instruction) then negative = 1 end #parse negative value
 	if $debug == 1 then puts "negative value?: %i" % negative end
 
 	#Is there a scale
-	if extracted = /byte.+?\[[^\]]*?(e[acdbs][xip])\s*?\*\s*?([1248])[^\]]*?\]\s*?,\s*?((0x)?[a-f0-9]+)$/i.match(instruction)
-		mreg = extracted.captures[0] 				#parse scaled register
-		multiplier = extracted.captures[1]			#parse scale
-		s_operand = imm8(extracted.captures[2])		#parse imm
+	if extracted = /(byte|word|dword).+?\[[^\]]*?(e[acdbs][xip])\s*?\*\s*?([1248])[^\]]*?\]\s*?,\s*?((0x)?[a-f0-9]+)$/i.match(instruction)
+		mreg = extracted.captures[1] 				#parse scaled register
+		multiplier = extracted.captures[2]			#parse scale
+		s_operand = imm8(extracted.captures[3])		#parse imm
 		if instruction !~ /.+?e[acdbs][xip].+e[acdbs][xip]/i	#parse possibility of no base register
 			register = 'none'
 		end
@@ -1103,9 +1155,9 @@ def modrm8imm (instruction, op, m1, num)
 
 	#Have to handle implicit * 1 with kid gloves, ie adc byte [eax + ebp], 88
 	#For the regex, if there's a register followed by adding another register that does not have a scale after it
-	if extracted = /byte.+?\[[^\]]*?(e[acdbs][xip])\s*?\+\s*?(e[acdbs][xip])[^*]+$/i.match(instruction) then
-		reg_a = extracted.captures[0]	#parse first register
-		reg_b = extracted.captures[1]	#parse second register
+	if extracted = /(byte|word|dword).+?\[[^\]]*?(e[acdbs][xip])\s*?\+\s*?(e[acdbs][xip])[^*]+$/i.match(instruction) then
+		reg_a = extracted.captures[1]	#parse first register
+		reg_b = extracted.captures[2]	#parse second register
 		tworegs = 1
 	end	
 
@@ -1136,7 +1188,7 @@ def modrm8imm (instruction, op, m1, num)
 	#SIB Doubles (Base register must be same as scaled register at scale of 1, disp required even if zero)
 	sibdoublemodrm8imm(tworegs, reg_a, reg_b, modrm_p, sib_p, offset, s_operand_p, m1, negative, s_operand)
 
-	return 1
+	#return 1
 
 end
 
@@ -1514,3 +1566,4 @@ def objdump (data)
 end
 
 main
+

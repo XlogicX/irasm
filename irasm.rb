@@ -202,7 +202,7 @@ def aas instruction
 	puts "3f                                       aas\n\n" end
 def adc instruction
 	#Add with Carry
-	if alimm8(instruction, 'adc', '14', '80D0')
+	if alimm8(instruction, 'adc', '14', '80D0')	
 	elsif aximm16(instruction, 'adc', '6615', '6681D0', '14', '80D0')
 	elsif eaximm32(instruction, 'adc', '15', '81D0', '6615', '6681D0', '14', '80D0')		
 	elsif eaximm32(instruction, 'adc', '15', '81D0', '6615', '6681D0', '14', '80D0')
@@ -697,7 +697,7 @@ def imm8 data
 		data = data.gsub(/0x(.+)/, '\1')
 	end
 	if data.to_s.length > 2
-		puts "Error, likely source operand is too large for destination register"
+		puts "Error, likely source operand is too large for destination"
 		exit
 	end
 	data = zeropad(data, 2)
@@ -711,7 +711,7 @@ def imm16 data
 		data = data.gsub(/0x(.+)/, '\1')
 	end
 	if data.to_s.length > 4
-		puts "Source operand to large for destination register"
+		puts "Source operand too large for destination"
 		exit
 	end
 	data = zeropad(data, 4)
@@ -725,7 +725,7 @@ def imm32 data
 		data = data.gsub(/0x(.+)/, '\1')
 	end
 	if data.to_s.length > 8
-		puts "Source operand to large for destination register"
+		puts "Source operand too large for destination"
 		exit
 	end
 	data = zeropad(data, 8)
@@ -1105,16 +1105,15 @@ def modrm8imm (instruction, op, m1, num)
 		if datasize == 'dword' or datasize == 'word' then	#modify the instruction to be 16/32 bit from 8bit default
 			if m1 == '80' then m1 = '83' end	#adc, add, and, cmp, or, sbb, sub, xor
 			if m1 == 'c0' then m1 = 'c1' end	#rcl, rcr, rol, ror, sal, sar, shl, shr
-			if m1 == 'c6' or m1 == 'f6' then	#test and mov
-				puts "%s not supported for this instruction with imm8 source operand" % op
-				#Consider the word/dword alternate
-				exit
-			end
+			if m1 == 'c6' then m1 = 'c7' end	#mov
+			if m1 == 'f6' then m1 = 'f7' end	#test
 		end
 		if datasize == 'word' then
 			m1 = '66' + m1				#add 16 bit override prefix to instruction
 		end
 	end
+	
+				#puts "%s not supported for this instruction with imm8 source operand and dest size" % op
 
 	#If it's just the register, then process it and leave
 	if extracted = /([abcd][hl])\s*,\s*((0x)?[a-f0-9]+)$/i.match(instruction)
@@ -1123,7 +1122,7 @@ def modrm8imm (instruction, op, m1, num)
 		#register = (xxxxxrrr)
 		modrm = 192 + (num.to_i * 8)
 		register = extracted.captures[0]
-		s_operand = imm8(extracted.captures[1])
+		s_operand = imm8(extracted.captures[1])	
 		if register == 'cl' then modrm = modrm + 1
 		elsif register == 'dl' then modrm = modrm + 2
 		elsif register == 'bl' then modrm = modrm + 3
@@ -1141,32 +1140,55 @@ def modrm8imm (instruction, op, m1, num)
 	reg_a = ''		#Default, will populate for an edge case
 	reg_b = ''		#Default, will populate for an edge case
 
-	#is it just a register as the pointer
-	if extracted = /(byte|word|dword).+?\[[^\]]*?(e[acdbs][xip])[^\]]*?\]\s*?,\s*?((0x)?[a-f0-9]+)$/i.match(instruction)
+	#Parse the source operand
+	if extracted = /,\s*?((0x)?[a-f0-9]+)$/i.match(instruction)
+		s_operand = extracted.captures[0]
+	end
+
+	#Parse register, source operand, displacement, scale, and scaled register
+	if extracted = /(byte|word|dword).+?\[[^\]]*?(e[acdbs][xip])[^\]]*?\]\s*?,\s*?(0x)?[a-f0-9]+$/i.match(instruction)
 		register = extracted.captures[1]
-		s_operand = extracted.captures[2]
 		offset = '0'
 		multiplier = '0'
 		mreg = ''
 	end
 
 	#Parse and adjust source operand size
-	if disp_to_dec(s_operand) > 65535 then
-		s_operand = littleend(imm32(s_operand))
+	#First see if mov and test instructions have correct source/dest sizes
+	if extracted = /(mov|test)/i.match(op) then
+		if disp_to_dec(s_operand) < 256 and datasize != 'byte' then
+			puts "source operand size does not match destination size for the instruction of '%s'" % op
+			exit
+		end
+		if disp_to_dec(s_operand) > 255 and disp_to_dec(s_operand) < 65536 and datasize != 'word' then
+			puts "source operand size does not match destination size for the instruction of '%s'" % op
+			exit
+		end
+		if disp_to_dec(s_operand) > 65535 and datasize != 'dword' then
+			puts "source operand size does not match destination size for the instruction of '%s'" % op
+			exit
+		end
+	end
+	if disp_to_dec(s_operand) > 65535 and datasize == 'dword' then
+		s_operand = littleend(imm32(s_operand))		
 		if m1 == '83' then m1 = '81'	#adc, add, and, cmp, or, sbb, sub, xor
-		elsif m1 == 'c1' then puts "This instruction doesn't support imm32"
-		elsif m1 == 'c6' then m1 = 'c7'
-		elsif m1 == 'f6' then m1 = 'f7' 
+		elsif m1 == 'c1' then 
+			puts "This instruction doesn't support imm32"
+			exit
+		elsif m1 == 'c7' or m1 == 'f7' then	
+			#don't really do anything, it's already good
 	    else 
 	    	puts "datasize of %s doesn't match this source operand for this instruction" % datasize
 	    	exit
 		end
-	elsif disp_to_dec(s_operand) > 255 then
+	elsif disp_to_dec(s_operand) > 255 and datasize != 'byte' then
 		s_operand = littleend(imm16(s_operand))
 		if m1 == '6683' then m1 = '6681'	#adc, add, and, cmp, or, sbb, sub, xor
-		elsif m1 == '66c1' then puts "This instruction doesn't support imm16"
-		elsif m1 == '66c6' then m1 = '66c7'		
-		elsif m1 == '66f6' then m1 = '66f7'
+		elsif m1 == '66c1' then 
+			puts "This instruction doesn't support imm16"
+			exit
+		elsif m1 == '66c7' or m1 == '66f7' then	
+			#don't really do anything, it's already good
 	    else 
 	    	puts "datasize of '%s' doesn't match this source operand for this instruction" % datasize
 	    	exit
@@ -1179,13 +1201,11 @@ def modrm8imm (instruction, op, m1, num)
 	#Is there a decimal formatted offset
 	if extracted = /(byte|word|dword).+?\[[^\]]*?(?<![x*\s]{2})(\d+)[^\]]*?\]\s*?,\s*?((0x)?[a-f0-9]+)$/i.match(instruction)
 		offset = extracted.captures[1]				#parse disp
-		s_operand = imm8(extracted.captures[2])		#parse imm
 	end		
 	if extracted = /(byte|word|dword).+?\[[^\]]*?-\s*?\d+/i.match(instruction) then negative = 1 end		#parse negative value
 	#Is there a hex formatted offset
 	if extracted = /(byte|word|dword).+?\[[^\]]*?(0x[0-9a-f]+)[^\]]*?\]\s*?,\s*?((0x)?[a-f0-9]+)$/i.match(instruction)
-		offset = extracted.captures[1]				#parse disp
-		s_operand = imm8(extracted.captures[2])		#parse imm
+		offset = extracted.captures[1]				#parse disp	
 	end
 	if extracted = /(byte|word|dword).+?\[[^\]]*?-\s*(0x[0-9a-f]+)/i.match(instruction) then negative = 1 end #parse negative value
 	if $debug == 1 then puts "negative value?: %i" % negative end
@@ -1636,3 +1656,7 @@ def objdump (data)
 end
 
 main
+
+
+
+#Add redundancy with bitshift commands with '1' in source operand

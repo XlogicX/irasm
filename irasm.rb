@@ -1143,6 +1143,7 @@ def modrm8imm (instruction, op, m1, num)
 	#Parse the source operand
 	if extracted = /,\s*?((0x)?[a-f0-9]+)$/i.match(instruction)
 		s_operand = extracted.captures[0]
+		s_operand_u	= s_operand					#an unprocessed form of source operand to use later
 	end
 
 	#Parse register, source operand, displacement, scale, and scaled register
@@ -1154,45 +1155,17 @@ def modrm8imm (instruction, op, m1, num)
 	end
 
 	#Parse and adjust source operand size
-	#First see if mov and test instructions have correct source/dest sizes
-	if extracted = /(mov|test)/i.match(op) then
-		if disp_to_dec(s_operand) < 256 and datasize != 'byte' then
-			puts "source operand size does not match destination size for the instruction of '%s'" % op
-			exit
-		end
-		if disp_to_dec(s_operand) > 255 and disp_to_dec(s_operand) < 65536 and datasize != 'word' then
-			puts "source operand size does not match destination size for the instruction of '%s'" % op
-			exit
-		end
-		if disp_to_dec(s_operand) > 65535 and datasize != 'dword' then
-			puts "source operand size does not match destination size for the instruction of '%s'" % op
-			exit
-		end
+	if m1 == 'c0' or m1 == 'c1' or m1 == '66c1' and disp_to_dec(s_operand) > 255 then
+		puts "This instruction does not support non-byte sized source operand"
+		return 1
+		exit
 	end
 	if disp_to_dec(s_operand) > 65535 and datasize == 'dword' then
 		s_operand = littleend(imm32(s_operand))		
-		if m1 == '83' then m1 = '81'	#adc, add, and, cmp, or, sbb, sub, xor
-		elsif m1 == 'c1' then 
-			puts "This instruction doesn't support imm32"
-			exit
-		elsif m1 == 'c7' or m1 == 'f7' then	
-			#don't really do anything, it's already good
-	    else 
-	    	puts "datasize of %s doesn't match this source operand for this instruction" % datasize
-	    	exit
-		end
+		if m1 == '83' then m1 = '81' end	#adc, add, and, cmp, or, sbb, sub, xor
 	elsif disp_to_dec(s_operand) > 255 and datasize != 'byte' then
 		s_operand = littleend(imm16(s_operand))
-		if m1 == '6683' then m1 = '6681'	#adc, add, and, cmp, or, sbb, sub, xor
-		elsif m1 == '66c1' then 
-			puts "This instruction doesn't support imm16"
-			exit
-		elsif m1 == '66c7' or m1 == '66f7' then	
-			#don't really do anything, it's already good
-	    else 
-	    	puts "datasize of '%s' doesn't match this source operand for this instruction" % datasize
-	    	exit
-		end			
+		if m1 == '6683' then m1 = '6681' end	#adc, add, and, cmp, or, sbb, sub, xor		
 	else
 		s_operand = imm8(s_operand)
 	end
@@ -1228,37 +1201,56 @@ def modrm8imm (instruction, op, m1, num)
 		tworegs = 1
 	end	
 
+	#If a dword and the source operand is 83/byte and it's actually wordsize, this needs an upgrade to dword/32bit
+	if datasize == 'dword' and m1 == '83' then
+		if s_operand.length == 4 then 
+			s_operand = s_operand + '0000' 
+			m1 = '81'
+		end
+	end
+
 	#PROCESSING
 	modrm_p, sib_p, s_operand_p, esp_areg_p, multiplier_p, register_p, mreg_p = pointer(negative, reg_a, reg_b, register, s_operand, offset, multiplier, mreg, m1, instruction, num)
+	if modrm_p == 'error' then return 1 end
+
+	#MOV and TEST
+	if extracted = /(mov|test)/i.match(op) then
+		if disp_to_dec(s_operand_u) < 256 and datasize == 'word' then		#if imm is byte but dest is word/dword
+			s_operand_p = s_operand_p + '00'
+			modrmimm_results(multiplier_p, esp_areg_p, m1, modrm_p, s_operand_p, instruction, register_p, mreg_p, offset, sib_p)		
+			s_operand = s_operand + '00'			
+			modrmimm_pointer_alternates(reg_a, reg_b, tworegs, modrm_p, sib_p, s_operand_p, esp_areg_p, multiplier_p, register_p, mreg_p, negative, register, s_operand, offset, multiplier, mreg, m1, instruction, num)
+			return 1
+		end
+		if disp_to_dec(s_operand_u) < 256 and datasize == 'dword' then		#if imm is byte but dest is word/dword
+			s_operand_p = s_operand_p + '000000'
+			modrmimm_results(multiplier_p, esp_areg_p, m1, modrm_p, s_operand_p, instruction, register_p, mreg_p, offset, sib_p)		
+			s_operand = s_operand + '000000'			
+			modrmimm_pointer_alternates(reg_a, reg_b, tworegs, modrm_p, sib_p, s_operand_p, esp_areg_p, multiplier_p, register_p, mreg_p, negative, register, s_operand, offset, multiplier, mreg, m1, instruction, num)
+			return 1
+		end		
+		if disp_to_dec(s_operand_u) > 255 and disp_to_dec(s_operand) < 65536 and datasize != 'word' then #if imm is word but dest is dword
+			s_operand_p = s_operand_p + '0000'			
+			modrmimm_results(multiplier_p, esp_areg_p, m1, modrm_p, s_operand_p, instruction, register_p, mreg_p, offset, sib_p)
+			s_operand = s_operand + '0000'
+			modrmimm_pointer_alternates(reg_a, reg_b, tworegs, modrm_p, sib_p, s_operand_p, esp_areg_p, multiplier_p, register_p, mreg_p, negative, register, s_operand, offset, multiplier, mreg, m1, instruction, num)
+			return 1
+		end
+	end
 
 	###############################
 	#   OUTPUT STANDARD RESULTS   #
 	###############################	
-	if multiplier_p == '0' and !esp_areg_p then
-		printf("%-32s %20s\n\n", m1 + modrm_p + s_operand_p, instruction)
-		sanity_check(m1 + modrm_p + s_operand_p, instruction)	#See if this output matches nasms
-	elsif !register_p and !multiplier_p and !mreg_p and offset then
-		printf("%-32s %20s\n\n", m1 + modrm_p + s_operand_p, instruction)
-		sanity_check(m1 + modrm_p + s_operand_p, instruction)	#See if this output matches nasms
-	elsif modrm_p == 'error' then return 1
-	else 
-		printf("%-32s %20s\n\n", m1 + modrm_p + sib_p + s_operand_p, instruction)
-		sanity_check(m1 + modrm_p + sib_p + s_operand_p, instruction)	#See if this output matches nasms
-	end
+	modrmimm_results(multiplier_p, esp_areg_p, m1, modrm_p, s_operand_p, instruction, register_p, mreg_p, offset, sib_p)
 
 	###############################
 	#  OUTPUT ALTERNATE RESULTS   #
 	###############################
-	#Try to force commutative property
-	fcpmodrm8imm(reg_a, reg_b, tworegs, modrm_p, sib_p, s_operand_p, esp_areg_p, multiplier_p, register_p, mreg_p, negative, register, s_operand, offset, multiplier, mreg, m1, instruction, num)
-	#Gratuitous disp (convert 1 byte disp to 4 byte disp)
-	disp8to32modrm8imm(offset, negative, s_operand_p, s_operand, modrm_p, register_p, multiplier_p, mreg_p, esp_areg_p, m1, sib_p)
-	#If there is no displacement, make a displacement of 0x00...
-	addnullmodrm8imm(offset, modrm_p, m1, sib_p, s_operand_p, register_p, multiplier_p, esp_areg_p)
-	#Force communative property with added null disp8 (if possible)
-	addnullfcpmodrm8imm(reg_a, reg_b, tworegs, modrm_p, sib_p, s_operand_p, esp_areg_p, multiplier_p, register_p, mreg_p, negative, register, s_operand, offset, multiplier, mreg, m1, instruction, num)
-	#SIB Doubles (Base register must be same as scaled register at scale of 1, disp required even if zero)
-	sibdoublemodrm8imm(tworegs, reg_a, reg_b, modrm_p, sib_p, offset, s_operand_p, m1, negative, s_operand)
+	modrmimm_pointer_alternates(reg_a, reg_b, tworegs, modrm_p, sib_p, s_operand_p, esp_areg_p, multiplier_p, register_p, mreg_p, negative, register, s_operand, offset, multiplier, mreg, m1, instruction, num)
+
+	#Padded source operands
+
+
 
 	#return 1
 
@@ -1318,6 +1310,32 @@ def disp_to_dec (disp)
 	return disp
 end
 
+def modrmimm_results (multiplier_p, esp_areg_p, m1, modrm_p, s_operand_p, instruction, register_p, mreg_p, offset, sib_p)		
+	if multiplier_p == '0' and !esp_areg_p then
+		printf("%-32s %20s\n\n", m1 + modrm_p + s_operand_p, instruction)
+		sanity_check(m1 + modrm_p + s_operand_p, instruction)	#See if this output matches nasms
+	elsif !register_p and !multiplier_p and !mreg_p and offset then
+		printf("%-32s %20s\n\n", m1 + modrm_p + s_operand_p, instruction)
+		sanity_check(m1 + modrm_p + s_operand_p, instruction)	#See if this output matches nasms
+	else 
+		printf("%-32s %20s\n\n", m1 + modrm_p + sib_p + s_operand_p, instruction)
+		sanity_check(m1 + modrm_p + sib_p + s_operand_p, instruction)	#See if this output matches nasms
+	end
+end
+
+def modrmimm_pointer_alternates (reg_a, reg_b, tworegs, modrm_p, sib_p, s_operand_p, esp_areg_p, multiplier_p, register_p, mreg_p, negative, register, s_operand, offset, multiplier, mreg, m1, instruction, num)
+	#Try to force commutative property
+	fcpmodrm8imm(reg_a, reg_b, tworegs, modrm_p, sib_p, s_operand_p, esp_areg_p, multiplier_p, register_p, mreg_p, negative, register, s_operand, offset, multiplier, mreg, m1, instruction, num)
+	#Gratuitous disp (convert 1 byte disp to 4 byte disp)
+	disp8to32modrm8imm(offset, negative, s_operand_p, s_operand, modrm_p, register_p, multiplier_p, mreg_p, esp_areg_p, m1, sib_p)
+	#If there is no displacement, make a displacement of 0x00...
+	addnullmodrm8imm(offset, modrm_p, m1, sib_p, s_operand_p, register_p, multiplier_p, esp_areg_p)
+	#Force communative property with added null disp8 (if possible)
+	addnullfcpmodrm8imm(reg_a, reg_b, tworegs, modrm_p, sib_p, s_operand_p, esp_areg_p, multiplier_p, register_p, mreg_p, negative, register, s_operand, offset, multiplier, mreg, m1, instruction, num)
+	#SIB Doubles (Base register must be same as scaled register at scale of 1, disp required even if zero)
+	sibdoublemodrm8imm(tworegs, reg_a, reg_b, modrm_p, sib_p, offset, s_operand_p, m1, negative, s_operand)
+end
+
 def pointer (negative, reg_a, reg_b, register, s_operand, offset, multiplier, mreg, m1, instruction, num)
 	#If multiplied register is scaled by 1, and there is no base register, then just use register as base
 	if mreg != '' and  multiplier == '1' and register == 'none' then 
@@ -1332,7 +1350,7 @@ def pointer (negative, reg_a, reg_b, register, s_operand, offset, multiplier, mr
 			register = 'esp'
 		else 
 			printf("\nesp is an invalid Scaled Index\n") 
-			return ["error", '0', '0', '0', '0', '0']
+			return ["error", '0', '0', '0', '0', '0', '0']
 		end
 	end	
 
@@ -1342,7 +1360,7 @@ def pointer (negative, reg_a, reg_b, register, s_operand, offset, multiplier, mr
 		if $debug == 1 then puts "reg2 is %s" % reg_b end
 		if reg_a == 'esp' and reg_b == 'esp' then
 			printf("\nesp is an invalid Scaled Index\n") 
-			return ["error", '0', '0', '0', '0', '0']
+			return ["error", '0', '0', '0', '0', '0', '0']
 		end
 		if reg_b == 'esp' then			#esp can't be scaled / can't be 2nd register
 			mreg = reg_a				#make first register the scaled one
@@ -1460,7 +1478,7 @@ def pointer (negative, reg_a, reg_b, register, s_operand, offset, multiplier, mr
 		else s_operand = littleend(zeropad(imm8(offset),2)) + s_operand	end	
 	elsif disp_to_dec(offset) > 2147483647 and negative == 1 then
 		puts "Invalid negative displacement"
-		return ["error", '0', '0', '0', '0', '0']
+		return ["error", '0', '0', '0', '0', '0', '0']
 	elsif disp_to_dec(offset) < 2147483648 and disp_to_dec(offset) > 128 and negative == 1	then
 		#32bit 2's compliment
 		offset = (4294967296 - disp_to_dec(offset).to_i).to_s	#2's compliment
@@ -1506,13 +1524,11 @@ def fcpmodrm8imm (reg_a, reg_b, tworegs, modrm_p, sib_p, s_operand_p, esp_areg_p
 		reg_a, reg_b = reg_b, reg_a		#swapem
 		#Re-Process
 		modrm_p, sib_p, s_operand_p, esp_areg_p, multiplier_p, register_p, mreg_p = pointer(negative, reg_a, reg_b, register, s_operand, offset, multiplier, mreg, m1, instruction, num)
-		if modrm_p == 'error' then return 1
-		else 
-			instruction_alt = objdump(m1+modrm_p+sib_p + s_operand_p)
-			printf("%-32s %20s (Forced commutative property)\n", m1 + modrm_p + sib_p + s_operand_p, instruction_alt)
-		end
+		instruction_alt = objdump(m1+modrm_p+sib_p + s_operand_p)
+		printf("%-32s %20s (Forced commutative property)\n", m1 + modrm_p + sib_p + s_operand_p, instruction_alt)
 	end
 end
+
 
 def disp8to32modrm8imm (offset, negative, s_operand_p, s_operand, modrm_p, register_p, multiplier_p, mreg_p, esp_areg_p, m1, sib_p)
 	#Gratuitous disp (convert 1 byte disp to 4 byte disp)
@@ -1522,7 +1538,7 @@ def disp8to32modrm8imm (offset, negative, s_operand_p, s_operand, modrm_p, regis
 			offset = "0x%s" % imm8(offset)						#change it to hex format
 		end
 		if extracted = /.+([0-9a-f]{2})/i.match(offset) then
-			s_operand_p = littleend(signed_pad(offset, negative)) + s_operand		#sign extend the disp
+			s_operand_p = littleend(signed_pad(offset, negative)) + s_operand		#sign extend the disp		
 			if disp_to_dec(offset) == 0 then
 				modrm_p = zeropad(((modrm_p.to_i(16).to_s(10)).to_i + 128).to_s(16), 2)	#modify modrm to be disp32 instead of no disp
 			else
@@ -1530,10 +1546,9 @@ def disp8to32modrm8imm (offset, negative, s_operand_p, s_operand, modrm_p, regis
 			end
 			if !register_p and !multiplier_p and !mreg_p and offset then			#if it's just the offset
 				#Don't do anything, it's actually already supposed to be encoded as disp32
-			elsif multiplier_p == '0' and !esp_areg_p then
+			elsif multiplier_p == '0' and !esp_areg_p then			
 				instruction_alt = objdump(m1 + modrm_p + s_operand_p)
 				printf("%-32s %20s (disp8 -> disp32 extended)\n", m1 + modrm_p + s_operand_p, instruction_alt)
-			elsif modrm_p == 'error' then return 1
 			else 
 				instruction_alt = objdump(m1 + modrm_p + sib_p + s_operand_p)
 				printf("%-32s %20s (disp8 -> disp32 extended)\n", m1 + modrm_p + sib_p + s_operand_p, instruction_alt) 
@@ -1562,12 +1577,9 @@ def addnullfcpmodrm8imm (reg_a, reg_b, tworegs, modrm_p, sib_p, s_operand_p, esp
 		reg_a, reg_b = reg_b, reg_a		#swapem
 		#Re-Process
 		modrm_p, sib_p, s_operand_p, esp_areg_p, multiplier_p, register_p, mreg_p = pointer(negative, reg_a, reg_b, register, s_operand, offset, multiplier, mreg, m1, instruction, num)
-		if modrm_p == 'error' then return 1
-		else 
-			modrm_p = zeropad(((modrm_p.to_i(16).to_s(10)).to_i + 64).to_s(16), 2)	#modify to be disp8
-			instruction_alt = objdump(m1+modrm_p + sib_p + '00' + s_operand_p)
-			printf("%-32s %20s (Forced commutative property, Additional null disp8)\n", m1 + modrm_p + sib_p + '00' + s_operand_p, instruction_alt)
-		end
+		modrm_p = zeropad(((modrm_p.to_i(16).to_s(10)).to_i + 64).to_s(16), 2)	#modify to be disp8
+		instruction_alt = objdump(m1+modrm_p + sib_p + '00' + s_operand_p)
+		printf("%-32s %20s (Forced commutative property, Additional null disp8)\n", m1 + modrm_p + sib_p + '00' + s_operand_p, instruction_alt)
 	end
 end
 
@@ -1657,6 +1669,4 @@ end
 
 main
 
-
-
-#Add redundancy with bitshift commands with '1' in source operand
+#Redundancy with bitshift commands with '1' in source operand

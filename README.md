@@ -15,8 +15,8 @@ OP eax, imm32 (xor eax, 0x13371337)<br>
 OP r/m8, imm8 (adc byte [eax + ebx + 0x1337], 66)<br>
 OP r/m16, imm8 (adc word [eax + ebx + 0x1337], 0x22)<br>
 OP r/m32, imm8 (adc dword [eax + ebx + 0x1337], 0x22)<br>
-OP r/m16, imm16 (adc word [eax + ebx + 0x1337], 0x4444) (Without alternates still)<br>
-OP r/m32, imm32 (adc dword [eax + ebx + 0x1337], 0x88888888) (Without alternates still)
+OP r/m16, imm16 (adc word [eax + ebx + 0x1337], 0x4444)<br>
+OP r/m32, imm32 (adc dword [eax + ebx + 0x1337], 0x88888888)
 
 ## Remaining Formats (to call script 'public')
 OP r/m8, r8 (xor al, ah)<br>

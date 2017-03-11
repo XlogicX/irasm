@@ -108,8 +108,36 @@ def main
 		elsif /^into$/i.match(asm) then into (asm)	
 		elsif /^invd$/i.match(asm) then invd (asm)
 		elsif /^iretw$/i.match(asm) then iretw (asm)
-		elsif /^iretd?$/i.match(asm) then iret (asm)
-		elsif /^ja\s/i.match(asm) then ja (asm)			
+		elsif /^iretd?$/i.match(asm) then iret (asm)	
+		elsif /^ja\s/i.match(asm) then ja (asm)	
+		elsif /^jae\s/i.match(asm) then jae (asm)
+		elsif /^jb\s/i.match(asm) then jb (asm)
+		elsif /^jbe\s/i.match(asm) then jbe (asm)
+		elsif /^jc\s/i.match(asm) then jc (asm)
+		elsif /^je\s/i.match(asm) then je (asm)
+		elsif /^jg\s/i.match(asm) then jg (asm)
+		elsif /^jge\s/i.match(asm) then jge (asm)
+		elsif /^jl\s/i.match(asm) then jl (asm)
+		elsif /^jle\s/i.match(asm) then jle (asm)
+		elsif /^jna\s/i.match(asm) then jna (asm)
+		elsif /^jnae\s/i.match(asm) then jnae (asm)
+		elsif /^jnb\s/i.match(asm) then jnb (asm)
+		elsif /^jnbe\s/i.match(asm) then jnbe (asm)
+		elsif /^jnc\s/i.match(asm) then jnc (asm)
+		elsif /^jne\s/i.match(asm) then jne (asm)
+		elsif /^jng\s/i.match(asm) then jng (asm)
+		elsif /^jnl\s/i.match(asm) then jnl (asm)
+		elsif /^jnle\s/i.match(asm) then jnle (asm)
+		elsif /^jno\s/i.match(asm) then jno (asm)
+		elsif /^jnp\s/i.match(asm) then jnp (asm)
+		elsif /^jns\s/i.match(asm) then jns (asm)
+		elsif /^jnz\s/i.match(asm) then jnz (asm)
+		elsif /^jo\s/i.match(asm) then jo (asm)
+		elsif /^jp\s/i.match(asm) then jp (asm)
+		elsif /^jpe\s/i.match(asm) then jpe (asm)
+		elsif /^jpo\s/i.match(asm) then jpo (asm)
+		elsif /^js\s/i.match(asm) then js (asm)		
+		elsif /^jz\s/i.match(asm) then jz (asm)				
 		elsif /^lahf$/i.match(asm) then lahf (asm)	
 		elsif /^lea/i.match(asm) then lea (asm)
 		elsif /^leave$/i.match(asm) then leave (asm)
@@ -466,6 +494,118 @@ def ja instruction
 	#Jump if Above
 	if jcc(instruction, 'ja', '77')		
 	else nasm(instruction) end end
+def jae instruction
+	#Jump if Above or Equal
+	if jcc(instruction, 'jae', '73')		
+	else nasm(instruction) end end	
+def jb instruction
+	#Jump if Below
+	if jcc(instruction, 'jb', '72')		
+	else nasm(instruction) end end	
+def jbe instruction
+	#Jump if Below or Equal
+	if jcc(instruction, 'jbe', '76')		
+	else nasm(instruction) end end	
+def jc instruction
+	#Jump if Carry
+	if jcc(instruction, 'jc', '72')		
+	else nasm(instruction) end end
+def je instruction
+	#Jump if Equal
+	if jcc(instruction, 'jz', '74')		
+	else nasm(instruction) end end	
+def jg instruction
+	#Jump if Greater Than
+	if jcc(instruction, 'jg', '7f')		
+	else nasm(instruction) end end
+def jge instruction
+	#Jump if Greater Than or Equal
+	if jcc(instruction, 'jge', '7d')		
+	else nasm(instruction) end end	
+def jl instruction
+	#Jump if Lesser Than
+	if jcc(instruction, 'jl', '7c')		
+	else nasm(instruction) end end	
+def jle instruction
+	#Jump if Lesser Than or Equal
+	if jcc(instruction, 'jle', '7e')		
+	else nasm(instruction) end end		
+def jna instruction
+	#Jump if Not Above
+	if jcc(instruction, 'jna', '76')		
+	else nasm(instruction) end end	
+def jnae instruction
+	#Jump if Not Above or Equal
+	if jcc(instruction, 'jnae', '72')		
+	else nasm(instruction) end end	
+def jnb instruction
+	#Jump if Not Below
+	if jcc(instruction, 'jnb', '73')		
+	else nasm(instruction) end end	
+def jnbe instruction
+	#Jump if Not Below or Equal
+	if jcc(instruction, 'jnbe', '77')		
+	else nasm(instruction) end end		
+def jnc instruction
+	#Jump if Not Carry
+	if jcc(instruction, 'jnc', '73')		
+	else nasm(instruction) end end	
+def jne instruction
+	#Jump if Not Equal
+	if jcc(instruction, 'jne', '75')		
+	else nasm(instruction) end end	
+def jng instruction
+	#Jump if Not Greater Than
+	if jcc(instruction, 'jng', '7e')		
+	else nasm(instruction) end end	
+def jnl instruction
+	#Jump if Not Lesser Than
+	if jcc(instruction, 'jnl', '7d')		
+	else nasm(instruction) end end	
+def jnle instruction
+	#Jump if Not Lesser Than or Equal
+	if jcc(instruction, 'jnle', '7f')		
+	else nasm(instruction) end end
+def jno instruction
+	#Jump if Not Over
+	if jcc(instruction, 'jno', '71')		
+	else nasm(instruction) end end	
+def jnp instruction
+	#Jump if Not Parity
+	if jcc(instruction, 'jnp', '7b')		
+	else nasm(instruction) end end	
+def jns instruction
+	#Jump if Not Sign Flag
+	if jcc(instruction, 'jns', '79')		
+	else nasm(instruction) end end		
+def jnz instruction
+	#Jump if Not Zero
+	if jcc(instruction, 'jnz', '75')		
+	else nasm(instruction) end end	
+def jo instruction
+	#Jump if Over
+	if jcc(instruction, 'jo', '70')		
+	else nasm(instruction) end end	
+def jp instruction
+	#Jump if Parity
+	if jcc(instruction, 'jp', '7a')		
+	else nasm(instruction) end end	
+def jpe instruction
+	#Jump if Parity Even
+	if jcc(instruction, 'jpe', '7a')		
+	else nasm(instruction) end end	
+def jpo instruction
+	#Jump if Parity Odd
+	if jcc(instruction, 'jpo', '7b')		
+	else nasm(instruction) end end	
+def js instruction
+	#Jump if Sign Flag
+	if jcc(instruction, 'js', '78')		
+	else nasm(instruction) end end	
+def jz instruction
+	#Jump if Zero
+	if jcc(instruction, 'jz', '74')		
+	else nasm(instruction) end end															
 def lahf instruction
 	#Load Status Flags into AH Register
 	puts "9F                                       lahf\n\n" end
@@ -1495,7 +1635,76 @@ def modrmmodrm(instruction, op, m1, num)
 end
 
 def jcc(instruction, op, m1)
-	puts "Conditional JUMP!!!\n"
+	#GateKeeper Parse
+	if extracted = /\w+\s+-\s*(.+)$/i.match(instruction) then
+		negative = 1
+		value = extracted.captures[0]
+	elsif extracted = /\w+\s+(.+)$/i.match(instruction) then
+		negative = 0
+		value = extracted.captures[0]		
+	end
+
+	#Convert to decimal if needed
+	if /0x/i.match(value) then value = disp_to_dec(value) end
+	value = value.to_i
+
+	#Is it just out of bounds in general
+	if value > 4294967301 or (value > 2147483642 and negative == 1) then
+		puts "Value provided is out of bounds"
+		return 1
+	end
+
+	#Process with rel32, regardless if the value can fit in a byte or word (because reasons)
+	value_u = value
+	m1_u = m1
+	if negative == 0 then
+		m1 = m1.gsub(/7(.)/, '0f8\1')
+		value = value - 6
+		value = littleend(zeropad(value.to_s(16), 8))
+		instruction_alt = objdump(m1 + value)			
+		printf("%-32s %20s\n\n", m1 + value, instruction_alt)		
+	else
+		m1 = m1.gsub(/7(.)/, '0f8\1')
+		value = value + 5
+		value = 4294967295 - value
+		value = littleend(value.to_s(16))
+		instruction_alt = objdump(m1 + value)			
+		printf("%-32s %20s\n\n", m1 + value, instruction_alt)	
+	end
+
+	#Process with rel16 if possible
+	value = value_u
+	m1 = m1_u
+	if negative == 0 and value < 65541 then
+		m1 = m1.gsub(/7(.)/, '660f8\1')
+		value = value - 5
+		value = littleend(zeropad(value.to_s(16), 4))
+		instruction_alt = objdump(m1 + value)			
+		printf("%-32s %20s (WORD sized alternate)\n", m1 + value, instruction_alt)		
+	elsif negative == 1 and value < 32764 then
+		m1 = m1.gsub(/7(.)/, '660f8\1')
+		value = value + 4
+		value = 65535 - value
+		value = littleend(value.to_s(16))
+		instruction_alt = objdump(m1 + value)			
+		printf("%-32s %20s (WORD sized alternate)\n", m1 + value, instruction_alt)	
+	end	
+
+	#Process with rel8 if possible
+	value = value_u
+	m1 = m1_u
+	if negative == 0 and value < 258 then
+		value = value - 2
+		value = littleend(zeropad(value.to_s(16), 2))
+		instruction_alt = objdump(m1 + value)			
+		printf("%-32s %20s (BYTE sized alternate)\n", m1 + value, instruction_alt)		
+	elsif negative == 1 and value < 127 then
+		value = value + 1
+		value = 255 - value
+		value = littleend(value.to_s(16))
+		instruction_alt = objdump(m1 + value)			
+		printf("%-32s %20s (BYTE sized alternate)\n", m1 + value, instruction_alt)	
+	end	
 end
 
 #--------------------------------

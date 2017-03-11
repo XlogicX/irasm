@@ -16,21 +16,25 @@ OP r/m8, imm8 (adc byte [eax + ebx + 0x1337], 66)<br>
 OP r/m16, imm8 (adc word [eax + ebx + 0x1337], 0x22)<br>
 OP r/m32, imm8 (adc dword [eax + ebx + 0x1337], 0x22)<br>
 OP r/m16, imm16 (adc word [eax + ebx + 0x1337], 0x4444)<br>
-OP r/m32, imm32 (adc dword [eax + ebx + 0x1337], 0x88888888)
-
-## Remaining Formats (to call script 'public')
+OP r/m32, imm32 (adc dword [eax + ebx + 0x1337], 0x88888888)<br>
 OP r/m8, r8 (xor al, ah)<br>
 OP r/m16, r16 (xor ax, ax)<br>
 OP r/m32, r32 (xor eax, eax)<br>
 OP r8, r/m8 (xor al, ah)<br>
 OP r16, r/m16 (xor ax, ax)<br>
-OP r32, r/m32 (xor eax, eax)
+OP r32, r/m32 (xor eax, eax)<br>
+OP rel8<br>
+OP rel16<br>
+OP rel32<br>
+
+## Remaining Formats (to call script 'public')
+
 
 # Fully Supported Instructions
-aad, aam, aas, cbw, cwde, clac, clc, cld, cli, clts, cmc, cmpsb, cmpsw, cmpsd, cpuid, cwd, cdq, daa, das, emms, f2xm1, fabs, faddp, fchs, fclex, fnclex, fcompp, fcos, fdecstp, fincstp, finit, fninit, fld1, fldl2t, fldl2e, fldpi, fldlg2, fldln2, fldz, fnop, fpatan, fprem, fprem1, fptan, frndint, fscale, fsin, fsincos, fsqrt, ftst, fucompp, fxam, fxtract, fyl2x, fyl2xp1, hlt, insb, insw, insd, into, invd, iretw, iretd, iret, lahf, leave, leavew, lfence, lock, lodsb, lodsw, lodsd, mfence, monitor, movsb, movsw, movsd, mwait, nop, outsb, outsw, outsd, pause, popaw, popad, popa, popfw, popfd, popf, pushaw, pushad, pusha, pushfw, pushfd, pushf, rdmsr, rdpmc, rdtsc, rdtscp, rsm, scasb, scasw, scasd, sfence, stac, stc, std, sti, stosb, stosw, stosd, swapgs, syscall, sysenter, sysexit, sysret, ud2, fwait, wait, wbinvd, wrmsr, xgetbv, xlat, xsetbv, and xtest
+adc, aad, aam, aas, add, and, cbw, cmp cwde, clac, clc, cld, cli, clts, cmc, cmpsb, cmpsw, cmpsd, cpuid, cwd, cdq, daa, das, emms, f2xm1, fabs, faddp, fchs, fclex, fnclex, fcompp, fcos, fdecstp, fincstp, finit, fninit, fld1, fldl2t, fldl2e, fldpi, fldlg2, fldln2, fldz, fnop, fpatan, fprem, fprem1, fptan, frndint, fscale, fsin, fsincos, fsqrt, ftst, fucompp, fxam, fxtract, fyl2x, fyl2xp1, hlt, insb, insw, insd, into, invd, iretw, iretd, iret, lahf, leave, leavew, lfence, lock, lodsb, lodsw, lodsd, mfence, monitor, movsb, movsw, movsd, mwait, nop, or, outsb, outsw, outsd, pause, popaw, popad, popa, popfw, popfd, popf, pushaw, pushad, pusha, pushfw, pushfd, pushf, rdmsr, rdpmc, rdtsc, rdtscp, rsm, sbb, scasb, scasw, scasd, sfence, stac, stc, std, sti, stosb, stosw, stosd, sub, swapgs, syscall, sysenter, sysexit, sysret, test, ud2, fwait, wait, wbinvd, wrmsr, xgetbv, xlat, xor, xsetbv, and xtest
 
 # Partially Supported Instructions (only with the above instruction formats)
-adc, add, and, cmp, fcom, fcomp, fdivp, fdivrp, fmulp, fstsw ax, fnstsw ax, fsubp, fsubrp, fucom, fucomp, fxch, in, or, ret, retf, sahf, sbb, sub, test, and xor
+fcom, fcomp, fdivp, fdivrp, fmulp, fstsw ax, fnstsw ax, fsubp, fsubrp, fucom, fucomp, fxch, in, ret, retf, and sahf
 
 # Test Instructions
 The below instructions are examples that can be used to test out the functionality of irasm:<br>

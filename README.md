@@ -27,9 +27,6 @@ OP rel8<br>
 OP rel16<br>
 OP rel32<br>
 
-## Remaining Formats (to call script 'public')
-
-
 # Fully Supported Instructions
 adc, aad, aam, aas, add, and, cbw, cmp cwde, clac, clc, cld, cli, clts, cmc, cmpsb, cmpsw, cmpsd, cpuid, cwd, cdq, daa, das, emms, f2xm1, fabs, faddp, fchs, fclex, fnclex, fcompp, fcos, fdecstp, fincstp, finit, fninit, fld1, fldl2t, fldl2e, fldpi, fldlg2, fldln2, fldz, fnop, fpatan, fprem, fprem1, fptan, frndint, fscale, fsin, fsincos, fsqrt, ftst, fucompp, fxam, fxtract, fyl2x, fyl2xp1, hlt, insb, insw, insd, into, invd, iretw, iretd, iret, lahf, leave, leavew, lfence, lock, lodsb, lodsw, lodsd, mfence, monitor, movsb, movsw, movsd, mwait, nop, or, outsb, outsw, outsd, pause, popaw, popad, popa, popfw, popfd, popf, pushaw, pushad, pusha, pushfw, pushfd, pushf, rdmsr, rdpmc, rdtsc, rdtscp, rsm, sbb, scasb, scasw, scasd, sfence, stac, stc, std, sti, stosb, stosw, stosd, sub, swapgs, syscall, sysenter, sysexit, sysret, test, ud2, fwait, wait, wbinvd, wrmsr, xgetbv, xlat, xor, xsetbv, and xtest
 

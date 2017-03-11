@@ -1,6 +1,13 @@
 #!/usr/bin/ruby
 
 $debug = 0
+#--------------------------------------------
+# 	              TODO          			#
+#--------------------------------------------
+#Handle spacing/tabbing in output better
+#Cleanup function calls; some variables are passed that aren't used (due to some minor code canabalism)
+#Some input exceptions don't return to prompt; exit program instead (fix)
+#Some inputs that are just an error (even with nasm) don't gracefully return (fix)
 
 #--------------------------------------------
 # 	Process for each instruction			#
@@ -102,7 +109,9 @@ def main
 		elsif /^invd$/i.match(asm) then invd (asm)
 		elsif /^iretw$/i.match(asm) then iretw (asm)
 		elsif /^iretd?$/i.match(asm) then iret (asm)
+		elsif /^ja\s/i.match(asm) then ja (asm)			
 		elsif /^lahf$/i.match(asm) then lahf (asm)	
+		elsif /^lea/i.match(asm) then lea (asm)
 		elsif /^leave$/i.match(asm) then leave (asm)
 		elsif /^leavew$/i.match(asm) then leavew (asm)	
 		elsif /^lfence$/i.match(asm) then lfence (asm)
@@ -453,9 +462,17 @@ def iret instruction
 def iretw instruction
 	#Interrupt Return (Word)
 	puts "66CF                                     iretw\n\n" end
+def ja instruction
+	#Jump if Above
+	if jcc(instruction, 'ja', '77')		
+	else nasm(instruction) end end
 def lahf instruction
 	#Load Status Flags into AH Register
 	puts "9F                                       lahf\n\n" end
+def lea instruction
+	#lea
+	if modrmmodrm(instruction, 'lea', '8d', '0')		
+	else nasm(instruction) end end	
 def leave instruction
 	#High Level Procedure Exit
 	puts "C9                                       leave\n\n" end
@@ -1299,31 +1316,112 @@ def modrmmodrm(instruction, op, m1, num)
 
 	#Process/Convert machinecode for opcode
 	if form == 'pointer' then
-		if /^[abcds]x/i.match(reg1) then
+		if m1 == '8d' then 
+			puts "LEA can only be LEA Register, Memory Location\n"
+			return 1
+		end
+		if /^[abcds][xpi]/i.match(reg1) then
 			m1 = m1.gsub(/(.)0/i, '66\11')
 			m1 = m1.gsub(/(.)8/i, '66\19')
 			m1 = m1.gsub(/84/i, '6685')			
 		end
-		if /^e[abcds]x/i.match(reg1) then
+		if /^e[abcds][xpi]/i.match(reg1) then
 			m1 = m1.gsub(/(.)0/i, '\11')
 			m1 = m1.gsub(/(.)8/i, '\19')
 			m1 = m1.gsub(/84/i, '85')				
 		end
-	end	
-	if form == 'register' then
-		if /^[abcds]x/i.match(reg1) then
+	elsif form == 'register' then
+		if /^[abcds][xpi]/i.match(reg1) then
 			m1 = m1.gsub(/(.)0/i, '66\13')
 			m1 = m1.gsub(/(.)8/i, '66\1B')
-			m1 = m1.gsub(/84/i, '6685')				
-		elsif /^e[abcds]x/i.match(reg1) then
+			m1 = m1.gsub(/84/i, '6685')		
+			m1 = m1.gsub(/8d/i, '668d')						
+		elsif /^e[abcds][xpi]/i.match(reg1) then
 			m1 = m1.gsub(/(.)0/i, '\13')
 			m1 = m1.gsub(/(.)8/i, '\1B')
 			m1 = m1.gsub(/84/i, '85')				
 		else
+			if m1 == '8d' then 
+				puts "LEA is not 8-bit\n"
+				return 1
+			end				
 			m1 = m1.gsub(/(.)0/i, '\12')
 			m1 = m1.gsub(/(.)8/i, '\1A')				
 		end
-	end		
+	else
+		if m1 == '8d' then 
+			puts "LEA can only be LEA Register, Memory Location\n"
+			return 1
+		end		
+		m1_u = m1
+		if /^[abcds][xpi]/i.match(reg1) then
+			m1 = m1.gsub(/(.)0/i, '66\11')
+			m1 = m1.gsub(/(.)8/i, '66\19')
+			m1 = m1.gsub(/84/i, '6685')				
+		elsif /^e[abcds][xpi]/i.match(reg1) then
+			m1 = m1.gsub(/(.)0/i, '\11')
+			m1 = m1.gsub(/(.)8/i, '\19')
+			m1 = m1.gsub(/84/i, '85')				
+		end
+		#Stage ModR/M with value supplied by source register
+		modrm = 192
+		if extracted = /e?c[xl]/i.match(reg2) then modrm = modrm + 8
+		elsif extracted = /e?d[xl]/i.match(reg2) then modrm = modrm + 16
+		elsif extracted = /e?b[xl]/i.match(reg2) then modrm = modrm + 24
+		elsif extracted = /e?sp|ah/i.match(reg2) then modrm = modrm + 32
+		elsif extracted = /e?bp|ch/i.match(reg2) then modrm = modrm + 40
+		elsif extracted = /e?si|dh/i.match(reg2) then modrm = modrm + 48
+		elsif extracted = /e?di|bh/i.match(reg2) then modrm = modrm + 56
+		end
+		if extracted = /e?c[xl]/i.match(reg1) then modrm = modrm + 1
+		elsif extracted = /e?d[xl]/i.match(reg1) then modrm = modrm + 2
+		elsif extracted = /e?b[xl]/i.match(reg1) then modrm = modrm + 3
+		elsif extracted = /e?sp|ah/i.match(reg1) then modrm = modrm + 4
+		elsif extracted = /e?bp|ch/i.match(reg1) then modrm = modrm + 5
+		elsif extracted = /e?si|dh/i.match(reg1) then modrm = modrm + 6
+		elsif extracted = /e?di|bh/i.match(reg1) then modrm = modrm + 7
+		end		
+		modrm = zeropad(modrm.to_s(16), 2)
+		instruction_alt = objdump(m1 + modrm)			
+		printf("%-32s %20s\n\n", m1 + modrm, instruction_alt)				
+		sanity_check(m1 + modrm, instruction)	#See if this output matches nasms
+
+		if not /^test/i.match(instruction)
+			m1 = m1_u
+			if /^[abcds][xpi]/i.match(reg1) then
+				m1 = m1.gsub(/(.)0/i, '66\13')
+				m1 = m1.gsub(/(.)8/i, '66\1B')			
+			elsif /^e[abcds][xpi]/i.match(reg1) then
+				m1 = m1.gsub(/(.)0/i, '\13')
+				m1 = m1.gsub(/(.)8/i, '\1B')		
+			else
+				m1 = m1.gsub(/(.)0/i, '\12')
+				m1 = m1.gsub(/(.)8/i, '\1A')			
+			end
+			modrm = 192
+			if extracted = /e?c[xl]/i.match(reg1) then modrm = modrm + 8
+			elsif extracted = /e?d[xl]/i.match(reg1) then modrm = modrm + 16
+			elsif extracted = /e?b[xl]/i.match(reg1) then modrm = modrm + 24
+			elsif extracted = /e?sp|ah/i.match(reg1) then modrm = modrm + 32
+			elsif extracted = /e?bp|ch/i.match(reg1) then modrm = modrm + 40
+			elsif extracted = /e?si|dh/i.match(reg1) then modrm = modrm + 48
+			elsif extracted = /e?di|bh/i.match(reg1) then modrm = modrm + 56
+			end
+			if extracted = /e?c[xl]/i.match(reg2) then modrm = modrm + 1
+			elsif extracted = /e?d[xl]/i.match(reg2) then modrm = modrm + 2
+			elsif extracted = /e?b[xl]/i.match(reg2) then modrm = modrm + 3
+			elsif extracted = /e?sp|ah/i.match(reg2) then modrm = modrm + 4
+			elsif extracted = /e?bp|ch/i.match(reg2) then modrm = modrm + 5
+			elsif extracted = /e?si|dh/i.match(reg2) then modrm = modrm + 6
+			elsif extracted = /e?di|bh/i.match(reg2) then modrm = modrm + 7
+			end		
+			modrm = zeropad(modrm.to_s(16), 2)
+			instruction_alt = objdump(m1 + modrm)			
+			printf("%-32s %20s (The 'Other' ModR/M)\n\n", m1 + modrm, instruction_alt)
+		end
+
+		return false
+	end
 
 	###############################
 	#           PARSING           #
@@ -1394,6 +1492,10 @@ def modrmmodrm(instruction, op, m1, num)
 	modrmmodrm_pointer_alternates(reg_a, reg_b, tworegs, modrm_p, sib_p, esp_areg_p, multiplier_p, register_p, mreg_p, negative, register, offset, multiplier, mreg, m1, instruction, num, reg1)
 
 	return false
+end
+
+def jcc(instruction, op, m1)
+	puts "Conditional JUMP!!!\n"
 end
 
 #--------------------------------

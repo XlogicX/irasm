@@ -4,10 +4,8 @@ $debug = 0
 #--------------------------------------------
 # 	              TODO          			#
 #--------------------------------------------
-#Handle spacing/tabbing in output better
-#Cleanup function calls; some variables are passed that aren't used (due to some minor code canabalism)
-#Some input exceptions don't return to prompt; exit program instead (fix)
-#Some inputs that are just an error (even with nasm) don't gracefully return (fix)
+#Handle spacing/tabbing in output better (will involve printf)
+# http://www.evc-cit.info/cit020/beginning-programming/chp_04/file_printf.html
 
 #--------------------------------------------
 # 	Process for each instruction			#
@@ -239,28 +237,27 @@ def aas instruction
 	puts "3f                                       aas\n\n" end
 def adc instruction
 	#Add with Carry
-	if alimm8(instruction, 'adc', '14', '80D0')	
-	elsif aximm16(instruction, 'adc', '6615', '6681D0', '14', '80D0')
-	elsif eaximm32(instruction, 'adc', '15', '81D0', '6615', '6681D0', '14', '80D0')		
-	elsif eaximm32(instruction, 'adc', '15', '81D0', '6615', '6681D0', '14', '80D0')
+	if alimm8(instruction, '14', '80D0')	
+	elsif aximm16(instruction, '6615', '6681D0', '14')
+	elsif eaximm32(instruction, '15', '81D0', '6615', '6681D0', '14', '80D0')		
 	elsif modrm8imm(instruction, 'adc', '80', '2')
-	elsif modrmmodrm(instruction, 'adc', '10', '2')		
+	elsif modrmmodrm(instruction, '10')		
 	else nasm(instruction) end end
 def add instruction
 	#Add
-	if alimm8(instruction, 'add', '04', '80C0')
-	elsif aximm16(instruction, 'add', '6605', '6681C0', '04', '80C0')
-	elsif eaximm32(instruction, 'add', '05', '81C0', '6605', '6681C0', '04', '80C0')
+	if alimm8(instruction, '04', '80C0')
+	elsif aximm16(instruction, '6605', '6681C0', '04')
+	elsif eaximm32(instruction, '05', '81C0', '6605', '6681C0', '04', '80C0')
 	elsif modrm8imm(instruction, 'add', '80', '0')	
-	elsif modrmmodrm(instruction, 'add', '00', '0')			
+	elsif modrmmodrm(instruction, '00')			
 	else nasm(instruction) end end
 def andi instruction
 	#Logical AND
-	if alimm8_b(instruction, 'and', '25', '81E0', '6625', '6681E0', '24', '80E0')
-	elsif aximm16_b(instruction, 'and', '25', '81E0', '6625', '6681E0', '24', '80E0')
-	elsif eaximm32_b(instruction, 'and', '25', '81E0', '6625', '6681E0', '24', '80E0')
+	if alimm8_b(instruction, '25', '81E0', '6625', '6681E0', '24', '80E0')
+	elsif aximm16_b(instruction, '25', '81E0', '6625', '6681E0', '24', '80E0')
+	elsif eaximm32_b(instruction, '25', '81E0', '6625', '6681E0', '24', '80E0')
 	elsif modrm8imm(instruction, 'and', '80', '4')	
-	elsif modrmmodrm(instruction, 'and', '20', '4')			
+	elsif modrmmodrm(instruction, '20')			
 	else nasm(instruction) end end
 def cbw instruction
 	#Convert Byte to Word
@@ -288,11 +285,11 @@ def cmc instruction
 	puts "F5                                       cmc\n\n" end
 def cmp instruction
 	#Compare Two Operands
-	if alimm8_c(instruction, 'cmp', '3C', '80F8')
-	elsif aximm16_c(instruction, 'cmp', '663D', '6681F8')
-	elsif eaximm32_c(instruction, 'cmp', '3D', '81F8')
+	if alimm8_c(instruction, '3C', '80F8')
+	elsif aximm16_c(instruction, '663D', '6681F8')
+	elsif eaximm32_c(instruction, '3D', '81F8')
 	elsif modrm8imm(instruction, 'cmp', '80', '7')	
-	elsif modrmmodrm(instruction, 'cmp', '38', '7')			
+	elsif modrmmodrm(instruction, '38')			
 	else nasm(instruction) end end
 def cmpsb instruction
 	#Compare String Operands (Byte)
@@ -467,7 +464,7 @@ def hlt instruction
 	puts "F4                                       hlt\n\n" end
 def IN instruction
 	#Input from Port
-	if alimm8_d(instruction, 'adc', 'E4', 'E5')		
+	if alimm8_d(instruction, 'E4', 'E5')		
 	else nasm(instruction) end end
 def insb instruction
 	#Input from Port to String (Byte)
@@ -492,126 +489,126 @@ def iretw instruction
 	puts "66CF                                     iretw\n\n" end
 def ja instruction
 	#Jump if Above
-	if jcc(instruction, 'ja', '77')		
+	if jcc(instruction, '77')		
 	else nasm(instruction) end end
 def jae instruction
 	#Jump if Above or Equal
-	if jcc(instruction, 'jae', '73')		
+	if jcc(instruction, '73')		
 	else nasm(instruction) end end	
 def jb instruction
 	#Jump if Below
-	if jcc(instruction, 'jb', '72')		
+	if jcc(instruction, '72')		
 	else nasm(instruction) end end	
 def jbe instruction
 	#Jump if Below or Equal
-	if jcc(instruction, 'jbe', '76')		
+	if jcc(instruction, '76')		
 	else nasm(instruction) end end	
 def jc instruction
 	#Jump if Carry
-	if jcc(instruction, 'jc', '72')		
+	if jcc(instruction, '72')		
 	else nasm(instruction) end end
 def je instruction
 	#Jump if Equal
-	if jcc(instruction, 'jz', '74')		
+	if jcc(instruction, '74')		
 	else nasm(instruction) end end	
 def jg instruction
 	#Jump if Greater Than
-	if jcc(instruction, 'jg', '7f')		
+	if jcc(instruction, '7f')		
 	else nasm(instruction) end end
 def jge instruction
 	#Jump if Greater Than or Equal
-	if jcc(instruction, 'jge', '7d')		
+	if jcc(instruction, '7d')		
 	else nasm(instruction) end end	
 def jl instruction
 	#Jump if Lesser Than
-	if jcc(instruction, 'jl', '7c')		
+	if jcc(instruction, '7c')		
 	else nasm(instruction) end end	
 def jle instruction
 	#Jump if Lesser Than or Equal
-	if jcc(instruction, 'jle', '7e')		
+	if jcc(instruction, '7e')		
 	else nasm(instruction) end end		
 def jna instruction
 	#Jump if Not Above
-	if jcc(instruction, 'jna', '76')		
+	if jcc(instruction, '76')		
 	else nasm(instruction) end end	
 def jnae instruction
 	#Jump if Not Above or Equal
-	if jcc(instruction, 'jnae', '72')		
+	if jcc(instruction, '72')		
 	else nasm(instruction) end end	
 def jnb instruction
 	#Jump if Not Below
-	if jcc(instruction, 'jnb', '73')		
+	if jcc(instruction, '73')		
 	else nasm(instruction) end end	
 def jnbe instruction
 	#Jump if Not Below or Equal
-	if jcc(instruction, 'jnbe', '77')		
+	if jcc(instruction, '77')		
 	else nasm(instruction) end end		
 def jnc instruction
 	#Jump if Not Carry
-	if jcc(instruction, 'jnc', '73')		
+	if jcc(instruction, '73')		
 	else nasm(instruction) end end	
 def jne instruction
 	#Jump if Not Equal
-	if jcc(instruction, 'jne', '75')		
+	if jcc(instruction, '75')		
 	else nasm(instruction) end end	
 def jng instruction
 	#Jump if Not Greater Than
-	if jcc(instruction, 'jng', '7e')		
+	if jcc(instruction, '7e')		
 	else nasm(instruction) end end	
 def jnl instruction
 	#Jump if Not Lesser Than
-	if jcc(instruction, 'jnl', '7d')		
+	if jcc(instruction, '7d')		
 	else nasm(instruction) end end	
 def jnle instruction
 	#Jump if Not Lesser Than or Equal
-	if jcc(instruction, 'jnle', '7f')		
+	if jcc(instruction, '7f')		
 	else nasm(instruction) end end
 def jno instruction
 	#Jump if Not Over
-	if jcc(instruction, 'jno', '71')		
+	if jcc(instruction, '71')		
 	else nasm(instruction) end end	
 def jnp instruction
 	#Jump if Not Parity
-	if jcc(instruction, 'jnp', '7b')		
+	if jcc(instruction, '7b')		
 	else nasm(instruction) end end	
 def jns instruction
 	#Jump if Not Sign Flag
-	if jcc(instruction, 'jns', '79')		
+	if jcc(instruction, '79')		
 	else nasm(instruction) end end		
 def jnz instruction
 	#Jump if Not Zero
-	if jcc(instruction, 'jnz', '75')		
+	if jcc(instruction, '75')		
 	else nasm(instruction) end end	
 def jo instruction
 	#Jump if Over
-	if jcc(instruction, 'jo', '70')		
+	if jcc(instruction, '70')		
 	else nasm(instruction) end end	
 def jp instruction
 	#Jump if Parity
-	if jcc(instruction, 'jp', '7a')		
+	if jcc(instruction, '7a')		
 	else nasm(instruction) end end	
 def jpe instruction
 	#Jump if Parity Even
-	if jcc(instruction, 'jpe', '7a')		
+	if jcc(instruction, '7a')		
 	else nasm(instruction) end end	
 def jpo instruction
 	#Jump if Parity Odd
-	if jcc(instruction, 'jpo', '7b')		
+	if jcc(instruction, '7b')		
 	else nasm(instruction) end end	
 def js instruction
 	#Jump if Sign Flag
-	if jcc(instruction, 'js', '78')		
+	if jcc(instruction, '78')		
 	else nasm(instruction) end end	
 def jz instruction
 	#Jump if Zero
-	if jcc(instruction, 'jz', '74')		
+	if jcc(instruction, '74')		
 	else nasm(instruction) end end															
 def lahf instruction
 	#Load Status Flags into AH Register
 	puts "9F                                       lahf\n\n" end
 def lea instruction
 	#lea
-	if modrmmodrm(instruction, 'lea', '8d', '0')		
+	if modrmmodrm(instruction, '8d')		
 	else nasm(instruction) end end	
 def leave instruction
 	#High Level Procedure Exit
@@ -639,7 +636,7 @@ def monitor instruction
 	puts "0F01C8                                   monitor\n\n" end
 def mov instruction
 	if modrm8imm(instruction, 'mov', 'c6', '0')
-	elsif modrmmodrm(instruction, 'mov', '88', '0')			
+	elsif modrmmodrm(instruction, '88')			
 	else nasm(instruction) end end		
 def movsb instruction
 	#Move Data from String to String (Byte)
@@ -658,11 +655,11 @@ def nop instruction
 	puts "90                                       nop\n\n" end
 def OR instruction
 	#Logical Inclusive OR
-	if alimm8_e(instruction, 'or', '0D', '81C8', '660D', '6681C8', '0C', '80C8')
-	elsif aximm16_e(instruction, 'or', '0D', '81C8', '660D', '6681C8', '0C', '80C8')
-	elsif eaximm32_e(instruction, 'or', '0D', '81C8', '660D', '6681C8', '0C', '80C8')
+	if alimm8_e(instruction, '0D', '81C8', '660D', '6681C8', '0C', '80C8')
+	elsif aximm16_e(instruction, '0D', '81C8', '660D', '6681C8', '0C', '80C8')
+	elsif eaximm32_e(instruction, '0D', '81C8', '660D', '6681C8', '0C', '80C8')
 	elsif modrm8imm(instruction, 'or', '80', '1')		
-	elsif modrmmodrm(instruction, 'or', '08', '1')			
+	elsif modrmmodrm(instruction, '08')			
 	else nasm(instruction) end end
 def outsb instruction
 	#Output String to Port (Byte)
@@ -744,11 +741,11 @@ def sar instruction
 	else nasm(instruction) end end
 def sbb instruction
 	#Integer Subtraction with Borrow
-	if alimm8_e(instruction, 'sbb', '1D', '81D8', '661D', '6681D8', '1C', '80D8')
-	elsif aximm16_e(instruction, 'sbb', '1D', '81D8', '661D', '6681D8', '1C', '80D8')
-	elsif eaximm32_e(instruction, 'sbb', '1D', '81D8', '661D', '6681D8', '1C', '80D8')	
+	if alimm8_e(instruction, '1D', '81D8', '661D', '6681D8', '1C', '80D8')
+	elsif aximm16_e(instruction, '1D', '81D8', '661D', '6681D8', '1C', '80D8')
+	elsif eaximm32_e(instruction, '1D', '81D8', '661D', '6681D8', '1C', '80D8')	
 	elsif modrm8imm(instruction, 'sbb', '80', '3')	
-	elsif modrmmodrm(instruction, 'sbb', '18', '3')			
+	elsif modrmmodrm(instruction, '18')			
 	else nasm(instruction) end end
 def scasb instruction
 	#Scan String (Byte)
@@ -791,11 +788,11 @@ def stosd instruction
 	puts "AB                                       stosd\n\n" end
 def sub instruction
 	#Subtract
-	if alimm8_e(instruction, 'sub', '2D', '81E8', '662D', '6681E8', '2C', '80E8')
-	elsif aximm16_e(instruction, 'sub', '2D', '81E8', '662D', '6681E8', '2C', '80E8')
-	elsif eaximm32_e(instruction, 'sub', '2D', '81E8', '662D', '6681E8', '2C', '80E8')
+	if alimm8_e(instruction, '2D', '81E8', '662D', '6681E8', '2C', '80E8')
+	elsif aximm16_e(instruction, '2D', '81E8', '662D', '6681E8', '2C', '80E8')
+	elsif eaximm32_e(instruction, '2D', '81E8', '662D', '6681E8', '2C', '80E8')
 	elsif modrm8imm(instruction, 'sub', '80', '5')	
-	elsif modrmmodrm(instruction, 'sub', '28', '5')			
+	elsif modrmmodrm(instruction, '28')			
 	else nasm(instruction) end end
 def swapgs instruction
 	#Swap GS Base Register
@@ -814,11 +811,11 @@ def sysret instruction
 	puts "0F07                                     sysret\n\n" end
 def test instruction
 	#Logical Compare
-	if alimm8_c(instruction, 'test', 'A8', 'F6C0')
-	elsif aximm16_c(instruction, 'test', '66A9', '66F7C0')
-	elsif eaximm32_c(instruction, 'test', 'A9', 'F7C0')		
+	if alimm8_c(instruction, 'A8', 'F6C0')
+	elsif aximm16_c(instruction, '66A9', '66F7C0')
+	elsif eaximm32_c(instruction, 'A9', 'F7C0')		
 	elsif modrm8imm(instruction, 'test', 'f6', '0')	
-	elsif modrmmodrm(instruction, 'test', '84', '0')			
+	elsif modrmmodrm(instruction, '84')			
 	else nasm(instruction) end end
 def ud2 instruction
 	#Undefined Instruction
@@ -840,11 +837,11 @@ def xlat instruction
 	puts "D7                                       xlat            (BYTE PTR ds:[ebx])\n\n" end
 def xor instruction
 	#Logical Exlusive OR
-	if alimm8_c(instruction, 'xor', '34', '80F0')
-	elsif aximm16_c(instruction, 'xor', '6635', '6681F0')
-	elsif eaximm32_c(instruction, 'xor', '35', '81F0')	
+	if alimm8_c(instruction, '34', '80F0')
+	elsif aximm16_c(instruction, '6635', '6681F0')
+	elsif eaximm32_c(instruction, '35', '81F0')	
 	elsif modrm8imm(instruction, 'xor', '80', '6')	
-	elsif modrmmodrm(instruction, 'xor', '30', '6')		
+	elsif modrmmodrm(instruction, '30')		
 	else nasm(instruction) end end
 def xsetbv instruction
 	#Set Extended Control Register
@@ -865,7 +862,7 @@ def imm8 data
 	end
 	if data.to_s.length > 2
 		puts "Error, likely source operand is too large for destination"
-		exit
+		main
 	end
 	data = zeropad(data, 2)
 	return data
@@ -879,7 +876,7 @@ def imm16 data
 	end
 	if data.to_s.length > 4
 		puts "Source operand too large for destination"
-		exit
+		main
 	end
 	data = zeropad(data, 4)
 	return data
@@ -893,7 +890,7 @@ def imm32 data
 	end
 	if data.to_s.length > 8
 		puts "Source operand too large for destination"
-		exit
+		main
 	end
 	data = zeropad(data, 8)
 	return data
@@ -903,7 +900,7 @@ end
 # 	Instruction Format Subroutines			#
 #--------------------------------------------
 #null reducable [adc, aad]
-def alimm8 (instruction, op, m1, m2)	#OP AL, imm8
+def alimm8 (instruction, m1, m2)	#OP AL, imm8
 	#Where instruction is the full instruction inputted
 	#	op is the opcode (adc, xor, cmp, etc...)
 	#	m1 is the explicit machine code
@@ -920,7 +917,7 @@ def alimm8 (instruction, op, m1, m2)	#OP AL, imm8
 	end
 end
 
-def aximm16 (instruction, op, m1, m2, m3, m4)	#OP AX, imm16
+def aximm16 (instruction, m1, m2, m3)	#OP AX, imm16
 	#Where instruction is the full instruction inputted
 	#	op is the opcode (adc, xor, cmp, ec...)
 	#	m1 is the explicit machine code
@@ -944,7 +941,7 @@ def aximm16 (instruction, op, m1, m2, m3, m4)	#OP AX, imm16
 	end
 end
 
-def eaximm32 (instruction, op, m1, m2, m3, m4, m5, m6)	#OP EAX, imm32
+def eaximm32 (instruction, m1, m2, m3, m4, m5, m6)	#OP EAX, imm32
 	#Where instruction is the full instruction inputted
 	#	op is the opcode (adc, xor, cmp, ec...)
 	#	m1 is the explicit machine code
@@ -978,7 +975,7 @@ def eaximm32 (instruction, op, m1, m2, m3, m4, m5, m6)	#OP EAX, imm32
 end
 
 #0xff extendable and 0xff reducable [and]
-def alimm8_b (instruction, op, m1, m2, m3, m4, m5, m6)	#OP AL, imm8
+def alimm8_b (instruction, m1, m2, m3, m4, m5, m6)	#OP AL, imm8
 	#Where instruction is the full instruction inputted
 	#	op is the opcode (adc, xor, cmp, etc...)
 	#	m1 is the explicit machine code
@@ -1003,7 +1000,7 @@ def alimm8_b (instruction, op, m1, m2, m3, m4, m5, m6)	#OP AL, imm8
 	end
 end
 
-def aximm16_b (instruction, op, m1, m2, m3, m4, m5, m6)
+def aximm16_b (instruction, m1, m2, m3, m4, m5, m6)
 	#Where instruction is the full instruction inputted
 	#	op is the opcode (adc, xor, cmp, ec...)
 	#	m1 is the explicit machine code
@@ -1034,7 +1031,7 @@ def aximm16_b (instruction, op, m1, m2, m3, m4, m5, m6)
 	end
 end
 
-def eaximm32_b (instruction, op, m1, m2, m3, m4, m5, m6)
+def eaximm32_b (instruction, m1, m2, m3, m4, m5, m6)
 	#Where instruction is the full instruction inputted
 	#	op is the opcode (adc, xor, cmp, ec...)
 	#	m1 is the explicit machine code
@@ -1066,7 +1063,7 @@ def eaximm32_b (instruction, op, m1, m2, m3, m4, m5, m6)
 end
 
 #not extendable nor reducable [cmp, test, xor]
-def alimm8_c (instruction, op, m1, m2)	#OP AL, imm8
+def alimm8_c (instruction, m1, m2)	#OP AL, imm8
 	#Where instruction is the full instruction inputted
 	#	op is the opcode (adc, xor, cmp, etc...)
 	#	m1 is the explicit machine code
@@ -1083,7 +1080,7 @@ def alimm8_c (instruction, op, m1, m2)	#OP AL, imm8
 	end
 end
 
-def aximm16_c (instruction, op, m1, m2)
+def aximm16_c (instruction, m1, m2)
 	#Where instruction is the full instruction inputted
 	#	op is the opcode (adc, xor, cmp, ec...)
 	#	m1 is the explicit machine code
@@ -1100,7 +1097,7 @@ def aximm16_c (instruction, op, m1, m2)
 	end
 end
 
-def eaximm32_c (instruction, op, m1, m2)
+def eaximm32_c (instruction, m1, m2)
 	#Where instruction is the full instruction inputted
 	#	op is the opcode (adc, xor, cmp, ec...)
 	#	m1 is the explicit machine code
@@ -1118,7 +1115,7 @@ def eaximm32_c (instruction, op, m1, m2)
 end
 
 #not extendable nor reducable and no r/m,imm redundancy and imm is always imm8 [IN]
-def alimm8_d (instruction, op, m1, m2)	#OP AL, imm8
+def alimm8_d (instruction, m1, m2)	#OP AL, imm8
 	#Where instruction is the full instruction inputted
 	#	op is the opcode (adc, xor, cmp, etc...)
 	#	m1 is the explicit machine code for 8bit
@@ -1139,7 +1136,7 @@ def alimm8_d (instruction, op, m1, m2)	#OP AL, imm8
 end
 
 #null extendable and null reducable [or, sbb, sub]
-def alimm8_e (instruction, op, m1, m2, m3, m4, m5, m6)	#OP AL, imm8
+def alimm8_e (instruction, m1, m2, m3, m4, m5, m6)	#OP AL, imm8
 	#Where instruction is the full instruction inputted
 	#	op is the opcode (adc, xor, cmp, etc...)
 	#	m1 is the explicit machine code
@@ -1164,7 +1161,7 @@ def alimm8_e (instruction, op, m1, m2, m3, m4, m5, m6)	#OP AL, imm8
 	end
 end
 
-def aximm16_e (instruction, op, m1, m2, m3, m4, m5, m6)
+def aximm16_e (instruction, m1, m2, m3, m4, m5, m6)
 	#Where instruction is the full instruction inputted
 	#	op is the opcode (adc, xor, cmp, ec...)
 	#	m1 is the explicit machine code
@@ -1193,7 +1190,7 @@ def aximm16_e (instruction, op, m1, m2, m3, m4, m5, m6)
 	end
 end
 
-def eaximm32_e (instruction, op, m1, m2, m3, m4, m5, m6)
+def eaximm32_e (instruction, m1, m2, m3, m4, m5, m6)
 	#Where instruction is the full instruction inputted
 	#	op is the opcode (adc, xor, cmp, ec...)
 	#	m1 is the explicit machine code
@@ -1325,7 +1322,6 @@ def modrm8imm (instruction, op, m1, num)
 	if m1 == 'c0' or m1 == 'c1' or m1 == '66c1' and disp_to_dec(s_operand) > 255 then
 		puts "This instruction does not support non-byte sized source operand"
 		return 1
-		exit
 	end
 	if disp_to_dec(s_operand) > 65535 and datasize == 'dword' then
 		s_operand = littleend(imm32(s_operand))		
@@ -1377,7 +1373,7 @@ def modrm8imm (instruction, op, m1, num)
 	end
 
 	#PROCESSING
-	modrm_p, sib_p, s_operand_p, esp_areg_p, multiplier_p, register_p, mreg_p = pointer(negative, reg_a, reg_b, register, s_operand, offset, multiplier, mreg, m1, instruction, num)
+	modrm_p, sib_p, s_operand_p, esp_areg_p, multiplier_p, register_p, mreg_p = pointer(negative, reg_a, reg_b, register, s_operand, offset, multiplier, mreg, num)
 	if modrm_p == 'error' then return 1 end
 
 	#MOV and TEST
@@ -1408,7 +1404,7 @@ def modrm8imm (instruction, op, m1, num)
 	#OP R/M, 1 (Bit Shift instructions have a '1' immediate builtin to opcode)
 	if m1 == 'c0' or m1 == 'c1' or m1 == '66c1' and disp_to_dec(s_operand_u) == 1 then
 		m1 = m1.gsub(/c/i, 'd')
-		modrmimm_results_so1(multiplier_p, esp_areg_p, m1, modrm_p, s_operand_p, instruction, register_p, mreg_p, offset, sib_p)		
+		modrmimm_results_so1(multiplier_p, esp_areg_p, m1, modrm_p, instruction, register_p, mreg_p, offset, sib_p)		
 		#Standard result routine without sanity checking (as this is the alternate)
 		m1 = m1.gsub(/d/i, 'c') #Change it back
 		if multiplier_p == '0' and !esp_areg_p then printf("%-32s %20s (Explicit imm8)\n\n", m1 + modrm_p + s_operand_p, instruction)
@@ -1433,7 +1429,7 @@ def modrm8imm (instruction, op, m1, num)
 	#return 1
 end
 
-def modrmmodrm(instruction, op, m1, num)
+def modrmmodrm(instruction, m1)
 	#instruction - full unparsed instruction
 	#op - instruction name
 	#m1 - machine code for it
@@ -1608,33 +1604,16 @@ def modrmmodrm(instruction, op, m1, num)
 	end	
 
 	#POCESSING
-		#puts "negative %s" % negative
-		#puts "reg_a %s" % reg_a
-		#puts "reg_b %s" % reg_b
-		#puts "register %s" % register
-		#puts "offset %s" % offset
-		#puts "multiplier %s" % multiplier
-		#puts "mreg %s" % mreg
-		#puts "m1 %s" % m1 
-		#puts "instruction %s" % instruction
-		#puts "num %s" % num
-	modrm_p, sib_p, offset, esp_areg_p, multiplier_p, register_p, mreg_p, ebp_areg = pointer2(negative, reg_a, reg_b, register, offset, multiplier, mreg, m1, instruction, num, reg1, tworegs)
+	modrm_p, sib_p, offset, esp_areg_p, multiplier_p, register_p, mreg_p, ebp_areg = pointer2(negative, reg_a, reg_b, register, offset, multiplier, mreg, reg1, tworegs)
 	if modrm_p == 'error' then return 1 end
-		#puts "modrm_p %s" % modrm_p
-		#puts "sib_p %s" % sib_p
-		#puts "offset %s" % offset
-		#puts "esp_areg_p %s" % esp_areg_p
-		#puts "multiplier_p %s" % multiplier_p
-		#puts "regiseter_p %s" % register_p
-		#puts "mreg_p %s" % mreg_p
 
 	modrmmodrm_results(multiplier_p, esp_areg_p, m1, modrm_p, instruction, register_p, mreg_p, offset, sib_p, ebp_areg)	
-	modrmmodrm_pointer_alternates(reg_a, reg_b, tworegs, modrm_p, sib_p, esp_areg_p, multiplier_p, register_p, mreg_p, negative, register, offset, multiplier, mreg, m1, instruction, num, reg1)
+	modrmmodrm_pointer_alternates(reg_a, reg_b, tworegs, modrm_p, sib_p, esp_areg_p, multiplier_p, register_p, mreg_p, negative, register, offset, multiplier, mreg, m1, instruction, reg1)
 
 	return false
 end
 
-def jcc(instruction, op, m1)
+def jcc(instruction, m1)
 	#GateKeeper Parse
 	if extracted = /\w+\s+-\s*(.+)$/i.match(instruction) then
 		negative = 1
@@ -1777,7 +1756,7 @@ def modrmimm_results (multiplier_p, esp_areg_p, m1, modrm_p, s_operand_p, instru
 	end
 end
 
-def modrmimm_results_so1 (multiplier_p, esp_areg_p, m1, modrm_p, s_operand_p, instruction, register_p, mreg_p, offset, sib_p)		
+def modrmimm_results_so1 (multiplier_p, esp_areg_p, m1, modrm_p, instruction, register_p, mreg_p, offset, sib_p)		
 	#Source operand is 1, and is built into instruction opcode
 	if multiplier_p == '0' and !esp_areg_p then
 		instruction_alt = objdump(m1 + modrm_p)		
@@ -1847,20 +1826,20 @@ def modrmimm_pointer_alternates (reg_a, reg_b, tworegs, modrm_p, sib_p, s_operan
 	sibdoublemodrm8imm(tworegs, reg_a, reg_b, modrm_p, sib_p, offset, s_operand_p, m1, negative, s_operand)
 end
 
-def modrmmodrm_pointer_alternates (reg_a, reg_b, tworegs, modrm_p, sib_p, esp_areg_p, multiplier_p, register_p, mreg_p, negative, register, offset, multiplier, mreg, m1, instruction, num, reg1)
+def modrmmodrm_pointer_alternates (reg_a, reg_b, tworegs, modrm_p, sib_p, esp_areg_p, multiplier_p, register_p, mreg_p, negative, register, offset, multiplier, mreg, m1, instruction, reg1)
 	#Try to force commutative property
-	fcpmodrmmodrm(reg_a, reg_b, tworegs, modrm_p, sib_p, esp_areg_p, multiplier_p, register_p, mreg_p, negative, register, offset, multiplier, mreg, m1, instruction, num, reg1)
+	fcpmodrmmodrm(reg_a, reg_b, tworegs, modrm_p, sib_p, esp_areg_p, multiplier_p, register_p, mreg_p, negative, register, offset, multiplier, mreg, m1, instruction, reg1)
 	#Gratuitous disp (convert 1 byte disp to 4 byte disp)
-	disp8to32modrmmodrm(offset, negative, modrm_p, register_p, multiplier_p, mreg_p, esp_areg_p, m1, sib_p, reg1)
+	disp8to32modrmmodrm(offset, negative, modrm_p, register_p, multiplier_p, mreg_p, esp_areg_p, m1, sib_p)
 	#If there is no displacement, make a displacement of 0x00...
-	addnullmodrmmodrm(offset, modrm_p, m1, sib_p, register_p, multiplier_p, esp_areg_p, reg1)
+	addnullmodrmmodrm(offset, modrm_p, m1, sib_p, register_p, multiplier_p, esp_areg_p)
 	#Force communative property with added null disp8 (if possible)
-	addnullfcpmodrmmodrm(reg_a, reg_b, tworegs, modrm_p, sib_p, esp_areg_p, multiplier_p, register_p, mreg_p, negative, register, offset, multiplier, mreg, m1, instruction, num, reg1)
+	addnullfcpmodrmmodrm(reg_a, reg_b, tworegs, modrm_p, sib_p, esp_areg_p, multiplier_p, register_p, mreg_p, negative, register, offset, multiplier, mreg, m1, instruction, reg1)
 	#SIB Doubles (Base register must be same as scaled register at scale of 1, disp required even if zero)
 	sibdoublemodrmmodrm(tworegs, reg_a, reg_b, modrm_p, sib_p, offset, m1, negative, reg1)
 end
 
-def pointer (negative, reg_a, reg_b, register, s_operand, offset, multiplier, mreg, m1, instruction, num)
+def pointer (negative, reg_a, reg_b, register, s_operand, offset, multiplier, mreg, num)
 	#If multiplied register is scaled by 1, and there is no base register, then just use register as base
 	if mreg != '' and  multiplier == '1' and register == 'none' then 
 		register = mreg 	#base register is now the scaled register
@@ -2042,7 +2021,7 @@ def pointer (negative, reg_a, reg_b, register, s_operand, offset, multiplier, mr
 	return [modrm, sib, s_operand, esp_areg, multiplier, register, mreg]
 end
 
-def pointer2 (negative, reg_a, reg_b, register, offset, multiplier, mreg, m1, instruction, num, reg1, tworegs)
+def pointer2 (negative, reg_a, reg_b, register, offset, multiplier, mreg, reg1, tworegs)
 	#If multiplied register is scaled by 1, and there is no base register, then just use register as base
 	if mreg != '' and  multiplier == '1' and register == 'none' then 
 		register = mreg 	#base register is now the scaled register
@@ -2239,7 +2218,7 @@ def fcpmodrm8imm (reg_a, reg_b, tworegs, modrm_p, sib_p, s_operand_p, esp_areg_p
 	if reg_a != 'esp' and reg_b != 'esp' and tworegs == 1 and reg_a != reg_b then		#If it's machine possible to swap registers
 		reg_a, reg_b = reg_b, reg_a		#swapem
 		#Re-Process
-		modrm_p, sib_p, s_operand_p, esp_areg_p, multiplier_p, register_p, mreg_p = pointer(negative, reg_a, reg_b, register, s_operand, offset, multiplier, mreg, m1, instruction, num)
+		modrm_p, sib_p, s_operand_p, esp_areg_p, multiplier_p, register_p, mreg_p = pointer(negative, reg_a, reg_b, register, s_operand, offset, multiplier, mreg, num)
 		instruction_alt = objdump(m1+modrm_p+sib_p + s_operand_p)
 		printf("%-32s %20s (Forced commutative property)\n", m1 + modrm_p + sib_p + s_operand_p, instruction_alt)
 	end
@@ -2291,7 +2270,7 @@ def addnullfcpmodrm8imm (reg_a, reg_b, tworegs, modrm_p, sib_p, s_operand_p, esp
 	if reg_a != 'esp' and reg_b != 'esp' and reg_b != 'ebp' and tworegs == 1 and reg_a != reg_b and disp_to_dec(offset) == 0 then	#If it's machine possible to swap registers and there's no offset
 		reg_a, reg_b = reg_b, reg_a		#swapem
 		#Re-Process
-		modrm_p, sib_p, s_operand_p, esp_areg_p, multiplier_p, register_p, mreg_p = pointer(negative, reg_a, reg_b, register, s_operand, offset, multiplier, mreg, m1, instruction, num)
+		modrm_p, sib_p, s_operand_p, esp_areg_p, multiplier_p, register_p, mreg_p = pointer(negative, reg_a, reg_b, register, s_operand, offset, multiplier, mreg, num)
 		modrm_p = zeropad(((modrm_p.to_i(16).to_s(10)).to_i + 64).to_s(16), 2)	#modify to be disp8
 		instruction_alt = objdump(m1+modrm_p + sib_p + '00' + s_operand_p)
 		printf("%-32s %20s (Forced commutative property, Additional null disp8)\n", m1 + modrm_p + sib_p + '00' + s_operand_p, instruction_alt)
@@ -2350,7 +2329,7 @@ def fcpmodrm8imm_so1 (reg_a, reg_b, tworegs, modrm_p, sib_p, s_operand_p, esp_ar
 	if reg_a != 'esp' and reg_b != 'esp' and tworegs == 1 and reg_a != reg_b then		#If it's machine possible to swap registers
 		reg_a, reg_b = reg_b, reg_a		#swapem
 		#Re-Process
-		modrm_p, sib_p, s_operand_p, esp_areg_p, multiplier_p, register_p, mreg_p = pointer(negative, reg_a, reg_b, register, s_operand, offset, multiplier, mreg, m1, instruction, num)
+		modrm_p, sib_p, s_operand_p, esp_areg_p, multiplier_p, register_p, mreg_p = pointer(negative, reg_a, reg_b, register, s_operand, offset, multiplier, mreg, num)
 		s_operand_p = s_operand_p.gsub(/01$/i, '') #remove the ending 0x01
 		instruction_alt = objdump(m1+modrm_p+sib_p + s_operand_p)
 		printf("%-32s %20s (Forced commutative property)\n", m1 + modrm_p + sib_p + s_operand_p, instruction_alt)
@@ -2407,7 +2386,7 @@ def addnullfcpmodrm8imm_so1 (reg_a, reg_b, tworegs, modrm_p, sib_p, s_operand_p,
 	if reg_a != 'esp' and reg_b != 'esp' and reg_b != 'ebp' and tworegs == 1 and reg_a != reg_b and disp_to_dec(offset) == 0 then	#If it's machine possible to swap registers and there's no offset
 		reg_a, reg_b = reg_b, reg_a		#swapem
 		#Re-Process
-		modrm_p, sib_p, s_operand_p, esp_areg_p, multiplier_p, register_p, mreg_p = pointer(negative, reg_a, reg_b, register, s_operand, offset, multiplier, mreg, m1, instruction, num)
+		modrm_p, sib_p, s_operand_p, esp_areg_p, multiplier_p, register_p, mreg_p = pointer(negative, reg_a, reg_b, register, s_operand, offset, multiplier, mreg, num)
 		modrm_p = zeropad(((modrm_p.to_i(16).to_s(10)).to_i + 64).to_s(16), 2)	#modify to be disp8
 		s_operand_p = s_operand_p.gsub(/01$/i, '') #remove the ending 0x01
 		instruction_alt = objdump(m1+modrm_p + sib_p + '00' + s_operand_p)
@@ -2451,13 +2430,13 @@ def sibdoublemodrm8imm_so1 (tworegs, reg_a, reg_b, modrm_p, sib_p, offset, s_ope
 	end
 end
 
-def fcpmodrmmodrm (reg_a, reg_b, tworegs, modrm_p, sib_p, esp_areg_p, multiplier_p, register_p, mreg_p, negative, register, offset, multiplier, mreg, m1, instruction, num, reg1)
+def fcpmodrmmodrm (reg_a, reg_b, tworegs, modrm_p, sib_p, esp_areg_p, multiplier_p, register_p, mreg_p, negative, register, offset, multiplier, mreg, m1, instruction, reg1)
 	#Force commutative property
 	if disp_to_dec(offset) != 0 then offset = '0x' + offset end
 	if reg_a != 'esp' and reg_b != 'esp' and tworegs == 1 and reg_a != reg_b then		#If it's machine possible to swap registers
 		reg_a, reg_b = reg_b, reg_a		#swapem
 		#Re-Process
-		modrm_p, sib_p, offset, esp_areg_p, multiplier_p, register_p, mreg_p = pointer2(negative, reg_a, reg_b, register, offset, multiplier, mreg, m1, instruction, num, reg1, tworegs)
+		modrm_p, sib_p, offset, esp_areg_p, multiplier_p, register_p, mreg_p = pointer2(negative, reg_a, reg_b, register, offset, multiplier, mreg, reg1, tworegs)
 		if offset.length > 2 then offset = littleend(offset) end #make little endian if more than 1 byte
 		if reg_a == 'ebp' and disp_to_dec(offset) == 0 then
 			instruction_alt = objdump(m1+modrm_p+sib_p + '00')
@@ -2472,7 +2451,7 @@ def fcpmodrmmodrm (reg_a, reg_b, tworegs, modrm_p, sib_p, esp_areg_p, multiplier
 	end
 end
 
-def disp8to32modrmmodrm (offset, negative, modrm_p, register_p, multiplier_p, mreg_p, esp_areg_p, m1, sib_p, reg1)
+def disp8to32modrmmodrm (offset, negative, modrm_p, register_p, multiplier_p, mreg_p, esp_areg_p, m1, sib_p)
 	#Gratuitous disp (convert 1 byte disp to 4 byte disp)
 	#This routine requires disp to be in 0xhex format
 	offset = '0x' + offset	#offset is received in hex format but without 0x
@@ -2501,7 +2480,7 @@ def disp8to32modrmmodrm (offset, negative, modrm_p, register_p, multiplier_p, mr
 	end
 end
 
-def addnullmodrmmodrm (offset, modrm_p, m1, sib_p, register_p, multiplier_p, esp_areg_p, reg1)
+def addnullmodrmmodrm (offset, modrm_p, m1, sib_p, register_p, multiplier_p, esp_areg_p)
 	offset = '0x' + offset	#offset is received in hex format but without 0x
 	#If there is no displacement, make a displacement of 0x00...
 	if disp_to_dec(offset) == 0 and register_p != 'ebp' and multiplier_p != '4' and multiplier_p != '8' then	#If there's no offset and this isn't ebp register (becuase it already requires disp8)
@@ -2516,12 +2495,12 @@ def addnullmodrmmodrm (offset, modrm_p, m1, sib_p, register_p, multiplier_p, esp
 	end
 end
 
-def addnullfcpmodrmmodrm (reg_a, reg_b, tworegs, modrm_p, sib_p, esp_areg_p, multiplier_p, register_p, mreg_p, negative, register, offset, multiplier, mreg, m1, instruction, num, reg1)
+def addnullfcpmodrmmodrm (reg_a, reg_b, tworegs, modrm_p, sib_p, esp_areg_p, multiplier_p, register_p, mreg_p, negative, register, offset, multiplier, mreg, m1, instruction, reg1)
 	#Force communative property with added null disp8 (if possible)
 	if reg_a != 'esp' and reg_b != 'esp' and reg_b != 'ebp' and tworegs == 1 and reg_a != reg_b and disp_to_dec(offset) == 0 then	#If it's machine possible to swap registers and there's no offset
 		reg_a, reg_b = reg_b, reg_a		#swapem
 		#Re-Process
-		modrm_p, sib_p, offset, esp_areg_p, multiplier_p, register_p, mreg_p = pointer2(negative, reg_a, reg_b, register, offset, multiplier, mreg, m1, instruction, num, reg1, tworegs)
+		modrm_p, sib_p, offset, esp_areg_p, multiplier_p, register_p, mreg_p = pointer2(negative, reg_a, reg_b, register, offset, multiplier, mreg, reg1, tworegs)
 		modrm_p = zeropad(((modrm_p.to_i(16).to_s(10)).to_i + 64).to_s(16), 2)	#modify to be disp8
 		instruction_alt = objdump(m1+modrm_p + sib_p + '00')
 		printf("%-32s %20s (Forced commutative property, Additional null disp8)\n", m1 + modrm_p + sib_p + '00', instruction_alt)
@@ -2579,12 +2558,16 @@ def nasm (data)
 	file = File.open("tmp.asm", "w")
 	file.write("[BITS 32]\n" + data + "\n")
 	file.close
-	cmd = 'nasm -f bin tmp.asm'
-	system(cmd)
-	machine_code = `xxd -ps -g 16 tmp`
+	cmd = 'nasm -f bin tmp.asm 2>/dev/null'
+	system(cmd)	
+	machine_code = `xxd -ps -g 16 tmp 2>/dev/null`
 	machine_code = machine_code.chomp
-	puts "%s\t\t\t %s (Provided by Nasm)\n\n" % [machine_code, objdump(machine_code)]
-	system('rm tmp tmp.asm')
+	if machine_code.length > 0 then
+		puts "%s\t\t\t %s (Provided by Nasm)\n\n" % [machine_code, objdump(machine_code)]
+		system('rm tmp tmp.asm')
+	else
+		puts "There was an error with your Assembly (or I couldn't parse it)\n\n"
+	end
 end
 
 def sanity_check (code, data)

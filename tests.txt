@@ -248,6 +248,7 @@ adc byte [eax+0xfc], 88
 adc byte [eax+0xfffffffc], 88
 adc byte [eax+4294967292], 88
 
+
 Pointer Alternative Tests
 ====================
 adc byte [eax + ebx], 0x88
@@ -273,6 +274,7 @@ adc byte [ebp + ebp], 88
 adc byte [eax * 4 + 0x77], 88
 adc byte [ebp * 4 + 0x77], 88
 adc byte [ebp * 8 + 0x77], 88
+
 
 byte/d?word and all r/m, imm8 Tests:
 ==================================
@@ -347,3 +349,774 @@ or al, 88
 or ax, 0x1234
 or eax, 0x12345678
 mfence
+and ax, 0x4444
+and ax, 0xff44
+and ax, 0x44
+and eax, 0xffffff44
+and eax, 0x44444444
+and eax, 0xffff4444
+and eax, 0x4444
+and eax, 0x44
+
+Operand Size Tests (byte/word/dword)
+==================
+adc byte [eax + ebx + 0x1337], 0x01
+adc byte [eax + ebx + 0x1337], 0x0101
+adc byte [eax + ebx + 0x1337], 0x010101
+adc byte [eax + ebx + 0x1337], 0x01010101
+adc word [eax + ebx + 0x1337], 0x01
+adc word [eax + ebx + 0x1337], 0x0101
+adc word [eax + ebx + 0x1337], 0x010101
+adc word [eax + ebx + 0x1337], 0x01010101
+adc dword [eax + ebx + 0x1337], 0x01
+adc dword [eax + ebx + 0x1337], 0x0101
+adc dword [eax + ebx + 0x1337], 0x010101
+adc dword [eax + ebx + 0x1337], 0x01010101
+sar byte [eax + ebx + 0x1337], 0x02
+sar byte [eax + ebx + 0x1337], 0x0101
+sar byte [eax + ebx + 0x1337], 0x010101
+sar byte [eax + ebx + 0x1337], 0x01010101
+sar word [eax + ebx + 0x1337], 0x02
+sar word [eax + ebx + 0x1337], 0x0101
+sar word [eax + ebx + 0x1337], 0x010101
+sar word [eax + ebx + 0x1337], 0x01010101
+sar dword [eax + ebx + 0x1337], 0x02
+sar dword [eax + ebx + 0x1337], 0x0101
+sar dword [eax + ebx + 0x1337], 0x010101
+sar dword [eax + ebx + 0x1337], 0x01010101
+mov byte [eax + ebx + 0x1337], 0x02
+mov byte [eax + ebx + 0x1337], 0x0101
+mov byte [eax + ebx + 0x1337], 0x010101
+mov byte [eax + ebx + 0x1337], 0x01010101
+mov word [eax + ebx + 0x1337], 0x02
+mov word [eax + ebx + 0x1337], 0x0101
+mov word [eax + ebx + 0x1337], 0x010101
+mov word [eax + ebx + 0x1337], 0x01010101
+mov dword [eax + ebx + 0x1337], 0x02
+mov dword [eax + ebx + 0x1337], 0x0101
+mov dword [eax + ebx + 0x1337], 0x010101
+mov dword [eax + ebx + 0x1337], 0x01010101
+test byte [eax + ebx + 0x1337], 0x02
+test byte [eax + ebx + 0x1337], 0x0101
+test byte [eax + ebx + 0x1337], 0x010101
+test byte [eax + ebx + 0x1337], 0x01010101
+test word [eax + ebx + 0x1337], 0x02
+test word [eax + ebx + 0x1337], 0x0101
+test word [eax + ebx + 0x1337], 0x010101
+test word [eax + ebx + 0x1337], 0x01010101
+test dword [eax + ebx + 0x1337], 0x02
+test dword [eax + ebx + 0x1337], 0x0101
+test dword [eax + ebx + 0x1337], 0x010101
+test dword [eax + ebx + 0x1337], 0x01010101
+
+Test of bitshift instructions with '1' operand redundancy
+==================
+sar byte [eax + ebx], 1
+sar byte [eax + ebx], 0x01
+sar word [ebx + ebx], 1
+sar dword [ebp + ebp], 1
+
+Pointer tests (Modrm / Modrm):
+===============
+adc [0x01], eax
+adc [1], eax
+adc [eax - 3000000000], eax
+adc [eax - 130], eax
+adc [eax - 120], eax
+adc [eax + 120], eax
+adc [eax + 130], eax
+adc [eax + 3000000000], eax
+adc [eax], eax
+adc [esp], eax
+adc [ebp], eax
+adc [eax * 1], eax
+adc [esp * 1], eax
+adc [ebp * 1], eax
+adc [eax * 2], eax
+adc [esp * 2], eax
+adc [ebp * 2], eax
+adc [eax * 4], eax
+adc [esp * 4], eax
+adc [ebp * 4], eax
+adc [eax * 8], eax
+adc [esp * 8], eax
+adc [ebp * 8], eax
+adc [eax + eax * 1], eax
+adc [esp + eax * 1], eax
+adc [ebp + eax * 1], eax
+adc [eax + esp * 1], eax
+adc [esp + esp * 1], eax
+adc [ebp + esp * 1], eax
+adc [eax + ebp * 1], eax
+adc [esp + ebp * 1], eax
+adc [ebp + ebp * 1], eax
+adc [eax + eax], eax
+adc [esp + eax], eax
+adc [ebp + eax], eax
+adc [eax + esp], eax
+adc [esp + esp], eax
+adc [ebp + esp], eax
+adc [eax + ebp], eax
+adc [esp + ebp], eax
+adc [ebp + ebp], eax
+adc [eax + eax * 2], eax
+adc [esp + eax * 2], eax
+adc [ebp + eax * 2], eax
+adc [eax + esp * 2], eax
+adc [esp + esp * 2], eax
+adc [ebp + esp * 2], eax
+adc [eax + ebp * 2], eax
+adc [esp + ebp * 2], eax
+adc [ebp + ebp * 2], eax
+adc [eax + eax * 4], eax
+adc [esp + eax * 4], eax
+adc [ebp + eax * 4], eax
+adc [eax + esp * 4], eax
+adc [esp + esp * 4], eax
+adc [ebp + esp * 4], eax
+adc [eax + ebp * 4], eax
+adc [esp + ebp * 4], eax
+adc [ebp + ebp * 4], eax
+adc [eax + eax * 8], eax
+adc [esp + eax * 8], eax
+adc [ebp + eax * 8], eax
+adc [eax + esp * 8], eax
+adc [esp + esp * 8], eax
+adc [ebp + esp * 8], eax
+adc [eax + ebp * 8], eax
+adc [esp + ebp * 8], eax
+adc [ebp + ebp * 8], eax
+adc [eax + 0x77], eax
+adc [esp + 0x77], eax
+adc [ebp + 0x77], eax
+adc [eax + 0x13371337], eax
+adc [esp + 0x13371337], eax
+adc [ebp + 0x13371337], eax
+adc [eax + eax * 1 + 0x77], eax
+adc [esp + eax * 1 + 0x77], eax
+adc [ebp + eax * 1 + 0x77], eax
+adc [eax + esp * 1 + 0x77], eax
+adc [esp + esp * 1 + 0x77], eax
+adc [ebp + esp * 1 + 0x77], eax
+adc [eax + ebp * 1 + 0x77], eax
+adc [esp + ebp * 1 + 0x77], eax
+adc [ebp + ebp * 1 + 0x77], eax
+adc [eax + eax + 0x77], eax
+adc [esp + eax + 0x77], eax
+adc [ebp + eax + 0x77], eax
+adc [eax + esp + 0x77], eax
+adc [esp + esp + 0x77], eax
+adc [ebp + esp + 0x77], eax
+adc [eax + ebp + 0x77], eax
+adc [esp + ebp + 0x77], eax
+adc [ebp + ebp + 0x77], eax
+adc [eax + eax * 2 + 0x77], eax
+adc [esp + eax * 2 + 0x77], eax
+adc [ebp + eax * 2 + 0x77], eax
+adc [eax + esp * 2 + 0x77], eax
+adc [esp + esp * 2 + 0x77], eax
+adc [ebp + esp * 2 + 0x77], eax
+adc [eax + ebp * 2 + 0x77], eax
+adc [esp + ebp * 2 + 0x77], eax
+adc [ebp + ebp * 2 + 0x77], eax
+adc [eax + eax * 4 + 0x77], eax
+adc [esp + eax * 4 + 0x77], eax
+adc [ebp + eax * 4 + 0x77], eax
+adc [eax + esp * 4 + 0x77], eax
+adc [esp + esp * 4 + 0x77], eax
+adc [ebp + esp * 4 + 0x77], eax
+adc [eax + ebp * 4 + 0x77], eax
+adc [esp + ebp * 4 + 0x77], eax
+adc [ebp + ebp * 4 + 0x77], eax
+adc [eax + eax * 8 + 0x77], eax
+adc [esp + eax * 8 + 0x77], eax
+adc [ebp + eax * 8 + 0x77], eax
+adc [eax + esp * 8 + 0x77], eax
+adc [esp + esp * 8 + 0x77], eax
+adc [ebp + esp * 8 + 0x77], eax
+adc [eax + ebp * 8 + 0x77], eax
+adc [esp + ebp * 8 + 0x77], eax
+adc [ebp + ebp * 8 + 0x77], eax
+adc [eax + eax * 1 + 0x13371337], eax
+adc [esp + eax * 1 + 0x13371337], eax
+adc [ebp + eax * 1 + 0x13371337], eax
+adc [eax + esp * 1 + 0x13371337], eax
+adc [esp + esp * 1 + 0x13371337], eax
+adc [ebp + esp * 1 + 0x13371337], eax
+adc [eax + ebp * 1 + 0x13371337], eax
+adc [esp + ebp * 1 + 0x13371337], eax
+adc [ebp + ebp * 1 + 0x13371337], eax
+adc [eax + eax + 0x13371337], eax
+adc [esp + eax + 0x13371337], eax
+adc [ebp + eax + 0x13371337], eax
+adc [eax + esp + 0x13371337], eax
+adc [esp + esp + 0x13371337], eax
+adc [ebp + esp + 0x13371337], eax
+adc [eax + ebp + 0x13371337], eax
+adc [esp + ebp + 0x13371337], eax
+adc [ebp + ebp + 0x13371337], eax
+adc [eax + eax * 2 + 0x13371337], eax
+adc [esp + eax * 2 + 0x13371337], eax
+adc [ebp + eax * 2 + 0x13371337], eax
+adc [eax + esp * 2 + 0x13371337], eax
+adc [esp + esp * 2 + 0x13371337], eax
+adc [ebp + esp * 2 + 0x13371337], eax
+adc [eax + ebp * 2 + 0x13371337], eax
+adc [esp + ebp * 2 + 0x13371337], eax
+adc [ebp + ebp * 2 + 0x13371337], eax
+adc [eax + eax * 4 + 0x13371337], eax
+adc [esp + eax * 4 + 0x13371337], eax
+adc [ebp + eax * 4 + 0x13371337], eax
+adc [eax + esp * 4 + 0x13371337], eax
+adc [esp + esp * 4 + 0x13371337], eax
+adc [ebp + esp * 4 + 0x13371337], eax
+adc [eax + ebp * 4 + 0x13371337], eax
+adc [esp + ebp * 4 + 0x13371337], eax
+adc [ebp + ebp * 4 + 0x13371337], eax
+adc [eax + eax * 8 + 0x13371337], eax
+adc [esp + eax * 8 + 0x13371337], eax
+adc [ebp + eax * 8 + 0x13371337], eax
+adc [eax + esp * 8 + 0x13371337], eax
+adc [esp + esp * 8 + 0x13371337], eax
+adc [ebp + esp * 8 + 0x13371337], eax
+adc [eax + ebp * 8 + 0x13371337], eax
+adc [esp + ebp * 8 + 0x13371337], eax
+adc [ebp + ebp * 8 + 0x13371337], eax
+adc [eax * 1 + 0x77], eax
+adc [esp * 1 + 0x77], eax
+adc [ebp * 1 + 0x77], eax
+adc [eax * 2 + 0x77], eax
+adc [esp * 2 + 0x77], eax
+adc [ebp * 2 + 0x77], eax
+adc [eax * 4 + 0x77], eax
+adc [esp * 4 + 0x77], eax
+adc [ebp * 4 + 0x77], eax
+adc [eax * 8 + 0x77], eax
+adc [esp * 8 + 0x77], eax
+adc [ebp * 8 + 0x77], eax
+adc [eax * 1 + 0x13371337], eax
+adc [esp * 1 + 0x13371337], eax
+adc [ebp * 1 + 0x13371337], eax
+adc [eax * 2 + 0x13371337], eax
+adc [esp * 2 + 0x13371337], eax
+adc [ebp * 2 + 0x13371337], eax
+adc [eax * 4 + 0x13371337], eax
+adc [esp * 4 + 0x13371337], eax
+adc [ebp * 4 + 0x13371337], eax
+adc [eax * 8 + 0x13371337], eax
+adc [esp * 8 + 0x13371337], eax
+adc [ebp * 8 + 0x13371337], eax
+adc eax, [0x01]
+adc eax, [1]
+adc eax, [eax - 3000000000]
+adc eax, [eax - 130]
+adc eax, [eax - 120]
+adc eax, [eax + 120]
+adc eax, [eax + 130]
+adc eax, [eax + 3000000000]
+adc eax, [eax]
+adc eax, [esp]
+adc eax, [ebp]
+adc eax, [eax * 1]
+adc eax, [esp * 1]
+adc eax, [ebp * 1]
+adc eax, [eax * 2]
+adc eax, [esp * 2]
+adc eax, [ebp * 2]
+adc eax, [eax * 4]
+adc eax, [esp * 4]
+adc eax, [ebp * 4]
+adc eax, [eax * 8]
+adc eax, [esp * 8]
+adc eax, [ebp * 8]
+adc eax, [eax + eax * 1]
+adc eax, [esp + eax * 1]
+adc eax, [ebp + eax * 1]
+adc eax, [eax + esp * 1]
+adc eax, [esp + esp * 1]
+adc eax, [ebp + esp * 1]
+adc eax, [eax + ebp * 1]
+adc eax, [esp + ebp * 1]
+adc eax, [ebp + ebp * 1]
+adc eax, [eax + eax]
+adc eax, [esp + eax]
+adc eax, [ebp + eax]
+adc eax, [eax + esp]
+adc eax, [esp + esp]
+adc eax, [ebp + esp]
+adc eax, [eax + ebp]
+adc eax, [esp + ebp]
+adc eax, [ebp + ebp]
+adc eax, [eax + eax * 2]
+adc eax, [esp + eax * 2]
+adc eax, [ebp + eax * 2]
+adc eax, [eax + esp * 2]
+adc eax, [esp + esp * 2]
+adc eax, [ebp + esp * 2]
+adc eax, [eax + ebp * 2]
+adc eax, [esp + ebp * 2]
+adc eax, [ebp + ebp * 2]
+adc eax, [eax + eax * 4]
+adc eax, [esp + eax * 4]
+adc eax, [ebp + eax * 4]
+adc eax, [eax + esp * 4]
+adc eax, [esp + esp * 4]
+adc eax, [ebp + esp * 4]
+adc eax, [eax + ebp * 4]
+adc eax, [esp + ebp * 4]
+adc eax, [ebp + ebp * 4]
+adc eax, [eax + eax * 8]
+adc eax, [esp + eax * 8]
+adc eax, [ebp + eax * 8]
+adc eax, [eax + esp * 8]
+adc eax, [esp + esp * 8]
+adc eax, [ebp + esp * 8]
+adc eax, [eax + ebp * 8]
+adc eax, [esp + ebp * 8]
+adc eax, [ebp + ebp * 8]
+adc eax, [eax + 0x77]
+adc eax, [esp + 0x77]
+adc eax, [ebp + 0x77]
+adc eax, [eax + 0x13371337]
+adc eax, [esp + 0x13371337]
+adc eax, [ebp + 0x13371337]
+adc eax, [eax + eax * 1 + 0x77]
+adc eax, [esp + eax * 1 + 0x77]
+adc eax, [ebp + eax * 1 + 0x77]
+adc eax, [eax + esp * 1 + 0x77]
+adc eax, [esp + esp * 1 + 0x77]
+adc eax, [ebp + esp * 1 + 0x77]
+adc eax, [eax + ebp * 1 + 0x77]
+adc eax, [esp + ebp * 1 + 0x77]
+adc eax, [ebp + ebp * 1 + 0x77]
+adc eax, [eax + eax + 0x77]
+adc eax, [esp + eax + 0x77]
+adc eax, [ebp + eax + 0x77]
+adc eax, [eax + esp + 0x77]
+adc eax, [esp + esp + 0x77]
+adc eax, [ebp + esp + 0x77]
+adc eax, [eax + ebp + 0x77]
+adc eax, [esp + ebp + 0x77]
+adc eax, [ebp + ebp + 0x77]
+adc eax, [eax + eax * 2 + 0x77]
+adc eax, [esp + eax * 2 + 0x77]
+adc eax, [ebp + eax * 2 + 0x77]
+adc eax, [eax + esp * 2 + 0x77]
+adc eax, [esp + esp * 2 + 0x77]
+adc eax, [ebp + esp * 2 + 0x77]
+adc eax, [eax + ebp * 2 + 0x77]
+adc eax, [esp + ebp * 2 + 0x77]
+adc eax, [ebp + ebp * 2 + 0x77]
+adc eax, [eax + eax * 4 + 0x77]
+adc eax, [esp + eax * 4 + 0x77]
+adc eax, [ebp + eax * 4 + 0x77]
+adc eax, [eax + esp * 4 + 0x77]
+adc eax, [esp + esp * 4 + 0x77]
+adc eax, [ebp + esp * 4 + 0x77]
+adc eax, [eax + ebp * 4 + 0x77]
+adc eax, [esp + ebp * 4 + 0x77]
+adc eax, [ebp + ebp * 4 + 0x77]
+adc eax, [eax + eax * 8 + 0x77]
+adc eax, [esp + eax * 8 + 0x77]
+adc eax, [ebp + eax * 8 + 0x77]
+adc eax, [eax + esp * 8 + 0x77]
+adc eax, [esp + esp * 8 + 0x77]
+adc eax, [ebp + esp * 8 + 0x77]
+adc eax, [eax + ebp * 8 + 0x77]
+adc eax, [esp + ebp * 8 + 0x77]
+adc eax, [ebp + ebp * 8 + 0x77]
+adc eax, [eax + eax * 1 + 0x13371337]
+adc eax, [esp + eax * 1 + 0x13371337]
+adc eax, [ebp + eax * 1 + 0x13371337]
+adc eax, [eax + esp * 1 + 0x13371337]
+adc eax, [esp + esp * 1 + 0x13371337]
+adc eax, [ebp + esp * 1 + 0x13371337]
+adc eax, [eax + ebp * 1 + 0x13371337]
+adc eax, [esp + ebp * 1 + 0x13371337]
+adc eax, [ebp + ebp * 1 + 0x13371337]
+adc eax, [eax + eax + 0x13371337]
+adc eax, [esp + eax + 0x13371337]
+adc eax, [ebp + eax + 0x13371337]
+adc eax, [eax + esp + 0x13371337]
+adc eax, [esp + esp + 0x13371337]
+adc eax, [ebp + esp + 0x13371337]
+adc eax, [eax + ebp + 0x13371337]
+adc eax, [esp + ebp + 0x13371337]
+adc eax, [ebp + ebp + 0x13371337]
+adc eax, [eax + eax * 2 + 0x13371337]
+adc eax, [esp + eax * 2 + 0x13371337]
+adc eax, [ebp + eax * 2 + 0x13371337]
+adc eax, [eax + esp * 2 + 0x13371337]
+adc eax, [esp + esp * 2 + 0x13371337]
+adc eax, [ebp + esp * 2 + 0x13371337]
+adc eax, [eax + ebp * 2 + 0x13371337]
+adc eax, [esp + ebp * 2 + 0x13371337]
+adc eax, [ebp + ebp * 2 + 0x13371337]
+adc eax, [eax + eax * 4 + 0x13371337]
+adc eax, [esp + eax * 4 + 0x13371337]
+adc eax, [ebp + eax * 4 + 0x13371337]
+adc eax, [eax + esp * 4 + 0x13371337]
+adc eax, [esp + esp * 4 + 0x13371337]
+adc eax, [ebp + esp * 4 + 0x13371337]
+adc eax, [eax + ebp * 4 + 0x13371337]
+adc eax, [esp + ebp * 4 + 0x13371337]
+adc eax, [ebp + ebp * 4 + 0x13371337]
+adc eax, [eax + eax * 8 + 0x13371337]
+adc eax, [esp + eax * 8 + 0x13371337]
+adc eax, [ebp + eax * 8 + 0x13371337]
+adc eax, [eax + esp * 8 + 0x13371337]
+adc eax, [esp + esp * 8 + 0x13371337]
+adc eax, [ebp + esp * 8 + 0x13371337]
+adc eax, [eax + ebp * 8 + 0x13371337]
+adc eax, [esp + ebp * 8 + 0x13371337]
+adc eax, [ebp + ebp * 8 + 0x13371337]
+adc eax, [eax * 1 + 0x77]
+adc eax, [esp * 1 + 0x77]
+adc eax, [ebp * 1 + 0x77]
+adc eax, [eax * 2 + 0x77]
+adc eax, [esp * 2 + 0x77]
+adc eax, [ebp * 2 + 0x77]
+adc eax, [eax * 4 + 0x77]
+adc eax, [esp * 4 + 0x77]
+adc eax, [ebp * 4 + 0x77]
+adc eax, [eax * 8 + 0x77]
+adc eax, [esp * 8 + 0x77]
+adc eax, [ebp * 8 + 0x77]
+adc eax, [eax * 1 + 0x13371337]
+adc eax, [esp * 1 + 0x13371337]
+adc eax, [ebp * 1 + 0x13371337]
+adc eax, [eax * 2 + 0x13371337]
+adc eax, [esp * 2 + 0x13371337]
+adc eax, [ebp * 2 + 0x13371337]
+adc eax, [eax * 4 + 0x13371337]
+adc eax, [esp * 4 + 0x13371337]
+adc eax, [ebp * 4 + 0x13371337]
+adc eax, [eax * 8 + 0x13371337]
+adc eax, [esp * 8 + 0x13371337]
+adc eax, [ebp * 8 + 0x13371337]
+
+displacement tests (Modrm / Modrm):
+===============
+adc [eax - 4294967292], eax
+adc [eax - 3000000000], eax
+adc [eax - 130], eax
+adc [eax - 7], eax
+adc [eax + 7], eax
+adc [eax + 130], eax
+adc [eax + 3000000000], eax
+adc [eax - 0xfffffffc], eax
+adc [eax - 0xfc], eax
+adc [eax - 0x07], eax
+adc [eax + 0x07], eax
+adc [eax + 0xfc], eax
+adc [eax + 0xfffffffc], eax
+adc [eax + 4294967292], eax
+adc [eax -4294967292], eax
+adc [eax -3000000000], eax
+adc [eax -130], eax
+adc [eax -7], eax
+adc [eax +7], eax
+adc [eax +130], eax
+adc [eax +3000000000], eax
+adc [eax -0xfffffffc], eax
+adc [eax -0xfc], eax
+adc [eax -0x07], eax
+adc [eax +0x07], eax
+adc [eax +0xfc], eax
+adc [eax +0xfffffffc], eax
+adc [eax +4294967292], eax
+adc [eax- 4294967292], eax
+adc [eax- 3000000000], eax
+adc [eax- 130], eax
+adc [eax- 7], eax
+adc [eax+ 7], eax
+adc [eax+ 130], eax
+adc [eax+ 3000000000], eax
+adc [eax- 0xfffffffc], eax
+adc [eax- 0xfc], eax
+adc [eax- 0x07], eax
+adc [eax+ 0x07], eax
+adc [eax+ 0xfc], eax
+adc [eax+ 0xfffffffc], eax
+adc [eax+ 4294967292], eax
+adc [eax-4294967292], eax
+adc [eax-3000000000], eax
+adc [eax-130], eax
+adc [eax-7], eax
+adc [eax+7], eax
+adc [eax+130], eax
+adc [eax+3000000000], eax
+adc [eax-0xfffffffc], eax
+adc [eax-0xfc], eax
+adc [eax-0x07], eax
+adc [eax+0x07], eax
+adc [eax+0xfc], eax
+adc [eax+0xfffffffc], eax
+adc [eax+4294967292], eax
+adc eax, [eax - 4294967292]
+adc eax, [eax - 3000000000]
+adc eax, [eax - 130]
+adc eax, [eax - 7]
+adc eax, [eax + 7]
+adc eax, [eax + 130]
+adc eax, [eax + 3000000000]
+adc eax, [eax - 0xfffffffc]
+adc eax, [eax - 0xfc]
+adc eax, [eax - 0x07]
+adc eax, [eax + 0x07]
+adc eax, [eax + 0xfc]
+adc eax, [eax + 0xfffffffc]
+adc eax, [eax + 4294967292]
+adc eax, [eax -4294967292]
+adc eax, [eax -3000000000]
+adc eax, [eax -130]
+adc eax, [eax -7]
+adc eax, [eax +7]
+adc eax, [eax +130]
+adc eax, [eax +3000000000]
+adc eax, [eax -0xfffffffc]
+adc eax, [eax -0xfc]
+adc eax, [eax -0x07]
+adc eax, [eax +0x07]
+adc eax, [eax +0xfc]
+adc eax, [eax +0xfffffffc]
+adc eax, [eax +4294967292]
+adc eax, [eax- 4294967292]
+adc eax, [eax- 3000000000]
+adc eax, [eax- 130]
+adc eax, [eax- 7]
+adc eax, [eax+ 7]
+adc eax, [eax+ 130]
+adc eax, [eax+ 3000000000]
+adc eax, [eax- 0xfffffffc]
+adc eax, [eax- 0xfc]
+adc eax, [eax- 0x07]
+adc eax, [eax+ 0x07]
+adc eax, [eax+ 0xfc]
+adc eax, [eax+ 0xfffffffc]
+adc eax, [eax+ 4294967292]
+adc eax, [eax-4294967292]
+adc eax, [eax-3000000000]
+adc eax, [eax-130]
+adc eax, [eax-7]
+adc eax, [eax+7]
+adc eax, [eax+130]
+adc eax, [eax+3000000000]
+adc eax, [eax-0xfffffffc]
+adc eax, [eax-0xfc]
+adc eax, [eax-0x07]
+adc eax, [eax+0x07]
+adc eax, [eax+0xfc]
+adc eax, [eax+0xfffffffc]
+adc eax, [eax+4294967292]
+
+Pointer Alternative Tests (Modrm / Modrm):
+====================
+adc [eax + ebx], eax
+adc [esp + eax], eax
+adc [eax + ebp], eax
+adc [ebp + eax], eax
+adc [eax + esp * 2], eax
+adc [eax + 130], eax
+adc [eax - 130], eax
+adc [eax + 5], eax
+adc [eax - 5], eax
+adc [eax], eax
+adc [ebp + 0x33], eax
+adc [ebp + 0x33333333], eax
+adc [esp], eax
+adc [eax * 1], eax
+adc [eax * 4], eax
+adc [ebp * 4], eax
+adc [eax * 8], eax
+adc [ebp * 8], eax
+adc [eax + ebp], eax
+adc [ebp + ebp], eax
+adc [eax * 4 + 0x77], eax
+adc [ebp * 4 + 0x77], eax
+adc [ebp * 8 + 0x77], eax
+adc eax, [eax + ebx]
+adc eax, [esp + eax]
+adc eax, [eax + ebp]
+adc eax, [ebp + eax]
+adc eax, [eax + esp * 2]
+adc eax, [eax + 130]
+adc eax, [eax - 130]
+adc eax, [eax + 5]
+adc eax, [eax - 5]
+adc eax, [eax]
+adc eax, [ebp + 0x33]
+adc eax, [ebp + 0x33333333]
+adc eax, [esp]
+adc eax, [eax * 1]
+adc eax, [eax * 4]
+adc eax, [ebp * 4]
+adc eax, [eax * 8]
+adc eax, [ebp * 8]
+adc eax, [eax + ebp]
+adc eax, [ebp + ebp]
+adc eax, [eax * 4 + 0x77]
+adc eax, [ebp * 4 + 0x77]
+adc eax, [ebp * 8 + 0x77]
+
+byte/d?word and all r/m, imm8 Tests (Modrm / Modrm):
+==================================
+adc [eax + ebx], al
+adc [eax + ebx], ax
+adc [eax + ebx], eax
+add [eax + ebx], al
+add [eax + ebx], ax
+add [eax + ebx], eax
+and [eax + ebx], al
+and [eax + ebx], ax
+and [eax + ebx], eax
+cmp [eax + ebx], al
+cmp [eax + ebx], ax
+cmp [eax + ebx], eax
+mov [eax + ebx], al
+mov [eax + ebx], ax
+mov [eax + ebx], eax
+or [eax + ebx], al
+or [eax + ebx], ax
+or [eax + ebx], eax
+sbb [eax + ebx], al
+sbb [eax + ebx], ax
+sbb [eax + ebx], eax
+sub [eax + ebx], al
+sub [eax + ebx], ax
+sub [eax + ebx], eax
+test [eax + ebx], al
+test [eax + ebx], ax
+test [eax + ebx], eax
+xor [eax + ebx], al
+xor [eax + ebx], ax
+xor [eax + ebx], eax
+adc al, [eax + ebx]
+adc ax, [eax + ebx]
+adc eax, [eax + ebx]
+add al, [eax + ebx]
+add ax, [eax + ebx]
+add eax, [eax + ebx]
+and al, [eax + ebx]
+and ax, [eax + ebx]
+and eax, [eax + ebx]
+cmp al, [eax + ebx]
+cmp ax, [eax + ebx]
+cmp eax, [eax + ebx]
+mov al, [eax + ebx]
+mov ax, [eax + ebx]
+mov eax, [eax + ebx]
+or al, [eax + ebx]
+or ax, [eax + ebx]
+or eax, [eax + ebx]
+sbb al, [eax + ebx]
+sbb ax, [eax + ebx]
+sbb eax, [eax + ebx]
+sub al, [eax + ebx]
+sub ax, [eax + ebx]
+sub eax, [eax + ebx]
+test al, [eax + ebx]
+test ax, [eax + ebx]
+test eax, [eax + ebx]
+xor al, [eax + ebx]
+xor ax, [eax + ebx]
+xor eax, [eax + ebx]
+
+Reg,Reg and full ModRM/ModRM instruction battery
+==================
+adc bp, sp
+adc sp, si
+adc si, di
+adc di, ax
+adc [eax], al
+adc al, [eax]
+adc al, al
+adc al, bl
+adc bl, cl
+adc cl, dl
+adc dl, ch
+adc ch, ah
+adc ah, dh
+adc dh, bh
+adc bh, al
+mov [eax], eax
+mov eax, [eax]
+mov eax, eax
+mov [eax], ax
+mov ax, [eax]
+mov ax, ax
+mov [eax], al
+mov al, [eax]
+mov al, al
+test [eax], eax
+test eax, [eax]
+test eax, eax
+test [eax], ax
+test ax, [eax]
+test ax, ax
+test [eax], al
+test al, [eax]
+test al, al
+lea [eax], eax
+lea eax, [eax]
+lea eax, eax
+lea [eax], ax
+lea ax, [eax]
+lea ax, ax
+lea [eax], al
+lea al, [eax]
+lea al, al
+add eax, eax
+and eax, eax
+cmp eax, eax
+or eax, eax
+sbb eax, eax
+sub eax, eax
+xor eax, eax
+
+Jcc:
+==================
+ja 58
+jae 58
+jb 58
+jbe 58
+jc 58
+je 58
+jg 58
+jge 58
+jl 58
+jle 58
+jna 58
+jnae 58
+jnb 58
+jnbe 58
+jnc 58
+jne 58
+jng 58
+jnl 58
+jnle 58
+jno 58
+jnp 58
+jns 58
+jnz 58
+jo 58
+jp 58
+jpe 58
+jpo 58
+js 58
+jz 58
+jz 0x3a
+Jz 300
+Jz 70000
+Jz 7
+Jz 6
+Jz 5
+Jz 4
+Jz 3
+Jz 2
+Jz 1
+Jz 0
+Jz -1
+Jz -300
+Jz -70000
+Jz -0x30

@@ -40,6 +40,7 @@ def main
 		elsif /^bsf/i.match(asm) then bsf (asm)	
 		elsif /^bsr/i.match(asm) then bsr (asm)
 		elsif /^bswap/i.match(asm) then bswap (asm)			
+		elsif /^call\s/i.match(asm) then call (asm)
 		elsif /^cbw/i.match(asm) then cbw (asm)			
 		elsif /^cwde/i.match(asm) then cwde (asm)
 		elsif /^clac/i.match(asm) then clac (asm)	
@@ -48,6 +49,35 @@ def main
 		elsif /^cli/i.match(asm) then cli (asm)	
 		elsif /^clts/i.match(asm) then clts (asm)
 		elsif /^cmc/i.match(asm) then cmc (asm)	
+		elsif /^cmova\s/i.match(asm) then cmova (asm)	
+		elsif /^cmovae\s/i.match(asm) then cmovae (asm)
+		elsif /^cmovb\s/i.match(asm) then cmovb (asm)
+		elsif /^cmovbe\s/i.match(asm) then cmovbe (asm)
+		elsif /^cmovc\s/i.match(asm) then cmovc (asm)
+		elsif /^cmove\s/i.match(asm) then cmove (asm)
+		elsif /^cmovg\s/i.match(asm) then cmovg (asm)
+		elsif /^cmovge\s/i.match(asm) then cmovge (asm)
+		elsif /^cmovl\s/i.match(asm) then cmovl (asm)
+		elsif /^cmovle\s/i.match(asm) then cmovle (asm)
+		elsif /^cmovna\s/i.match(asm) then cmovna (asm)
+		elsif /^cmovnae\s/i.match(asm) then cmovnae (asm)
+		elsif /^cmovnb\s/i.match(asm) then cmovnb (asm)
+		elsif /^cmovnbe\s/i.match(asm) then cmovnbe (asm)
+		elsif /^cmovnc\s/i.match(asm) then cmovnc (asm)
+		elsif /^cmovne\s/i.match(asm) then cmovne (asm)
+		elsif /^cmovng\s/i.match(asm) then cmovng (asm)
+		elsif /^cmovnl\s/i.match(asm) then cmovnl (asm)
+		elsif /^cmovnle\s/i.match(asm) then cmovnle (asm)
+		elsif /^cmovno\s/i.match(asm) then cmovno (asm)
+		elsif /^cmovnp\s/i.match(asm) then cmovnp (asm)
+		elsif /^cmovns\s/i.match(asm) then cmovns (asm)
+		elsif /^cmovnz\s/i.match(asm) then cmovnz (asm)
+		elsif /^cmovo\s/i.match(asm) then cmovo (asm)
+		elsif /^cmovp\s/i.match(asm) then cmovp (asm)
+		elsif /^cmovpe\s/i.match(asm) then cmovpe (asm)
+		elsif /^cmovpo\s/i.match(asm) then cmovpo (asm)
+		elsif /^cmovs\s/i.match(asm) then cmovs (asm)		
+		elsif /^cmovz\s/i.match(asm) then cmovz (asm)	
 		elsif /^cmp[^sx]/i.match(asm) then cmp (asm)	
 		elsif /^cmpsb/i.match(asm) then cmpsb (asm)	
 		elsif /^cmpsw/i.match(asm) then cmpsw (asm)	
@@ -145,6 +175,7 @@ def main
 		elsif /^jpe\s/i.match(asm) then jpe (asm)
 		elsif /^jpo\s/i.match(asm) then jpo (asm)
 		elsif /^js\s/i.match(asm) then js (asm)		
+		elsif /^jmp\s/i.match(asm) then jmp (asm)
 		elsif /^jz\s/i.match(asm) then jz (asm)				
 		elsif /^lahf$/i.match(asm) then lahf (asm)	
 		elsif /^lea\s/i.match(asm) then lea (asm)
@@ -155,6 +186,9 @@ def main
 		elsif /^lodsb$/i.match(asm) then lodsb (asm)
 		elsif /^lodsw$/i.match(asm) then lodsw (asm)
 		elsif /^lodsd$/i.match(asm) then lodsd (asm)
+		elsif /^loop\s/i.match(asm) then loopx (asm)
+		elsif /^loope\s/i.match(asm) then loope (asm)
+		elsif /^loopne\s/i.match(asm) then loopne (asm)
 		elsif /^mov\s/i.match(asm) then mov (asm)			
 		elsif /^mfence$/i.match(asm) then mfence (asm)							
 		elsif /^monitor$/i.match(asm) then monitor (asm)
@@ -224,6 +258,7 @@ def main
 		elsif /^f?wait$/i.match(asm) then wait (asm)
 		elsif /^wbinvd$/i.match(asm) then wbinvd (asm)		
 		elsif /^wrmsr$/i.match(asm) then wrmsr (asm)
+		elsif /^xbegin/i.match(asm) then xbegin (asm)
 		elsif /^xchg/i.match(asm) then xchg (asm)
 		elsif /^xgetbv$/i.match(asm) then xgetbv (asm)
 		elsif /^xlat$/i.match(asm) then xlat (asm)
@@ -300,6 +335,10 @@ def bswap instruction
 	#Compare Two Operands
 	if plusreg(instruction, '0FC8')		
 	else nasm(instruction) end end
+def call instruction
+	#Transactional Begin
+	if jcc(instruction, 'E8')		
+	else nasm(instruction) end end
 def cbw instruction
 	#Convert Byte to Word
 	printf("%-34s%-15s\n\n", '6698', 'cbw')	end		
@@ -324,6 +363,122 @@ def clts instruction
 def cmc instruction
 	#Complement Carry Flag
 	printf("%-34s%-15s\n\n", 'F5', 'cmc')	end		
+def cmova instruction
+	#Move if Above
+	if modrmmodrm(instruction, '0F47')		
+	else nasm(instruction) end end
+def cmovae instruction
+	#Move if Above or Equal
+	if modrmmodrm(instruction, '0F43')		
+	else nasm(instruction) end end	
+def cmovb instruction
+	#Move if Below
+	if modrmmodrm(instruction, '0F42')		
+	else nasm(instruction) end end	
+def cmovbe instruction
+	#Move if Below or Equal
+	if modrmmodrm(instruction, '0F46')		
+	else nasm(instruction) end end	
+def cmovc instruction
+	#Move if Carry
+	if modrmmodrm(instruction, '0F42')		
+	else nasm(instruction) end end
+def cmove instruction
+	#Move if Equal
+	if modrmmodrm(instruction, '0F44')		
+	else nasm(instruction) end end	
+def cmovg instruction
+	#Move if Greater Than
+	if modrmmodrm(instruction, '0F4F')		
+	else nasm(instruction) end end
+def cmovge instruction
+	#Move if Greater Than or Equal
+	if modrmmodrm(instruction, '0F4D')		
+	else nasm(instruction) end end	
+def cmovl instruction
+	#Move if Lesser Than
+	if modrmmodrm(instruction, '0F4C')		
+	else nasm(instruction) end end	
+def cmovle instruction
+	#Move if Lesser Than or Equal
+	if modrmmodrm(instruction, '0F4E')		
+	else nasm(instruction) end end		
+def cmovna instruction
+	#Move if Not Above
+	if modrmmodrm(instruction, '0F46')		
+	else nasm(instruction) end end	
+def cmovnae instruction
+	#Move if Not Above or Equal
+	if modrmmodrm(instruction, '0F42')		
+	else nasm(instruction) end end	
+def cmovnb instruction
+	#Move if Not Below
+	if modrmmodrm(instruction, '0F43')		
+	else nasm(instruction) end end	
+def cmovnbe instruction
+	#Move if Not Below or Equal
+	if modrmmodrm(instruction, '0F47')		
+	else nasm(instruction) end end		
+def cmovnc instruction
+	#Move if Not Carry
+	if modrmmodrm(instruction, '0F43')		
+	else nasm(instruction) end end	
+def cmovne instruction
+	#Move if Not Equal
+	if modrmmodrm(instruction, '0F45')		
+	else nasm(instruction) end end	
+def cmovng instruction
+	#Move if Not Greater Than
+	if modrmmodrm(instruction, '0F4E')		
+	else nasm(instruction) end end	
+def cmovnl instruction
+	#Move if Not Lesser Than
+	if modrmmodrm(instruction, '0F4D')		
+	else nasm(instruction) end end	
+def cmovnle instruction
+	#Move if Not Lesser Than or Equal
+	if modrmmodrm(instruction, '0F4F')		
+	else nasm(instruction) end end
+def cmovno instruction
+	#Move if Not Over
+	if modrmmodrm(instruction, '0F41')		
+	else nasm(instruction) end end	
+def cmovnp instruction
+	#Move if Not Parity
+	if modrmmodrm(instruction, '0F4B')		
+	else nasm(instruction) end end	
+def cmovns instruction
+	#Move if Not Sign Flag
+	if modrmmodrm(instruction, '0F49')		
+	else nasm(instruction) end end		
+def cmovnz instruction
+	#Move if Not Zero
+	if modrmmodrm(instruction, '0F45')		
+	else nasm(instruction) end end	
+def cmovo instruction
+	#Move if Over
+	if modrmmodrm(instruction, '0F40')		
+	else nasm(instruction) end end	
+def cmovp instruction
+	#Move if Parity
+	if modrmmodrm(instruction, '0F4A')		
+	else nasm(instruction) end end	
+def cmovpe instruction
+	#Move if Parity Even
+	if modrmmodrm(instruction, '0F4A')		
+	else nasm(instruction) end end	
+def cmovpo instruction
+	#Move if Parity Odd
+	if modrmmodrm(instruction, '0F4B')		
+	else nasm(instruction) end end	
+def cmovs instruction
+	#Move if Sign Flag
+	if modrmmodrm(instruction, '0F48')		
+	else nasm(instruction) end end	
+def cmovz instruction
+	#Move if Zero
+	if modrmmodrm(instruction, '0F44')		
+	else nasm(instruction) end end															
 def cmp instruction
 	#Compare Two Operands
 	if alimm8_c(instruction, '3C', '80F8')
@@ -652,6 +807,10 @@ def js instruction
 	#Jump if Sign Flag
 	if jcc(instruction, '78')		
 	else nasm(instruction) end end	
+def jmp instruction
+	#Jump if Zero
+	if jcc(instruction, 'EB')		
+	else nasm(instruction) end end	
 def jz instruction
 	#Jump if Zero
 	if jcc(instruction, '74')		
@@ -681,6 +840,18 @@ def lodsw instruction
 def lodsd instruction
 	#Load String (Doubleword)
 	printf("%-34s%-15s\n\n", 'AD', 'lodsd') end	
+def loopx instruction
+	#Loop
+	if rel8(instruction, 'E2')		
+	else nasm(instruction) end end	
+def loope instruction
+	#Loop if Equal
+	if rel8(instruction, 'E1')		
+	else nasm(instruction) end end	
+def loopne instruction
+	#Loop if Not Equal
+	if rel8(instruction, 'E0')		
+	else nasm(instruction) end end			
 def mfence instruction
 	#Memory Fence
 	fence('mfence', '0FAE', 'F0') end
@@ -914,6 +1085,10 @@ def wbinvd instruction
 def wrmsr instruction
 	#Write to Model Specific Register
 	printf("%-34s%-15s\n\n", '0F30', 'wrmsr') end	
+def xbegin instruction
+	#Transactional Begin
+	if jcc(instruction, 'C7F8')		
+	else nasm(instruction) end end
 def xchg instruction
 	#Exchange two registers
 	if plusreg(instruction, '90')	
@@ -1659,7 +1834,7 @@ def modrmmodrm(instruction, m1)
 	end
 
 	#Kick the BSF, BSR, POPCNT, and TZCNT out if it is 8-bit
-	if m1 == '0FBC' or m1 == '0FBD' or m1 == 'F30FB8' or m1 == 'F30FBC' and not /^e?[abcds][xpi]/i.match(reg1) then
+	if m1 == '0FBC' or m1 == '0FBD' or m1 == 'F30FB8' or m1 == 'F30FBC' or /^cmov/i.match(instruction) and not /^e?[abcds][xpi]/i.match(reg1) then
 		puts "This instruction does not support 8-bit operands\n\n"
 		return 1
 	end
@@ -1676,8 +1851,8 @@ def modrmmodrm(instruction, m1)
 			puts "This instruction only supports register32, register32/pointer32 format\n\n"
 			return 1
 		end
-		#Kick out the BSF, BSR, POPCNT, and TZCNT instructions
-		if m1 == '0FBC' or m1 == '0FBD' or m1 == 'F30FB8' or m1 == 'F30FBC' then
+		#Kick out the BSF, BSR, POPCNT, TZCNT, and all conditional MOV instructions
+		if m1 == '0FBC' or m1 == '0FBD' or m1 == 'F30FB8' or m1 == 'F30FBC'  or /^cmov/i.match(instruction) then
 			puts "This instruction only supports register16_32, register16_32/pointer16_32 format\n\n"
 			return 1
 		end
@@ -1705,7 +1880,7 @@ def modrmmodrm(instruction, m1)
 			puts "This instruction doesn't support pointer for 2nd operand\n\n"
 			return 1
 		end
-		if m1 == '0FBC' or m1 == '0FBD' or m1 == 'F30FB8' or m1 == 'F30FBC' then
+		if m1 == '0FBC' or m1 == '0FBD' or m1 == 'F30FB8' or m1 == 'F30FBC' or /^cmov/i.match(instruction) then
 			if /^[abcds][xpi]/i.match(reg1) then
 				m1 = m1.gsub(/(.+)/i, '66\1')
 			end
@@ -1736,7 +1911,7 @@ def modrmmodrm(instruction, m1)
 			return 1
 		end		
 		m1_u = m1		
-		if m1 == '0FBC' or m1 == '0FBD' or m1 == 'F30FB8' or m1 == 'F30FBC' then
+		if m1 == '0FBC' or m1 == '0FBD' or m1 == 'F30FB8' or m1 == 'F30FBC' or /^cmov/i.match(instruction) then
 			if /^[abcds][xpi]/i.match(reg1) then
 				m1 = m1.gsub(/(.+)/i, '66\1')
 			end
@@ -1778,12 +1953,12 @@ def modrmmodrm(instruction, m1)
 		end		
 		modrm = zeropad(modrm.to_s(16), 2)
 		instruction_alt = objdump(m1 + modrm)			
-		if not /^test/i.match(instruction) and not m1 == '660F38F6' and not m1 == 'F30F38F6' and not m1 == '0F79' and not m1_u == '0FBC' and not m1_u == '0FBD' and not m1_u == 'F30FB8' and not m1_u == 'F30FBC' and not /^(66)?8[67]/i.match(m1)
+		if not /^test/i.match(instruction) and not m1 == '660F38F6' and not m1 == 'F30F38F6' and not m1 == '0F79' and not m1_u == '0FBC' and not m1_u == '0FBD' and not m1_u == 'F30FB8' and not m1_u == 'F30FBC' and not /^(66)?8[67]/i.match(m1) and not /^cmov/i.match(instruction)
 			printf("%-34s%-15s\n\n", m1 + modrm, instruction_alt)				
 			sanity_check(m1 + modrm, instruction)	#See if this output matches nasms
 		end
 		m1 = m1_u	
-		if m1 == '0FBC' or m1 == '0FBD' or m1 == 'F30FB8' or m1 == 'F30FBC' then
+		if m1 == '0FBC' or m1 == '0FBD' or m1 == 'F30FB8' or m1 == 'F30FBC' or /^cmov/i.match(instruction) then
 			if /^[abcds][xpi]/i.match(reg1) then
 				m1 = m1.gsub(/(.+)/i, '66\1')
 			end
@@ -1819,14 +1994,14 @@ def modrmmodrm(instruction, m1)
 		end		
 		modrm = zeropad(modrm.to_s(16), 2)
 		instruction_alt = objdump(m1 + modrm)	
-		if not /^test/i.match(instruction) and not m1 == '660F38F6' and not m1 == 'F30F38F6' and not m1 == '0F79' and not m1 == '63' and not m1_u == '0FBC' and not m1_u == '0FBD' and not m1_u == 'F30FB8' and not m1_u == 'F30FBC' and not /0FB[01]/i.match(m1) and not m1_u == '0F78' and not /^(66)?8[67]/i.match(m1)
+		if not /^test/i.match(instruction) and not m1 == '660F38F6' and not m1 == 'F30F38F6' and not m1 == '0F79' and not m1 == '63' and not m1_u == '0FBC' and not m1_u == '0FBD' and not m1_u == 'F30FB8' and not m1_u == 'F30FBC' and not /0FB[01]/i.match(m1) and not m1_u == '0F78' and not /^(66)?8[67]/i.match(m1) and not /^cmov/i.match(instruction)
 			printf("%-34s%-15s (The 'Other' ModR/M)\n\n", m1 + modrm, instruction_alt)
 		elsif not m1 == '63' and not /0FB[01]/i.match(m1) and not m1 == '0F78'
 			printf("%-34s%-15s\n\n", m1 + modrm, instruction_alt)
 			sanity_check(m1 + modrm, instruction)	#See if this output matches nasms
 		end
 
-		return false
+		return 1
 	end
 
 	###############################
@@ -1899,7 +2074,7 @@ def jcc(instruction, m1)
 
 	#Is it just out of bounds in general
 	if value > 4294967301 or (value > 2147483642 and negative == 1) then
-		puts "Value provided is out of bounds\n\n"
+		puts "Value provided is out of bounds\n"
 		return 1
 	end
 
@@ -1907,7 +2082,8 @@ def jcc(instruction, m1)
 	value_u = value
 	m1_u = m1
 	if negative == 0 then
-		m1 = m1.gsub(/7(.)/, '0F8\1')
+		m1 = m1.gsub(/^7(.)/, '0F8\1')
+		m1 = m1.gsub(/^EB/, 'E9')		
 		value = value - 6
 		if value > -1 then
 			value = littleend(zeropad(value.to_s(16), 8))
@@ -1920,10 +2096,11 @@ def jcc(instruction, m1)
 			printf("%-34s%-15s\n\n", m1 + value, instruction_alt)
 		end
 	else
-		m1 = m1.gsub(/7(.)/, '0F8\1')
+		m1 = m1.gsub(/^7(.)/, '0F8\1')
+		m1 = m1.gsub(/^EB/, 'E9')		
 		value = value + 5
 		value = 4294967295
-		value = littleend(value.to_s(16))
+		value = littleend(value.to_s(16)).upcase
 		instruction_alt = objdump(m1 + value)			
 		printf("%-34s%-15s\n\n", m1 + value, instruction_alt)	
 	end
@@ -1932,10 +2109,13 @@ def jcc(instruction, m1)
 	value = value_u
 	m1 = m1_u
 	if negative == 0 and value < 65541 then
-		m1 = m1.gsub(/7(.)/, '660F8\1')
+		m1 = m1.gsub(/C7F8/, '66C7F8')
+		m1 = m1.gsub(/^E8/, '66E8')
+		m1 = m1.gsub(/^7(.)/, '660F8\1')
+		m1 = m1.gsub(/^EB/, '66E9')		
 		value = value - 5
 		if value > -1 then		
-			value = littleend(zeropad(value.to_s(16), 4))
+			value = littleend(zeropad(value.to_s(16), 4)).upcase
 			instruction_alt = objdump(m1 + value)			
 			printf("%-34s%-15s (WORD sized alternate)\n", m1 + value, instruction_alt)
 		else
@@ -1945,36 +2125,41 @@ def jcc(instruction, m1)
 			printf("%-34s%-15s (WORD sized alternate)\n", m1 + value, instruction_alt)
 		end	
 	elsif negative == 1 and value < 32764 then
-		m1 = m1.gsub(/7(.)/, '660F8\1')
+		m1 = m1.gsub(/C7F8/, '66C7F8')	
+		m1 = m1.gsub(/^E8/, '66E8')			
+		m1 = m1.gsub(/^7(.)/, '660F8\1')
+		m1 = m1.gsub(/^EB/, '66E9')		
 		value = value + 4
 		value = 65535 - value
-		value = littleend(value.to_s(16))
+		value = littleend(value.to_s(16)).upcase
 		instruction_alt = objdump(m1 + value)			
 		printf("%-34s%-15s (WORD sized alternate)\n", m1 + value, instruction_alt)	
 	end	
 
 	#Process with rel8 if possible
-	value = value_u
-	m1 = m1_u
-	if negative == 0 and value < 258 then
-		value = value - 2
-		if value > -1 then			
-			value = littleend(zeropad(value.to_s(16), 2))
-			instruction_alt = objdump(m1 + value)			
-			printf("%-34s%-15s (BYTE sized alternate)\n", m1 + value, instruction_alt)
-		else
-			value = 255 - (value.abs - 1)
+	if not /^(xbegin|call)/i.match(instruction) then
+		value = value_u
+		m1 = m1_u
+		if negative == 0 and value < 258 then
+			value = value - 2
+			if value > -1 then			
+				value = littleend(zeropad(value.to_s(16), 2)).upcase
+				instruction_alt = objdump(m1 + value)			
+				printf("%-34s%-15s (BYTE sized alternate)\n", m1 + value, instruction_alt)
+			else
+				value = 255 - (value.abs - 1)
+				value = littleend(value.to_s(16)).upcase
+				instruction_alt = objdump(m1 + value)			
+				printf("%-34s%-15s (BYTE sized alternate)\n", m1 + value, instruction_alt)	
+			end	
+		elsif negative == 1 and value < 127 then
+			value = value + 1
+			value = 255 - value
 			value = littleend(value.to_s(16)).upcase
 			instruction_alt = objdump(m1 + value)			
 			printf("%-34s%-15s (BYTE sized alternate)\n", m1 + value, instruction_alt)	
 		end	
-	elsif negative == 1 and value < 127 then
-		value = value + 1
-		value = 255 - value
-		value = littleend(value.to_s(16))
-		instruction_alt = objdump(m1 + value)			
-		printf("%-34s%-15s (BYTE sized alternate)\n", m1 + value, instruction_alt)	
-	end	
+	end
 	puts "\n"
 	return 1
 end
@@ -2026,7 +2211,52 @@ def plusreg(instruction, m1)
 	sanity_check(m1, instruction)	#See if this output matches nasms	
 
 	return 1
+end
 
+def rel8(instruction, m1)
+	#GateKeeper Parse
+	if extracted = /\w+\s+-\s*(.+)$/i.match(instruction) then
+		negative = 1
+		value = extracted.captures[0]
+	elsif extracted = /\w+\s+(.+)$/i.match(instruction) then
+		negative = 0
+		value = extracted.captures[0]		
+	else return false end
+
+	#Convert to decimal if needed
+	if /0x/i.match(value) then value = disp_to_dec(value) end
+	value = value.to_i
+
+	#Is it just out of bounds in general
+	if value > 4294967301 or (value > 2147483642 and negative == 1) then
+		puts "Value provided is out of bounds\n"
+		return 1
+	end
+
+	#Process with rel8
+	if negative == 0 and value < 258 then
+		value = value - 2
+		if value > -1 then			
+			value = littleend(zeropad(value.to_s(16), 2)).upcase
+			instruction_alt = objdump(m1 + value)			
+			printf("%-34s%-15s\n", m1 + value, instruction_alt)
+		else
+			value = 255 - (value.abs - 1)
+			value = littleend(value.to_s(16)).upcase
+			instruction_alt = objdump(m1 + value)			
+			printf("%-34s%-15s\n", m1 + value, instruction_alt)	
+		end	
+	elsif negative == 1 and value < 127 then
+		value = value + 1
+		value = 255 - value
+		value = littleend(value.to_s(16)).upcase
+		instruction_alt = objdump(m1 + value)			
+		printf("%-34s%-15s\n", m1 + value, instruction_alt)	
+	else
+		puts "Value provided is out of bounds\n"
+	end	
+	puts "\n"
+	return 1
 end
 
 #--------------------------------
@@ -3012,6 +3242,5 @@ end
 
 main
 
-# Added OP, reg16/32 format for DEC, INC, POP, PUSH, RDRAND, RDSEED, BSWAP, and XCHG
-#	This adds dec, inc, pop, push, rdrand, rdseed, and bswap to this tool
-#	Still need the modrm redundancy for XCHG
+#Added LOOP, LOOPE, LOOPNE, XBEGIN, and CMOVs
+#Added OP, rel forms of CALL and JMP

@@ -31,9 +31,14 @@ def main
 		elsif /^aad/i.match(asm) then aad (asm)
 		elsif /^aam/i.match(asm) then aam (asm)
 		elsif /^aas/i.match(asm) then aas (asm)
-		elsif /^adc/i.match(asm) then adc (asm)
+		elsif /^adc[^x]/i.match(asm) then adc (asm)
+		elsif /^adcx/i.match(asm) then adcx (asm)			
 		elsif /^add/i.match(asm) then add (asm)	
+		elsif /^adox/i.match(asm) then adox (asm)
 		elsif /^and/i.match(asm) then andi (asm)
+		elsif /^arpl/i.match(asm) then arpl (asm)
+		elsif /^bsf/i.match(asm) then bsf (asm)	
+		elsif /^bsr/i.match(asm) then bsr (asm)
 		elsif /^cbw/i.match(asm) then cbw (asm)			
 		elsif /^cwde/i.match(asm) then cwde (asm)
 		elsif /^clac/i.match(asm) then clac (asm)	
@@ -160,7 +165,8 @@ def main
 		elsif /^outsd$/i.match(asm) then outsd (asm)			#...
 		elsif /^pause$/i.match(asm) then pause (asm)		
 		elsif /^popaw$/i.match(asm) then popaw (asm)
-		elsif /^popad?$/i.match(asm) then popa (asm)			
+		elsif /^popad?$/i.match(asm) then popa (asm)
+		elsif /^popcnt/i.match(asm) then popcnt (asm)			
 		elsif /^popfw$/i.match(asm) then popfw (asm)
 		elsif /^popfd?$/i.match(asm) then popf (asm)
 		elsif /^pushaw$/i.match(asm) then pushaw (asm)
@@ -202,7 +208,9 @@ def main
 		elsif /^sysexit/i.match(asm) then sysexit (asm)	
 		elsif /^sysret/i.match(asm) then sysret (asm)	
 		elsif /^test/i.match(asm) then test (asm)
+		elsif /^tzcnt/i.match(asm) then tzcnt (asm)
 		elsif /^ud2$/i.match(asm) then ud2 (asm)	
+		elsif /^vmwrite/i.match(asm) then vmwrite (asm)
 		elsif /^f?wait$/i.match(asm) then wait (asm)
 		elsif /^wbinvd$/i.match(asm) then wbinvd (asm)		
 		elsif /^wrmsr$/i.match(asm) then wrmsr (asm)
@@ -241,6 +249,10 @@ def adc instruction
 	elsif modrmimm(instruction, 'adc', '80', '2')
 	elsif modrmmodrm(instruction, '10')		
 	else nasm(instruction) end end
+def adcx instruction
+	#Unsigned Integer Addition of Two Operands with Cary Flag
+	if modrmmodrm(instruction, '660F38F6')		
+	else nasm(instruction) end end
 def add instruction
 	#Add
 	if alimm8(instruction, '04', '80C0')
@@ -248,6 +260,10 @@ def add instruction
 	elsif eaximm32(instruction, '05', '81C0', '83C0')
 	elsif modrmimm(instruction, 'add', '80', '0')	
 	elsif modrmmodrm(instruction, '00')			
+	else nasm(instruction) end end
+def adox instruction
+	#Unsigned Integer Addition of Two Operands with Overflow Flag
+	if modrmmodrm(instruction, 'F30F38F6')		
 	else nasm(instruction) end end
 def andi instruction
 	#Logical AND
@@ -257,6 +273,18 @@ def andi instruction
 	elsif modrmimm(instruction, 'and', '80', '4')	
 	elsif modrmmodrm(instruction, '20')			
 	else nasm(instruction) end end
+def arpl instruction
+	#Unsigned Integer Addition of Two Operands with Overflow Flag
+	if modrmmodrm(instruction, '63')		
+	else nasm(instruction) end end
+def bsf instruction
+	#Bit Scan Forward
+	if modrmmodrm(instruction, '0FBC')		
+	else nasm(instruction) end end
+def bsr instruction
+	#Bit Scan Reverse
+	if modrmmodrm(instruction, '0FBD')		
+	else nasm(instruction) end end		
 def cbw instruction
 	#Convert Byte to Word
 	printf("%-34s%-15s\n\n", '6698', 'cbw')	end		
@@ -677,6 +705,10 @@ def popaw instruction
 def popa instruction
 	#Pop All General-Purpose Registers
 	printf("%-34s%-15s\n\n", '61', instruction) end	
+def popcnt instruction
+	#Return the Count of Number of Bits set to 1
+	if modrmmodrm(instruction, 'F30FB8')		
+	else nasm(instruction) end end
 def popfw instruction
 	#Pop Stack into EFLAGS Registers (Word)
 	printf("%-34s%-15s\n\n", '669D', 'popfw') end	
@@ -815,9 +847,17 @@ def test instruction
 	elsif modrmimm(instruction, 'test', 'F6', '0')	
 	elsif modrmmodrm(instruction, '84')			
 	else nasm(instruction) end end
+def tzcnt instruction
+	#Count the number of trailing zero bits
+	if modrmmodrm(instruction, 'F30FBC')		
+	else nasm(instruction) end end
 def ud2 instruction
 	#Undefined Instruction
 	printf("%-34s%-15s\n\n", '0F0B', 'ud2') end	
+def vmwrite instruction
+	#VMWrite
+	if modrmmodrm(instruction, '0F79')		
+	else nasm(instruction) end end
 def wait instruction
 	#Wait
 	printf("%-34s%-15s\n\n", '9B', 'wait') end	
@@ -1554,12 +1594,41 @@ def modrmmodrm(instruction, m1)
 	#Remove gratuitus byte/word/dword declaration, it is implied by operand
 	instruction = instruction.gsub(/\s*(byte|word|dword)\s*/,' ')
 
+	#Kick the ADCX, ADOX, and VMWRITE instructions out if it's not 32-bit
+	if m1 == '660F38F6' or m1 == 'F30F38F6'  or m1 == '0F79' and not /^e[abcds][xpi]/i.match(reg1) then
+		puts "This instruction only supports 32bit operands\n\n"
+		return 1
+	end
+
+	#Kick the ARPL instruction out if it's not 16-bit
+	if m1 == '63' and not /^[abcds][xpi]/i.match(reg1) then
+		puts "This instruction only supports 16bit operands\n\n"
+		return 1
+	end
+
+	#Kick the BSF, BSR, POPCNT, and TZCNT out if it is 8-bit
+	if m1 == '0FBC' or m1 == '0FBD' or m1 == 'F30FB8' or m1 == 'F30FBC' and not /^e?[abcds][xpi]/i.match(reg1) then
+		puts "This instruction does not support 8-bit operands\n\n"
+		return 1
+	end
+
 	#Process/Convert machinecode for opcode
 	if form == 'pointer' then
+		#Kick out the LEA Instructions
 		if m1 == '8D' then 
 			puts "LEA can only be LEA Register, Memory Location\n\n"
 			return 1
 		end
+		#Kick out the ADCX, ADOX, and VMWRITE instructions
+		if m1 == '660F38F6' or m1 == 'F30F38F6'  or m1 == '0F79' then
+			puts "This instruction only supports register32, register32/pointer32 format\n\n"
+			return 1
+		end
+		#Kick out the BSF, BSR, POPCNT, and TZCNT instructions
+		if m1 == '0FBC' or m1 == '0FBD' or m1 == 'F30FB8' or m1 == 'F30FBC' then
+			puts "This instruction only supports register16_32, register16_32/pointer16_32 format\n\n"
+			return 1
+		end		
 		if /^[abcds][xpi]/i.match(reg1) then
 			m1 = m1.gsub(/(.)0/i, '66\11')
 			m1 = m1.gsub(/(.)8/i, '66\19')
@@ -1571,37 +1640,52 @@ def modrmmodrm(instruction, m1)
 			m1 = m1.gsub(/84/i, '85')				
 		end
 	elsif form == 'register' then
+		if m1 == '63' then
+			puts "This instruction only supports register16/pointer16, register16 format\n\n"
+			return 1
+		end
+		if m1 == '0FBC' or m1 == '0FBD' or m1 == 'F30FB8' or m1 == 'F30FBC' then
+			if /^[abcds][xpi]/i.match(reg1) then
+				m1 = m1.gsub(/(.+)/i, '66\1')
+			end
+		end				
 		if /^[abcds][xpi]/i.match(reg1) then
-			m1 = m1.gsub(/(.)0/i, '66\13')
-			m1 = m1.gsub(/(.)8/i, '66\1B')
-			m1 = m1.gsub(/84/i, '6685')		
-			m1 = m1.gsub(/8D/i, '668D')						
+			m1 = m1.gsub(/^(.)0/i, '66\13')
+			m1 = m1.gsub(/^(.)8/i, '66\1B')
+			m1 = m1.gsub(/^84/i, '6685')		
+			m1 = m1.gsub(/^8D/i, '668D')						
 		elsif /^e[abcds][xpi]/i.match(reg1) then
-			m1 = m1.gsub(/(.)0/i, '\13')
-			m1 = m1.gsub(/(.)8/i, '\1B')
-			m1 = m1.gsub(/84/i, '85')				
+			m1 = m1.gsub(/^(.)0/i, '\13')
+			m1 = m1.gsub(/^(.)8/i, '\1B')
+			m1 = m1.gsub(/^84/i, '85')				
 		else
 			if m1 == '8D' then 
 				puts "LEA is not 8-bit\n"
 				return 1
 			end				
-			m1 = m1.gsub(/(.)0/i, '\12')
-			m1 = m1.gsub(/(.)8/i, '\1A')				
+			m1 = m1.gsub(/^(.)0/i, '\12')
+			m1 = m1.gsub(/^(.)8/i, '\1A')				
 		end
-	else
+	else	#It's 2 registers
+		#Kick out the LEA instructions
 		if m1 == '8D' then 
 			puts "LEA can only be LEA Register, Memory Location\n\n"
 			return 1
 		end		
-		m1_u = m1
+		m1_u = m1		
+		if m1 == '0FBC' or m1 == '0FBD' or m1 == 'F30FB8' or m1 == 'F30FBC' then
+			if /^[abcds][xpi]/i.match(reg1) then
+				m1 = m1.gsub(/(.+)/i, '66\1')
+			end
+		end			
 		if /^[abcds][xpi]/i.match(reg1) then
-			m1 = m1.gsub(/(.)0/i, '66\11')
-			m1 = m1.gsub(/(.)8/i, '66\19')
-			m1 = m1.gsub(/84/i, '6685')				
+			m1 = m1.gsub(/^(.)0/i, '66\11')
+			m1 = m1.gsub(/^(.)8/i, '66\19')
+			m1 = m1.gsub(/^84/i, '6685')				
 		elsif /^e[abcds][xpi]/i.match(reg1) then
-			m1 = m1.gsub(/(.)0/i, '\11')
-			m1 = m1.gsub(/(.)8/i, '\19')
-			m1 = m1.gsub(/84/i, '85')				
+			m1 = m1.gsub(/^(.)0/i, '\11')
+			m1 = m1.gsub(/^(.)8/i, '\19')
+			m1 = m1.gsub(/^84/i, '85')				
 		end
 		#Stage ModR/M with value supplied by source register
 		modrm = 192
@@ -1623,44 +1707,53 @@ def modrmmodrm(instruction, m1)
 		end		
 		modrm = zeropad(modrm.to_s(16), 2)
 		instruction_alt = objdump(m1 + modrm)			
-		printf("%-34s%-15s\n\n", m1 + modrm, instruction_alt)				
-		sanity_check(m1 + modrm, instruction)	#See if this output matches nasms
-
-		if not /^test/i.match(instruction)
-			m1 = m1_u
+		if not /^test/i.match(instruction) and not m1 == '660F38F6' and not m1 == 'F30F38F6' and not m1 == '0F79' and not m1_u == '0FBC' and not m1_u == '0FBD' and not m1_u == 'F30FB8' and not m1_u == 'F30FBC'
+			printf("%-34s%-15s\n\n", m1 + modrm, instruction_alt)				
+			sanity_check(m1 + modrm, instruction)	#See if this output matches nasms
+		end
+		m1 = m1_u	
+		if m1 == '0FBC' or m1 == '0FBD' or m1 == 'F30FB8' or m1 == 'F30FBC' then
 			if /^[abcds][xpi]/i.match(reg1) then
-				m1 = m1.gsub(/(.)0/i, '66\13')
-				m1 = m1.gsub(/(.)8/i, '66\1B')			
-			elsif /^e[abcds][xpi]/i.match(reg1) then
-				m1 = m1.gsub(/(.)0/i, '\13')
-				m1 = m1.gsub(/(.)8/i, '\1B')		
-			else
-				m1 = m1.gsub(/(.)0/i, '\12')
-				m1 = m1.gsub(/(.)8/i, '\1A')			
+				m1 = m1.gsub(/(.+)/i, '66\1')
 			end
-			modrm = 192
-			if extracted = /e?c[xl]/i.match(reg1) then modrm = modrm + 8
-			elsif extracted = /e?d[xl]/i.match(reg1) then modrm = modrm + 16
-			elsif extracted = /e?b[xl]/i.match(reg1) then modrm = modrm + 24
-			elsif extracted = /e?sp|ah/i.match(reg1) then modrm = modrm + 32
-			elsif extracted = /e?bp|ch/i.match(reg1) then modrm = modrm + 40
-			elsif extracted = /e?si|dh/i.match(reg1) then modrm = modrm + 48
-			elsif extracted = /e?di|bh/i.match(reg1) then modrm = modrm + 56
-			end
-			if extracted = /e?c[xl]/i.match(reg2) then modrm = modrm + 1
-			elsif extracted = /e?d[xl]/i.match(reg2) then modrm = modrm + 2
-			elsif extracted = /e?b[xl]/i.match(reg2) then modrm = modrm + 3
-			elsif extracted = /e?sp|ah/i.match(reg2) then modrm = modrm + 4
-			elsif extracted = /e?bp|ch/i.match(reg2) then modrm = modrm + 5
-			elsif extracted = /e?si|dh/i.match(reg2) then modrm = modrm + 6
-			elsif extracted = /e?di|bh/i.match(reg2) then modrm = modrm + 7
-			end		
-			modrm = zeropad(modrm.to_s(16), 2)
-			instruction_alt = objdump(m1 + modrm)			
+		end					
+		if /^[abcds][xpi]/i.match(reg1) then
+			m1 = m1.gsub(/^(.)0/i, '66\13')
+			m1 = m1.gsub(/^(.)8/i, '66\1B')			
+		elsif /^e[abcds][xpi]/i.match(reg1) then
+			m1 = m1.gsub(/^(.)0/i, '\13')
+			m1 = m1.gsub(/^(.)8/i, '\1B')		
+		else
+			m1 = m1.gsub(/^(.)0/i, '\12')
+			m1 = m1.gsub(/^(.)8/i, '\1A')			
+		end	
+		modrm = 192
+		if extracted = /e?c[xl]/i.match(reg1) then modrm = modrm + 8
+		elsif extracted = /e?d[xl]/i.match(reg1) then modrm = modrm + 16
+		elsif extracted = /e?b[xl]/i.match(reg1) then modrm = modrm + 24
+		elsif extracted = /e?sp|ah/i.match(reg1) then modrm = modrm + 32
+		elsif extracted = /e?bp|ch/i.match(reg1) then modrm = modrm + 40
+		elsif extracted = /e?si|dh/i.match(reg1) then modrm = modrm + 48
+		elsif extracted = /e?di|bh/i.match(reg1) then modrm = modrm + 56
+		end
+		if extracted = /e?c[xl]/i.match(reg2) then modrm = modrm + 1
+		elsif extracted = /e?d[xl]/i.match(reg2) then modrm = modrm + 2
+		elsif extracted = /e?b[xl]/i.match(reg2) then modrm = modrm + 3
+		elsif extracted = /e?sp|ah/i.match(reg2) then modrm = modrm + 4
+		elsif extracted = /e?bp|ch/i.match(reg2) then modrm = modrm + 5
+		elsif extracted = /e?si|dh/i.match(reg2) then modrm = modrm + 6
+		elsif extracted = /e?di|bh/i.match(reg2) then modrm = modrm + 7
+		end		
+		modrm = zeropad(modrm.to_s(16), 2)
+		instruction_alt = objdump(m1 + modrm)	
+		if not /^test/i.match(instruction) and not m1 == '660F38F6' and not m1 == 'F30F38F6' and not m1 == '0F79' and not m1 == '63' and not m1_u == '0FBC' and not m1_u == '0FBD' and not m1_u == 'F30FB8' and not m1_u == 'F30FBC'
 			printf("%-34s%-15s (The 'Other' ModR/M)\n\n", m1 + modrm, instruction_alt)
+		elsif not m1 == '63'
+			printf("%-34s%-15s\n\n", m1 + modrm, instruction_alt)
+			sanity_check(m1 + modrm, instruction)	#See if this output matches nasms
 		end
 
-		return 1
+		return false
 	end
 
 	###############################
@@ -2753,17 +2846,22 @@ def nasm (data)
 end
 
 def sanity_check (code, data)
-	file = File.open("tmp.asm", "w")
-	file.write("[BITS 32]\n" + data + "\n")
-	file.close
-	cmd = 'nasm -f bin tmp.asm'
-	system(cmd)
-	machine_code = `xxd -ps -g 16 tmp`
-	machine_code = machine_code.chomp
-	if machine_code.upcase != code.upcase then
-		puts "My output doesn't match that of nasm, something may be wrong here\n\n"
+	cmd = `nasm -v 2> /dev/null`
+	if /nasm\s+version/i.match(cmd) then
+		file = File.open("tmp.asm", "w")
+		file.write("[BITS 32]\n" + data + "\n")
+		file.close
+		cmd = 'nasm -f bin tmp.asm 2>/dev/null'
+		system(cmd)
+		machine_code = `xxd -ps -g 16 tmp 2>/dev/null`
+		machine_code = machine_code.chomp
+		if machine_code.length > 0 then
+			if machine_code.upcase != code.upcase then
+				puts "My output doesn't match that of nasm, something may be wrong here\n\n"
+			end
+			system('rm tmp tmp.asm 2>/dev/null')
+		end
 	end
-	system('rm tmp tmp.asm')
 end
 
 def objdump (data)
@@ -2790,3 +2888,11 @@ def objdump (data)
 end
 
 main
+
+# Added support for ADCX, ADOX, and VMWRITE (r32, m32/r32)
+# Added support for ARPL (m16/r16, r16)
+# Kind of added BSF, BSR, POPCNT, and TZCNT, but there's an issue with only OP r, r/m instructions
+#	OP r, r/m instructions use the 'Other Mod/RM' format, and do not use the same format as the default.
+#ADCX, ADOX, BSF, BSR, POPCNT, TZCNT, VMWRITE
+#16 Bit too: BSF, BSR, POPCNT, TZCNT
+#	0FBC, 0FBD, F30FB8, F30FBC

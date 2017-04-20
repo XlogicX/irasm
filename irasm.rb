@@ -39,6 +39,7 @@ def main
 		elsif /^arpl/i.match(asm) then arpl (asm)
 		elsif /^bsf/i.match(asm) then bsf (asm)	
 		elsif /^bsr/i.match(asm) then bsr (asm)
+		elsif /^bswap/i.match(asm) then bswap (asm)			
 		elsif /^cbw/i.match(asm) then cbw (asm)			
 		elsif /^cwde/i.match(asm) then cwde (asm)
 		elsif /^clac/i.match(asm) then clac (asm)	
@@ -47,15 +48,17 @@ def main
 		elsif /^cli/i.match(asm) then cli (asm)	
 		elsif /^clts/i.match(asm) then clts (asm)
 		elsif /^cmc/i.match(asm) then cmc (asm)	
-		elsif /^cmp[^s]/i.match(asm) then cmp (asm)	
+		elsif /^cmp[^sx]/i.match(asm) then cmp (asm)	
 		elsif /^cmpsb/i.match(asm) then cmpsb (asm)	
 		elsif /^cmpsw/i.match(asm) then cmpsw (asm)	
-		elsif /^cmpsd/i.match(asm) then cmpsd (asm)			
+		elsif /^cmpsd/i.match(asm) then cmpsd (asm)	
+		elsif /^cmpxchg/i.match(asm) then cmpxchg (asm)					
 		elsif /^cpuid/i.match(asm) then cpuid (asm)	
 		elsif /^cwd/i.match(asm) then cwd (asm)
 		elsif /^cdq/i.match(asm) then cdq (asm)			
 		elsif /^daa/i.match(asm) then daa (asm)	
 		elsif /^das/i.match(asm) then das (asm)	
+		elsif /^dec/i.match(asm) then dec (asm)				
 		elsif /^emms/i.match(asm) then emms (asm)
 		elsif /^f2xm1/i.match(asm) then f2xm1 (asm)	
 		elsif /^fabs/i.match(asm) then fabs (asm)	
@@ -106,6 +109,7 @@ def main
 		elsif /^fyl2xp1$/i.match(asm) then fyl2xp1 (asm)
 		elsif /^hlt$/i.match(asm) then hlt (asm)	
 		elsif /^in\s/i.match(asm) then IN (asm)
+		elsif /^inc\s/i.match(asm) then inc (asm)			
 		elsif /^insb$/i.match(asm) then insb (asm)
 		elsif /^insw$/i.match(asm) then insw (asm)
 		elsif /^insd$/i.match(asm) then insd (asm)
@@ -164,11 +168,14 @@ def main
 		elsif /^outsw$/i.match(asm) then outsw (asm)			#...
 		elsif /^outsd$/i.match(asm) then outsd (asm)			#...
 		elsif /^pause$/i.match(asm) then pause (asm)		
+		elsif /^pop\s/i.match(asm) then pop (asm)
 		elsif /^popaw$/i.match(asm) then popaw (asm)
 		elsif /^popad?$/i.match(asm) then popa (asm)
 		elsif /^popcnt/i.match(asm) then popcnt (asm)			
 		elsif /^popfw$/i.match(asm) then popfw (asm)
 		elsif /^popfd?$/i.match(asm) then popf (asm)
+		elsif /^popfd?$/i.match(asm) then popf (asm)
+		elsif /^push\s/i.match(asm) then push (asm)			
 		elsif /^pushaw$/i.match(asm) then pushaw (asm)
 		elsif /^pushad?$/i.match(asm) then pusha (asm)			
 		elsif /^pushfw$/i.match(asm) then pushfw (asm)
@@ -177,6 +184,8 @@ def main
 		elsif /^rcr/i.match(asm) then rcr (asm)					
 		elsif /^rdmsr$/i.match(asm) then rdmsr (asm)
 		elsif /^rdpmc$/i.match(asm) then rdpmc (asm)
+		elsif /^rdrand\s/i.match(asm) then rdrand (asm)
+		elsif /^rdseed\s/i.match(asm) then rdseed (asm)
 		elsif /^rdtsc$/i.match(asm) then rdtsc (asm)
 		elsif /^rdtscp$/i.match(asm) then rdtscp (asm)
 		elsif /^ret$/i.match(asm) then ret (asm)
@@ -211,9 +220,11 @@ def main
 		elsif /^tzcnt/i.match(asm) then tzcnt (asm)
 		elsif /^ud2$/i.match(asm) then ud2 (asm)	
 		elsif /^vmwrite/i.match(asm) then vmwrite (asm)
+		elsif /^vmread/i.match(asm) then vmread (asm)			
 		elsif /^f?wait$/i.match(asm) then wait (asm)
 		elsif /^wbinvd$/i.match(asm) then wbinvd (asm)		
 		elsif /^wrmsr$/i.match(asm) then wrmsr (asm)
+		elsif /^xchg/i.match(asm) then xchg (asm)
 		elsif /^xgetbv$/i.match(asm) then xgetbv (asm)
 		elsif /^xlat$/i.match(asm) then xlat (asm)
 		elsif /^xor/i.match(asm) then xor (asm)
@@ -285,6 +296,10 @@ def bsr instruction
 	#Bit Scan Reverse
 	if modrmmodrm(instruction, '0FBD')		
 	else nasm(instruction) end end		
+def bswap instruction
+	#Compare Two Operands
+	if plusreg(instruction, '0FC8')		
+	else nasm(instruction) end end
 def cbw instruction
 	#Convert Byte to Word
 	printf("%-34s%-15s\n\n", '6698', 'cbw')	end		
@@ -326,6 +341,10 @@ def cmpsw instruction
 def cmpsd instruction
 	#Compare String Operands (Doubleword)
 	printf("%-34s%-15s\n\n", 'A7', 'cmpsd (DWORD PTR ds:[esi],DWORD PTR es:[edi])')	end	
+def cmpxchg instruction
+	#Compare Two Operands
+	if modrmmodrm(instruction, '0FB0')			
+	else nasm(instruction) end end
 def cpuid instruction
 	#CPU Identification
 	printf("%-34s%-15s\n\n", '0FA2', 'cpuid')	end		
@@ -341,6 +360,10 @@ def daa instruction
 def das instruction
 	#Decimal Adjust AL after Subtraction
 	printf("%-34s%-15s\n\n", '2F', 'das')	end
+def dec instruction
+	#Compare Two Operands
+	if plusreg(instruction, '48')		
+	else nasm(instruction) end end
 def emms instruction
 	#Empty MMX Technology State
 	printf("%-34s%-15s\n\n", '0F77', 'emms')	end
@@ -491,6 +514,10 @@ def hlt instruction
 def IN instruction
 	#Input from Port
 	if alimm8_d(instruction, 'E4', 'E5')		
+	else nasm(instruction) end end
+def inc instruction
+	#Compare Two Operands
+	if plusreg(instruction, '40')		
 	else nasm(instruction) end end
 def insb instruction
 	#Input from Port to String (Byte)
@@ -699,6 +726,10 @@ def outsd instruction
 def pause instruction
 	#Spin Loop Hint
 	printf("%-34s%-15s\n\n", 'F390', 'pause') end		
+def pop instruction
+	#Compare Two Operands
+	if plusreg(instruction, '58')		
+	else nasm(instruction) end end
 def popaw instruction
 	#Pop All General-Purpose Registers (Word)
 	printf("%-34s%-15s\n\n", '6661', 'popaw') end	
@@ -715,6 +746,10 @@ def popfw instruction
 def popf instruction
 	#Pop Stack into EFLAGS Registers
 	printf("%-34s%-15s\n\n", '9D', instruction) end	
+def push instruction
+	#Compare Two Operands
+	if plusreg(instruction, '50')		
+	else nasm(instruction) end end
 def pushaw instruction
 	#Push All General-Purpose Registers (Word)
 	printf("%-34s%-15s\n\n", '6660', 'pushaw') end	
@@ -745,6 +780,14 @@ def rdmsr instruction
 def rdpmc instruction
 	#Read Performance-Monitoring Counters
 	printf("%-34s%-15s\n\n", '0F33', 'rdpmc') end	
+def rdrand instruction
+	#Compare Two Operands
+	if plusreg(instruction, '0FC7F0')		
+	else nasm(instruction) end end
+def rdseed instruction
+	#Compare Two Operands
+	if plusreg(instruction, '0FC7F8')		
+	else nasm(instruction) end end		
 def rdtsc instruction
 	#Read Time-Stamp Counter
 	printf("%-34s%-15s\n\n", '0F31', 'rdtsc') end	
@@ -858,6 +901,10 @@ def vmwrite instruction
 	#VMWrite
 	if modrmmodrm(instruction, '0F79')		
 	else nasm(instruction) end end
+def vmread instruction
+	#VMRead
+	if modrmmodrm(instruction, '0F78')		
+	else nasm(instruction) end end
 def wait instruction
 	#Wait
 	printf("%-34s%-15s\n\n", '9B', 'wait') end	
@@ -867,6 +914,11 @@ def wbinvd instruction
 def wrmsr instruction
 	#Write to Model Specific Register
 	printf("%-34s%-15s\n\n", '0F30', 'wrmsr') end	
+def xchg instruction
+	#Exchange two registers
+	if plusreg(instruction, '90')	
+	elsif modrmmodrm(instruction, '86')
+	else nasm(instruction) end end
 def xgetbv instruction
 	#Get Value of Extended Control Register
 	printf("%-34s%-15s\n\n", '0F01D0', 'xgetbv') end	
@@ -1594,8 +1646,8 @@ def modrmmodrm(instruction, m1)
 	#Remove gratuitus byte/word/dword declaration, it is implied by operand
 	instruction = instruction.gsub(/\s*(byte|word|dword)\s*/,' ')
 
-	#Kick the ADCX, ADOX, and VMWRITE instructions out if it's not 32-bit
-	if m1 == '660F38F6' or m1 == 'F30F38F6'  or m1 == '0F79' and not /^e[abcds][xpi]/i.match(reg1) then
+	#Kick the ADCX, ADOX, and VMWRITE and VMREAD instructions out if it's not 32-bit
+	if m1 == '660F38F6' or m1 == 'F30F38F6' or m1 == '0F79' or m1 == '0F78' and not /^e[abcds][xpi]/i.match(reg1) then
 		puts "This instruction only supports 32bit operands\n\n"
 		return 1
 	end
@@ -1628,20 +1680,29 @@ def modrmmodrm(instruction, m1)
 		if m1 == '0FBC' or m1 == '0FBD' or m1 == 'F30FB8' or m1 == 'F30FBC' then
 			puts "This instruction only supports register16_32, register16_32/pointer16_32 format\n\n"
 			return 1
-		end		
+		end
+		# Upgrade CMPXCHG if needed
 		if /^[abcds][xpi]/i.match(reg1) then
-			m1 = m1.gsub(/(.)0/i, '66\11')
-			m1 = m1.gsub(/(.)8/i, '66\19')
-			m1 = m1.gsub(/84/i, '6685')			
+			m1 = m1.gsub(/^0F(.)0/i, '660F\11')				
+		elsif /^e[abcds][xpi]/i.match(reg1) then
+			m1 = m1.gsub(/^0F(.)0/i, '0F\11')			
+		end				
+		if /^[abcds][xpi]/i.match(reg1) then
+			m1 = m1.gsub(/^86/i, '6687')			
+			m1 = m1.gsub(/^(.)0/i, '66\11')
+			m1 = m1.gsub(/^(.)8/i, '66\19')
+			m1 = m1.gsub(/^84/i, '6685')			
 		end
 		if /^e[abcds][xpi]/i.match(reg1) then
-			m1 = m1.gsub(/(.)0/i, '\11')
-			m1 = m1.gsub(/(.)8/i, '\19')
-			m1 = m1.gsub(/84/i, '85')				
+			m1 = m1.gsub(/^86/i, '87')			
+			m1 = m1.gsub(/^(.)0/i, '\11')
+			m1 = m1.gsub(/^(.)8/i, '\19')
+			m1 = m1.gsub(/^84/i, '85')				
 		end
 	elsif form == 'register' then
-		if m1 == '63' then
-			puts "This instruction only supports register16/pointer16, register16 format\n\n"
+		#Kick out the ARPL, CMPXCHG, and VMREAD instructions
+		if m1 == '63' or m1 == '0FB0'  or m1 == '0F78' then
+			puts "This instruction doesn't support pointer for 2nd operand\n\n"
 			return 1
 		end
 		if m1 == '0FBC' or m1 == '0FBD' or m1 == 'F30FB8' or m1 == 'F30FBC' then
@@ -1650,11 +1711,13 @@ def modrmmodrm(instruction, m1)
 			end
 		end				
 		if /^[abcds][xpi]/i.match(reg1) then
+			m1 = m1.gsub(/^86/i, '6687')			
 			m1 = m1.gsub(/^(.)0/i, '66\13')
 			m1 = m1.gsub(/^(.)8/i, '66\1B')
 			m1 = m1.gsub(/^84/i, '6685')		
 			m1 = m1.gsub(/^8D/i, '668D')						
 		elsif /^e[abcds][xpi]/i.match(reg1) then
+			m1 = m1.gsub(/^86/i, '87')			
 			m1 = m1.gsub(/^(.)0/i, '\13')
 			m1 = m1.gsub(/^(.)8/i, '\1B')
 			m1 = m1.gsub(/^84/i, '85')				
@@ -1677,12 +1740,20 @@ def modrmmodrm(instruction, m1)
 			if /^[abcds][xpi]/i.match(reg1) then
 				m1 = m1.gsub(/(.+)/i, '66\1')
 			end
-		end			
+		end		
+		# Upgrade CMPXCHG if needed
 		if /^[abcds][xpi]/i.match(reg1) then
+			m1 = m1.gsub(/^0F(.)0/i, '660F\11')				
+		elsif /^e[abcds][xpi]/i.match(reg1) then
+			m1 = m1.gsub(/^0F(.)0/i, '0F\11')			
+		end
+		if /^[abcds][xpi]/i.match(reg1) then
+			m1 = m1.gsub(/^86/i, '6687')			
 			m1 = m1.gsub(/^(.)0/i, '66\11')
 			m1 = m1.gsub(/^(.)8/i, '66\19')
 			m1 = m1.gsub(/^84/i, '6685')				
 		elsif /^e[abcds][xpi]/i.match(reg1) then
+			m1 = m1.gsub(/^86/i, '87')			
 			m1 = m1.gsub(/^(.)0/i, '\11')
 			m1 = m1.gsub(/^(.)8/i, '\19')
 			m1 = m1.gsub(/^84/i, '85')				
@@ -1707,7 +1778,7 @@ def modrmmodrm(instruction, m1)
 		end		
 		modrm = zeropad(modrm.to_s(16), 2)
 		instruction_alt = objdump(m1 + modrm)			
-		if not /^test/i.match(instruction) and not m1 == '660F38F6' and not m1 == 'F30F38F6' and not m1 == '0F79' and not m1_u == '0FBC' and not m1_u == '0FBD' and not m1_u == 'F30FB8' and not m1_u == 'F30FBC'
+		if not /^test/i.match(instruction) and not m1 == '660F38F6' and not m1 == 'F30F38F6' and not m1 == '0F79' and not m1_u == '0FBC' and not m1_u == '0FBD' and not m1_u == 'F30FB8' and not m1_u == 'F30FBC' and not /^(66)?8[67]/i.match(m1)
 			printf("%-34s%-15s\n\n", m1 + modrm, instruction_alt)				
 			sanity_check(m1 + modrm, instruction)	#See if this output matches nasms
 		end
@@ -1718,9 +1789,11 @@ def modrmmodrm(instruction, m1)
 			end
 		end					
 		if /^[abcds][xpi]/i.match(reg1) then
+			m1 = m1.gsub(/^86/i, '6687')				
 			m1 = m1.gsub(/^(.)0/i, '66\13')
 			m1 = m1.gsub(/^(.)8/i, '66\1B')			
 		elsif /^e[abcds][xpi]/i.match(reg1) then
+			m1 = m1.gsub(/^86/i, '87')				
 			m1 = m1.gsub(/^(.)0/i, '\13')
 			m1 = m1.gsub(/^(.)8/i, '\1B')		
 		else
@@ -1746,9 +1819,9 @@ def modrmmodrm(instruction, m1)
 		end		
 		modrm = zeropad(modrm.to_s(16), 2)
 		instruction_alt = objdump(m1 + modrm)	
-		if not /^test/i.match(instruction) and not m1 == '660F38F6' and not m1 == 'F30F38F6' and not m1 == '0F79' and not m1 == '63' and not m1_u == '0FBC' and not m1_u == '0FBD' and not m1_u == 'F30FB8' and not m1_u == 'F30FBC'
+		if not /^test/i.match(instruction) and not m1 == '660F38F6' and not m1 == 'F30F38F6' and not m1 == '0F79' and not m1 == '63' and not m1_u == '0FBC' and not m1_u == '0FBD' and not m1_u == 'F30FB8' and not m1_u == 'F30FBC' and not /0FB[01]/i.match(m1) and not m1_u == '0F78' and not /^(66)?8[67]/i.match(m1)
 			printf("%-34s%-15s (The 'Other' ModR/M)\n\n", m1 + modrm, instruction_alt)
-		elsif not m1 == '63'
+		elsif not m1 == '63' and not /0FB[01]/i.match(m1) and not m1 == '0F78'
 			printf("%-34s%-15s\n\n", m1 + modrm, instruction_alt)
 			sanity_check(m1 + modrm, instruction)	#See if this output matches nasms
 		end
@@ -1818,7 +1891,7 @@ def jcc(instruction, m1)
 	elsif extracted = /\w+\s+(.+)$/i.match(instruction) then
 		negative = 0
 		value = extracted.captures[0]		
-	end
+	else return false end
 
 	#Convert to decimal if needed
 	if /0x/i.match(value) then value = disp_to_dec(value) end
@@ -1904,6 +1977,56 @@ def jcc(instruction, m1)
 	end	
 	puts "\n"
 	return 1
+end
+
+def plusreg(instruction, m1)
+	#GateKeeper Parse
+	if extracted = /^\w+?\s+?(e?[abcds][xpi])$/i.match(instruction) then
+		register = extracted.captures[0]
+	elsif extracted = /xchg\s+?e?ax\s*,\s*(e?[abcds][xpi])$/i.match(instruction) then
+		register = extracted.captures[0]	
+	elsif extracted = /xchg\s+?(e?[abcds][xpi])\s*,\s*e?ax$/i.match(instruction) then
+		register = extracted.captures[0]	
+	else return false end
+
+	#Add to base depending on register used
+	if /e?cx/.match(register) then
+		m1 = m1.gsub(/(.+)0$/i, '\11')
+		m1 = m1.gsub(/(.+)8$/i, '\19')
+	elsif /e?dx/.match(register) then
+		m1 = m1.gsub(/(.+)0$/i, '\12')
+		m1 = m1.gsub(/(.+)8$/i, '\1A')
+	elsif /e?bx/.match(register) then
+		m1 = m1.gsub(/(.+)0$/i, '\13')
+		m1 = m1.gsub(/(.+)8$/i, '\1B')
+	elsif /e?sp/.match(register) then
+		m1 = m1.gsub(/(.+)0$/i, '\14')
+		m1 = m1.gsub(/(.+)8$/i, '\1C')
+	elsif /e?bp/.match(register) then
+		m1 = m1.gsub(/(.+)0$/i, '\15')
+		m1 = m1.gsub(/(.+)8$/i, '\1D')
+	elsif /e?si/.match(register) then
+		m1 = m1.gsub(/(.+)0$/i, '\16')
+		m1 = m1.gsub(/(.+)8$/i, '\1E')
+	elsif /e?di/.match(register) then
+		m1 = m1.gsub(/(.+)0$/i, '\17')
+		m1 = m1.gsub(/(.+)8$/i, '\1F')										
+	end
+
+	#Add 16bit prefix if 16bit
+	if not /^e/.match(register) then m1 = m1.gsub(/(.+)/i, '66\1') end
+
+	#Display instruction
+	instruction_alt = objdump(m1)			
+	if /^bswap\s[^e]/i.match(instruction) then
+		printf("%-34s%-15s (Invalid tho)\n\n", m1, instruction_alt)
+	else
+		printf("%-34s%-15s\n\n", m1, instruction_alt)
+	end
+	sanity_check(m1, instruction)	#See if this output matches nasms	
+
+	return 1
+
 end
 
 #--------------------------------
@@ -2889,10 +3012,6 @@ end
 
 main
 
-# Added support for ADCX, ADOX, and VMWRITE (r32, m32/r32)
-# Added support for ARPL (m16/r16, r16)
-# Kind of added BSF, BSR, POPCNT, and TZCNT, but there's an issue with only OP r, r/m instructions
-#	OP r, r/m instructions use the 'Other Mod/RM' format, and do not use the same format as the default.
-#ADCX, ADOX, BSF, BSR, POPCNT, TZCNT, VMWRITE
-#16 Bit too: BSF, BSR, POPCNT, TZCNT
-#	0FBC, 0FBD, F30FB8, F30FBC
+# Added OP, reg16/32 format for DEC, INC, POP, PUSH, RDRAND, RDSEED, BSWAP, and XCHG
+#	This adds dec, inc, pop, push, rdrand, rdseed, and bswap to this tool
+#	Still need the modrm redundancy for XCHG

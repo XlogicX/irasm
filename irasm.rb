@@ -1,12 +1,6 @@
 #!/usr/bin/ruby
 
 $debug = 0
-#--------------------------------------------
-# 	              TODO          			#
-#--------------------------------------------
-#Handle spacing/tabbing in output better (will involve printf)
-# http://www.evc-cit.info/cit020/beginning-programming/chp_04/file_printf.html
-#Get consistent with case-sensitivity
 
 #--------------------------------------------
 # 	Process for each instruction			#
@@ -21,11 +15,11 @@ def main
 # 	Read Each Instruction From Input		#
 #--------------------------------------------
 	while 1 do
-		print 'irasm > '
-		asm = gets.chomp
-		if /(quit|(?<!s)exit)/i.match(asm)
-			exit
-		end
+		print 'irasm > '						#Prompt
+		asm = gets.chomp						#Get assembly instruction
+		if /(quit|(?<!s)exit)/i.match(asm)		#If it's quit or exit
+			exit								#	Exit the script
+		end										#Otherwise start looking for instruction names
 
 		if /^aaa/i.match(asm) then aaa (asm)
 		elsif /^aad/i.match(asm) then aad (asm)
@@ -808,7 +802,7 @@ def js instruction
 	if jcc(instruction, '78')		
 	else nasm(instruction) end end	
 def jmp instruction
-	#Jump if Zero
+	#Jump
 	if jcc(instruction, 'EB')		
 	else nasm(instruction) end end	
 def jz instruction
@@ -859,6 +853,7 @@ def monitor instruction
 	#Set Up Monitor Address
 	printf("%-34s%-15s\n\n", '0F01C8', 'monitor') end	
 def mov instruction
+	#Move
 	if modrmimm(instruction, 'mov', 'C6', '0')
 	elsif modrmmodrm(instruction, '88')			
 	else nasm(instruction) end end		
@@ -918,7 +913,7 @@ def popf instruction
 	#Pop Stack into EFLAGS Registers
 	printf("%-34s%-15s\n\n", '9D', instruction) end	
 def push instruction
-	#Compare Two Operands
+	#Push data to the stack
 	if plusreg(instruction, '50')		
 	else nasm(instruction) end end
 def pushaw instruction
@@ -934,15 +929,19 @@ def pushf instruction
 	#Push EFLAGS Register onto the Stack
 	printf("%-34s%-15s\n\n", '9C', instruction) end	
 def rcl instruction
+	#Rotate with Carry to the Left
 	if modrmimm(instruction, 'rcl', 'C0', '2')		
 	else nasm(instruction) end end		
 def rcr instruction
+	#Rotate with Carry to the Right
 	if modrmimm(instruction, 'rcr', 'C0', '3')
 	else nasm(instruction) end end			
 def rol instruction
+	#Rotate to the Left
 	if modrmimm(instruction, 'rol', 'C0', '0')
 	else nasm(instruction) end end		
 def ror instruction
+	#Rotate to the Right
 	if modrmimm(instruction, 'ror', 'C0', '1')
 	else nasm(instruction) end end				
 def rdmsr instruction
@@ -952,11 +951,11 @@ def rdpmc instruction
 	#Read Performance-Monitoring Counters
 	printf("%-34s%-15s\n\n", '0F33', 'rdpmc') end	
 def rdrand instruction
-	#Compare Two Operands
+	#Randome
 	if plusreg(instruction, '0FC7F0')		
 	else nasm(instruction) end end
 def rdseed instruction
-	#Compare Two Operands
+	#Create Seed for Random
 	if plusreg(instruction, '0FC7F8')		
 	else nasm(instruction) end end		
 def rdtsc instruction
@@ -978,9 +977,11 @@ def sahf instruction
 	#Store AH into Flags
 	printf("%-34s%-15s\n\n", '9E', 'sahf') end	
 def sal instruction
+	#Shift Arithmetic Left (SHL is the official for this)
 	if modrmimm(instruction, 'sal', 'C0', '6')
 	else nasm(instruction) end end		
 def sar instruction
+	#Shift Arithmetic Right
 	if modrmimm(instruction, 'sar', 'C0', '7')
 	else nasm(instruction) end end
 def sbb instruction
@@ -1004,9 +1005,11 @@ def sfence instruction
 	#Store Fence
 	fence('sfence', '0FAE', 'F8') end
 def shl instruction
+	#Shift Left
 	if modrmimm(instruction, 'shl', 'C0', '4')
 	else nasm(instruction) end end		
 def shr instruction
+	#Shift Right
 	if modrmimm(instruction, 'shr', 'C0', '5')
 	else nasm(instruction) end end
 def stac instruction
@@ -1120,44 +1123,50 @@ def xtest instruction
 #------------------------------------
 
 def imm8 data
-	if not /^0x/i.match(data)
-		data = data.to_i(10).to_s(16) 
+	#We want number as hex string without '0x' prefix
+	if not /^0x/i.match(data)				#If it's not hex formatted
+		data = data.to_i(10).to_s(16)		#Convert to hex
 	else
-		data = data.gsub(/0x(.+)/, '\1')
+		data = data.gsub(/0x(.+)/, '\1')	#otherwise keep the hex without '0x' prefix
 	end
+	#This routine is for 8bit data, if argument supplied is too large, gracefully error
 	if data.to_s.length > 2
 		puts "Error, likely source operand is too large for destination\n\n"
 		main
 	end
-	data = zeropad(data, 2).upcase
+	data = zeropad(data, 2).upcase			#Pad leading zeros if needed
 	return data
 end
 
 def imm16 data
-	if not /^0x/i.match(data)
-		data = data.to_i(10).to_s(16) 
+	#We want number as hex string without '0x' prefix	
+	if not /^0x/i.match(data)				#If it's not hex formatted
+		data = data.to_i(10).to_s(16) 		#Convert to hex
 	else
-		data = data.gsub(/0x(.+)/, '\1')
+		data = data.gsub(/0x(.+)/, '\1')	#otherwise keep the hex without '0x' prefix
 	end
+	#This routine is for 16bit data, if argument supplied is too large, gracefully error	
 	if data.to_s.length > 4
 		puts "Source operand too large for destination\n\n"
 		main
 	end
-	data = zeropad(data, 4).upcase
+	data = zeropad(data, 4).upcase			#Pad leading zeros if needed
 	return data
 end
 
 def imm32 data
-	if not /^0x/i.match(data)
-		data = data.to_i(10).to_s(16) 
+	#We want number as hex string without '0x' prefix		
+	if not /^0x/i.match(data)				#If it's not hex formatted
+		data = data.to_i(10).to_s(16) 		#Convert to hex
 	else
-		data = data.gsub(/0x(.+)/, '\1')
+		data = data.gsub(/0x(.+)/, '\1')	#otherwise keep the hex without '0x' prefix
 	end
+	#This routine is for 32bit data, if argument supplied is too large, gracefully error	
 	if data.to_s.length > 8
 		puts "Source operand too large for destination\n\n"
 		main
 	end
-	data = zeropad(data, 8).upcase
+	data = zeropad(data, 8).upcase			#Pad leading zeros if needed
 	return data
 end
 
@@ -1176,13 +1185,14 @@ def alimm8 (instruction, m1, m2)	#OP AL, imm8
 	#Where instruction is the full instruction inputted
 	#	m1 is the explicit machine code
 	#	m2 is the r/m8, imm8 version of the machine code
+
 	#Gatekeeper parse, Is it: OP al, imm8?
 	if extracted = /^\w+\s+al,\s*((0x)?[a-f0-9]+)$/i.match(instruction)
-		s_operand = imm8(extracted.captures[0]) #validate sanity of imm8
-		instruction_alt = objdump(m1 + s_operand)
-		printf("%-34s%-15s\n\n", m1 + s_operand, instruction_alt)
-		instruction_alt = objdump(m2 + s_operand)
-		printf("%-34s%-15s (r/m8, imm8)\n\n", m2 + s_operand, instruction_alt)	
+		s_operand = imm8(extracted.captures[0]) 					#validate sanity of imm8
+		instruction_alt = objdump(m1 + s_operand)					#objdump format of instruction
+		printf("%-34s%-15s\n\n", m1 + s_operand, instruction_alt)	#display instruction
+		instruction_alt = objdump(m2 + s_operand)					#objdump format of alternate instruction
+		printf("%-34s%-15s (r/m8, imm8)\n\n", m2 + s_operand, instruction_alt)	#display instruction
 		sanity_check(m1 + s_operand, instruction)	#See if this output matches nasms
 		return 1
 	end
@@ -1193,12 +1203,14 @@ def aximm16 (instruction, m1, m2, m3)	#OP AX, imm16
 	#	m1 is the explicit machine code
 	#	m2 is the r/m16, imm16 version of the machine code
 	#	m3 is the r/m16, imm8 version of the machine code
+
 	#Gatekeeper parse, Is it: OP ax, imm16?
 	if extracted = /^\w+\s+ax,\s*((0x)?[a-f0-9]+)$/i.match(instruction)
-		s_operand = imm16(extracted.captures[0])	
+		s_operand = imm16(extracted.captures[0])				#parse the imm16 operand
+		#If there are at least two leading zero's, this can be done as imm8 as well
 		if extracted_i = /00(..)/i.match(s_operand)
-			instruction_alt = objdump(m3 + littleend(s_operand))
-			printf("%-34s%-15s\n\n", m3 + extracted_i.captures[0], instruction_alt)		
+			instruction_alt = objdump(m3 + littleend(s_operand))						#objdump format
+			printf("%-34s%-15s\n\n", m3 + extracted_i.captures[0], instruction_alt)		#
 			sanity_check(m3 + extracted_i.captures[0], instruction)
 			instruction_alt = objdump(m1 + littleend(s_operand))	
 			printf("%-34s%-15s (ax, imm16)\n", m1 + littleend(s_operand), instruction_alt)
@@ -2060,10 +2072,10 @@ end
 
 def jcc(instruction, m1)
 	#GateKeeper Parse
-	if extracted = /\w+\s+-\s*(.+)$/i.match(instruction) then
+	if extracted = /\w+\s+-\s*([^\:]+)$/i.match(instruction) then
 		negative = 1
 		value = extracted.captures[0]
-	elsif extracted = /\w+\s+(.+)$/i.match(instruction) then
+	elsif extracted = /\w+\s+([^\:]+)$/i.match(instruction) then
 		negative = 0
 		value = extracted.captures[0]		
 	else return false end
@@ -3241,6 +3253,3 @@ def objdump (data)
 end
 
 main
-
-#Added LOOP, LOOPE, LOOPNE, XBEGIN, and CMOVs
-#Added OP, rel forms of CALL and JMP

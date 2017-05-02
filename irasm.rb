@@ -218,6 +218,45 @@ def main
 		elsif /^rdtscp$/i.match(asm) then rdtscp (asm)
 		elsif /^ret$/i.match(asm) then ret (asm)
 		elsif /^retf$/i.match(asm) then retf (asm)
+		elsif /^rep\sinsb$/i.match(asm) then rep_insb (asm)
+		elsif /^rep\sinsw$/i.match(asm) then rep_insw (asm)
+		elsif /^rep\sinsd$/i.match(asm) then rep_insd (asm)	
+		elsif /^rep\smovsb$/i.match(asm) then rep_movsb (asm)				
+		elsif /^rep\smovsw$/i.match(asm) then rep_movsw (asm)	
+		elsif /^rep\smovsd$/i.match(asm) then rep_movsd (asm)				
+		elsif /^rep\soutsb$/i.match(asm) then rep_outsb (asm)
+		elsif /^rep\soutsw$/i.match(asm) then rep_outsw (asm)
+		elsif /^rep\soutsd$/i.match(asm) then rep_outsd (asm)					
+		elsif /^rep\slodsb$/i.match(asm) then rep_lodsb (asm)
+		elsif /^rep\slodsw$/i.match(asm) then rep_lodsw (asm)
+		elsif /^rep\slodsd$/i.match(asm) then rep_lodsd (asm)
+		elsif /^rep\sstosb$/i.match(asm) then rep_stosb (asm)
+		elsif /^rep\sstosw$/i.match(asm) then rep_stosw (asm)
+		elsif /^rep\sstosd$/i.match(asm) then rep_stosd (asm)
+		elsif /^repe\scmpsb$/i.match(asm) then repe_cmpsb (asm)
+		elsif /^repe\scmpsw$/i.match(asm) then repe_cmpsw (asm)
+		elsif /^repe\scmpsd$/i.match(asm) then repe_cmpsd (asm)		
+		elsif /^repz\scmpsb$/i.match(asm) then repe_cmpsb (asm)
+		elsif /^repz\scmpsw$/i.match(asm) then repe_cmpsw (asm)
+		elsif /^repz\scmpsd$/i.match(asm) then repe_cmpsd (asm)	
+		elsif /^repe\sscasb$/i.match(asm) then repe_scasb (asm)
+		elsif /^repe\sscasw$/i.match(asm) then repe_scasw (asm)
+		elsif /^repe\sscasd$/i.match(asm) then repe_scasd (asm)		
+		elsif /^repz\sscasb$/i.match(asm) then repe_scasb (asm)
+		elsif /^repz\sscasw$/i.match(asm) then repe_scasw (asm)
+		elsif /^repz\sscasd$/i.match(asm) then repe_scasd (asm)						
+		elsif /^repne\scmpsb$/i.match(asm) then repne_cmpsb (asm)
+		elsif /^repne\scmpsw$/i.match(asm) then repne_cmpsw (asm)
+		elsif /^repne\scmpsd$/i.match(asm) then repne_cmpsd (asm)		
+		elsif /^repnz\scmpsb$/i.match(asm) then repne_cmpsb (asm)
+		elsif /^repnz\scmpsw$/i.match(asm) then repne_cmpsw (asm)
+		elsif /^repnz\scmpsd$/i.match(asm) then repne_cmpsd (asm)	
+		elsif /^repne\sscasb$/i.match(asm) then repne_scasb (asm)
+		elsif /^repne\sscasw$/i.match(asm) then repne_scasw (asm)
+		elsif /^repne\sscasd$/i.match(asm) then repne_scasd (asm)		
+		elsif /^repnz\sscasb$/i.match(asm) then repne_scasb (asm)
+		elsif /^repnz\sscasw$/i.match(asm) then repne_scasw (asm)
+		elsif /^repnz\sscasd$/i.match(asm) then repne_scasd (asm)	
 		elsif /^rol/i.match(asm) then rol (asm)	
 		elsif /^ror/i.match(asm) then ror (asm)						
 		elsif /^rsm$/i.match(asm) then rsm (asm)
@@ -970,6 +1009,96 @@ def ret instruction
 def retf instruction
 	#Return from Procedure (Far)
 	printf("%-34s%-15s\n\n", 'CB', 'retf') end	
+def rep_insb instruction
+	#Return from Procedure (Far)
+	printf("%-34s%-15s\n\n", 'F36C', 'rep insb') end	
+def rep_insw instruction
+	#Return from Procedure (Far)
+	printf("%-34s%-15s\n\n", 'F3666D', 'rep insw')
+	printf("%-34s%-15s (prefix swap)\n\n", '66F36D', 'rep insw') end
+def rep_insd instruction
+	#Return from Procedure (Far)
+	printf("%-34s%-15s\n\n", 'F36D', 'rep insd') end	
+def rep_movsb instruction
+	#Return from Procedure (Far)
+	printf("%-34s%-15s\n\n", 'F3A4', 'rep movsb') end
+def rep_movsw instruction
+	#Return from Procedure (Far)
+	printf("%-34s%-15s\n\n", 'F366A5', 'rep movsw')
+	printf("%-34s%-15s (prefix swap)\n\n", '66F3A5', 'rep movsw') end	
+def rep_movsd instruction
+	#Return from Procedure (Far)
+	printf("%-34s%-15s\n\n", 'F3A5', 'rep movsd') end	
+def rep_outsb instruction
+	#Return from Procedure (Far)
+	printf("%-34s%-15s\n\n", 'F36E', 'rep outsb') end
+def rep_outsw instruction
+	#Return from Procedure (Far)
+	printf("%-34s%-15s\n\n", 'F3666F', 'rep outsw')
+	printf("%-34s%-15s (prefix swap)\n\n", '66F36F', 'rep outsw') end	
+def rep_outsd instruction
+	#Return from Procedure (Far)
+	printf("%-34s%-15s\n\n", 'F36F', 'rep outsd') end
+def rep_lodsb instruction
+	#Return from Procedure (Far)
+	printf("%-34s%-15s\n\n", 'F3AC', 'rep lodsb') end
+def rep_lodsw instruction
+	#Return from Procedure (Far)
+	printf("%-34s%-15s\n\n", 'F366AD', 'rep lodsw')
+	printf("%-34s%-15s (prefix swap)\n\n", '66F3AD', 'rep lodsw') end	
+def rep_lodsd instruction
+	#Return from Procedure (Far)
+	printf("%-34s%-15s\n\n", 'F3AD', 'rep lodsd') end
+def rep_stosb instruction
+	#Return from Procedure (Far)
+	printf("%-34s%-15s\n\n", 'F3AA', 'rep stosb') end
+def rep_stosw instruction
+	#Return from Procedure (Far)
+	printf("%-34s%-15s\n\n", 'F366AB', 'rep stosw')
+	printf("%-34s%-15s (prefix swap)\n\n", '66F3AB', 'rep stosw') end	
+def rep_stosd instruction
+	#Return from Procedure (Far)
+	printf("%-34s%-15s\n\n", 'F3AB', 'rep lodsd') end
+def repe_cmpsb instruction
+	#Return from Procedure (Far)
+	printf("%-34s%-15s\n\n", 'F3A6', 'repe cmpsb') end
+def repe_cmpsw instruction
+	#Return from Procedure (Far)
+	printf("%-34s%-15s\n\n", 'F366A7', 'repe cmpsw')
+	printf("%-34s%-15s (prefix swap)\n\n", '66F3A7', 'repe cmpsw') end	
+def repe_cmpsd instruction
+	#Return from Procedure (Far)
+	printf("%-34s%-15s\n\n", 'F3A7', 'repe cmpsd') end
+def repe_scasb instruction
+	#Return from Procedure (Far)
+	printf("%-34s%-15s\n\n", 'F3AE', 'repe scasb') end	
+def repe_scasw instruction
+	#Return from Procedure (Far)
+	printf("%-34s%-15s\n\n", 'F366AF', 'repe scasw')
+	printf("%-34s%-15s (prefix swap)\n\n", '66F3AF', 'repe scasw') end	
+def repe_scasd instruction
+	#Return from Procedure (Far)
+	printf("%-34s%-15s\n\n", 'F3AF', 'repe scasd') end	
+def repne_cmpsb instruction
+	#Return from Procedure (Far)
+	printf("%-34s%-15s\n\n", 'F2A6', 'repne cmpsb') end
+def repne_cmpsw instruction
+	#Return from Procedure (Far)
+	printf("%-34s%-15s\n\n", 'F266A7', 'repne cmpsw')
+	printf("%-34s%-15s (prefix swap)\n\n", '66F2A7', 'repne cmpsw') end	
+def repne_cmpsd instruction
+	#Return from Procedure (Far)
+	printf("%-34s%-15s\n\n", 'F2A7', 'repne cmpsd') end
+def repne_scasb instruction
+	#Return from Procedure (Far)
+	printf("%-34s%-15s\n\n", 'F2AE', 'repne scasb') end	
+def repne_scasw instruction
+	#Return from Procedure (Far)
+	printf("%-34s%-15s\n\n", 'F266AF', 'repne scasw')
+	printf("%-34s%-15s (prefix swap)\n\n", '66F3AF', 'repne scasw') end	
+def repne_scasd instruction
+	#Return from Procedure (Far)
+	printf("%-34s%-15s\n\n", 'F2AF', 'repne scasd') end	
 def rsm instruction
 	#Resume from System Management Mode
 	printf("%-34s%-15s\n\n", '0FAA', 'rsm') end	
@@ -3253,3 +3382,8 @@ def objdump (data)
 end
 
 main
+
+#Added REPE/Z SCASB, REPE/Z SCASW, REPE/Z SCASD, REP INSB, REP INSW, REP INSD, REP MOVSB, REP MOVSW, REP MOVSD, 
+#REP OUTSB, REP OUTSW, REP OUTSD, REP LODSB, REP LODSW, REP LODSD, REP STOSB, REP STOSW, REP STOSD, REPE CMPSB, 
+#REPE CMPSW, REPE CMPSD, REPNE/Z SCASB, REPNE/Z SCASW, REPNE/Z SCASD, REPNE/Z CMPSB, REPNE/Z CMPSW, REPNE/Z CMPSD,
+#	Also added prefix-swap redundancy for the 'word' sizes

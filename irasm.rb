@@ -31,6 +31,7 @@ def main
 		elsif /^adox/i.match(asm) then adox (asm)
 		elsif /^and/i.match(asm) then andi (asm)
 		elsif /^arpl/i.match(asm) then arpl (asm)
+		elsif /^bound/i.match(asm) then bound (asm)			
 		elsif /^bsf/i.match(asm) then bsf (asm)	
 		elsif /^bsr/i.match(asm) then bsr (asm)
 		elsif /^bswap/i.match(asm) then bswap (asm)			
@@ -355,6 +356,10 @@ def andi instruction
 def arpl instruction
 	#Unsigned Integer Addition of Two Operands with Overflow Flag
 	if modrmmodrm(instruction, '63')		
+	else nasm(instruction) end end
+def bound instruction
+	#Logical AND	
+	if modrmmodrm(instruction, '62')			
 	else nasm(instruction) end end
 def bsf instruction
 	#Bit Scan Forward
@@ -1974,8 +1979,8 @@ def modrmmodrm(instruction, m1)
 		return 1
 	end
 
-	#Kick the BSF, BSR, POPCNT, and TZCNT out if it is 8-bit
-	if m1 == '0FBC' or m1 == '0FBD' or m1 == 'F30FB8' or m1 == 'F30FBC' or /^cmov/i.match(instruction) and not /^e?[abcds][xpi]/i.match(reg1) then
+	#Kick the BSF, BSR, POPCNT, TZCNT and BOUND out if it is 8-bit
+	if m1 == '0FBC' or m1 == '0FBD' or m1 == 'F30FB8' or m1 == '62' or m1 == 'F30FBC' or /^cmov/i.match(instruction) and not /^e?[abcds][xpi]/i.match(reg1) then
 		puts "This instruction does not support 8-bit operands\n\n"
 		return 1
 	end
@@ -1995,6 +2000,11 @@ def modrmmodrm(instruction, m1)
 		#Kick out the BSF, BSR, POPCNT, TZCNT, and all conditional MOV instructions
 		if m1 == '0FBC' or m1 == '0FBD' or m1 == 'F30FB8' or m1 == 'F30FBC'  or /^cmov/i.match(instruction) then
 			puts "This instruction only supports register16_32, register16_32/pointer16_32 format\n\n"
+			return 1
+		end
+		#Kick out the BOUND
+		if m1 == '62' then
+			puts "This instruction only supports register16_32, pointer16_32 format\n\n"
 			return 1
 		end
 		# Upgrade CMPXCHG if needed
@@ -2021,7 +2031,7 @@ def modrmmodrm(instruction, m1)
 			puts "This instruction doesn't support pointer for 2nd operand\n\n"
 			return 1
 		end
-		if m1 == '0FBC' or m1 == '0FBD' or m1 == 'F30FB8' or m1 == 'F30FBC' or /^cmov/i.match(instruction) then
+		if m1 == '0FBC' or m1 == '0FBD' or m1 == 'F30FB8' or m1 == '62' or m1 == 'F30FBC' or /^cmov/i.match(instruction) then
 			if /^[abcds][xpi]/i.match(reg1) then
 				m1 = m1.gsub(/(.+)/i, '66\1')
 			end
@@ -2048,9 +2058,14 @@ def modrmmodrm(instruction, m1)
 	else	#It's 2 registers
 		#Kick out the LEA instructions
 		if m1 == '8D' then 
-			puts "LEA can only be LEA Register, Memory Location\n\n"
+			puts "LEA can only be a Register, Memory Location\n\n"
 			return 1
-		end		
+		end	
+		#Kick out the BOUND instructions
+		if m1 == '62' then 
+			puts "BOUND can only be a Register, Memory Location\n\n"
+			return 1
+		end				
 		m1_u = m1		
 		if m1 == '0FBC' or m1 == '0FBD' or m1 == 'F30FB8' or m1 == 'F30FBC' or /^cmov/i.match(instruction) then
 			if /^[abcds][xpi]/i.match(reg1) then
@@ -3383,7 +3398,4 @@ end
 
 main
 
-#Added REPE/Z SCASB, REPE/Z SCASW, REPE/Z SCASD, REP INSB, REP INSW, REP INSD, REP MOVSB, REP MOVSW, REP MOVSD, 
-#REP OUTSB, REP OUTSW, REP OUTSD, REP LODSB, REP LODSW, REP LODSD, REP STOSB, REP STOSW, REP STOSD, REPE CMPSB, 
-#REPE CMPSW, REPE CMPSD, REPNE/Z SCASB, REPNE/Z SCASW, REPNE/Z SCASD, REPNE/Z CMPSB, REPNE/Z CMPSW, REPNE/Z CMPSD,
-#	Also added prefix-swap redundancy for the 'word' sizes
+#Added BOUND instruction (OP reg, pointer)

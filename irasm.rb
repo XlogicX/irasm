@@ -378,7 +378,8 @@ def bswap instruction
 	else nasm(instruction) end end
 def call instruction
 	#Transactional Begin
-	if jcc(instruction, 'E8')		
+	if jcc(instruction, 'E8')
+	elsif ptr(instruction, '9A')		
 	else nasm(instruction) end end
 def cbw instruction
 	#Convert Byte to Word
@@ -858,7 +859,8 @@ def js instruction
 	else nasm(instruction) end end	
 def jmp instruction
 	#Jump
-	if jcc(instruction, 'EB')		
+	if jcc(instruction, 'EB')	
+	elsif ptr(instruction, 'EA')	
 	else nasm(instruction) end end	
 def jz instruction
 	#Jump if Zero
@@ -2539,6 +2541,56 @@ def pushimm(instruction)
 		sanity_check(m1 + ammount, instruction)	#See if this output matches nasms
 		return 1
 	else return false end
+end
+
+def ptr(instruction, m1)
+	#GateKeeper Parse
+	if extracted = /^\S+\s(\d+|0x[0-9a-f]+):(\d+|0x[0-9a-f]+)$/i.match(instruction) then
+		num1 = extracted.captures[0]
+		num2 = extracted.captures[1]
+	else return false end
+
+	#Convert to real (non hex)
+	if /^0x/i.match(num1) then num1 = disp_to_dec(num1) end
+	if /^0x/i.match(num2) then num2 = disp_to_dec(num2) end
+
+	num1 = num1.to_i
+	num2 = num2.to_i
+
+	#Range Check1
+	if num1 < 0 or num1 > 65535 then
+		printf("First pointer is out of range\n\n")
+		return false
+	end
+	#Range Check2
+	if num2 < 0 or num2 > 4294836225 then
+		printf("Second pointer is out of range\n\n")
+		return false
+	end
+
+	#Convert first pointer into machine code
+	num1 = littleend(zeropad(num1.to_s(16), 4))
+
+	if num2 > 65535 then
+		num2 = littleend(zeropad(num2.to_s(16), 8))
+	else
+		num2a = littleend(zeropad(num2.to_s(16), 8))
+		instruction_alt = objdump(m1 + num2a + num1)
+		printf("%-34s%-15s\n\n", m1 + num2a + num1, instruction_alt)	
+		sanity_check(m1 + num2a + num1, instruction)	#See if this output matches nasms
+
+		num2b = littleend(zeropad(num2.to_s(16), 4))
+		m1 = m1.gsub(/^(.+)$/i, '66\1')
+		instruction_alt = objdump(m1 + num2b + num1)
+		printf("%-34s%-15s (WORD Size Alternate)\n\n", m1 + num2b + num1, instruction_alt)	
+		return 1		
+	end
+
+	instruction_alt = objdump(m1 + num2 + num1)
+	printf("%-34s%-15s\n\n", m1 + num2 + num1, instruction_alt)	
+	sanity_check(m1 + num2 + num1, instruction)	#See if this output matches nasms
+	return 1
+
 end
 
 #--------------------------------

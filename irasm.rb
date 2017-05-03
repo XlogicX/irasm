@@ -85,6 +85,7 @@ def main
 		elsif /^das/i.match(asm) then das (asm)	
 		elsif /^dec/i.match(asm) then dec (asm)				
 		elsif /^emms/i.match(asm) then emms (asm)
+		elsif /^enter/i.match(asm) then enter (asm)
 		elsif /^f2xm1/i.match(asm) then f2xm1 (asm)	
 		elsif /^fabs/i.match(asm) then fabs (asm)	
 		elsif /^faddp/i.match(asm) then faddp (asm)	
@@ -134,6 +135,7 @@ def main
 		elsif /^fyl2xp1$/i.match(asm) then fyl2xp1 (asm)
 		elsif /^hlt$/i.match(asm) then hlt (asm)	
 		elsif /^in\s/i.match(asm) then IN (asm)
+		elsif /^int(3$|\s)/i.match(asm) then int (asm)
 		elsif /^inc\s/i.match(asm) then inc (asm)			
 		elsif /^insb$/i.match(asm) then insb (asm)
 		elsif /^insw$/i.match(asm) then insw (asm)
@@ -292,6 +294,7 @@ def main
 		elsif /^f?wait$/i.match(asm) then wait (asm)
 		elsif /^wbinvd$/i.match(asm) then wbinvd (asm)		
 		elsif /^wrmsr$/i.match(asm) then wrmsr (asm)
+		elsif /^xabort\s/i.match(asm) then xabort (asm)			
 		elsif /^xbegin/i.match(asm) then xbegin (asm)
 		elsif /^xchg/i.match(asm) then xchg (asm)
 		elsif /^xgetbv$/i.match(asm) then xgetbv (asm)
@@ -560,6 +563,9 @@ def dec instruction
 def emms instruction
 	#Empty MMX Technology State
 	printf("%-34s%-15s\n\n", '0F77', 'emms')	end
+def enter instruction
+	if imm16imm8(instruction, 'C8')		
+	else nasm(instruction) end end
 def f2xm1 instruction
 	#Compute 2^x-1
 	printf("%-34s%-15s\n\n", 'D9F0', 'f2xm1')	end	
@@ -706,7 +712,8 @@ def hlt instruction
 	printf("%-34s%-15s\n\n", 'F4', 'hlt') end	
 def IN instruction
 	#Input from Port
-	if alimm8_d(instruction, 'E4', 'E5')		
+	if alimm8_d(instruction, 'E4', 'E5')
+	elsif inaldx(instruction)		
 	else nasm(instruction) end end
 def inc instruction
 	#Compare Two Operands
@@ -721,6 +728,10 @@ def insw instruction
 def insd instruction
 	#Input from Port to String (DWword)
 	printf("%-34s%-15s\n\n", '6D', 'insd (DWORD PTR es:[edi],dx)') end	
+def int instruction
+	#Interupt
+	if opimm8(instruction, 'CD')		
+	else nasm(instruction) end end
 def into instruction
 	#Call to Interrupt Procedure
 	printf("%-34s%-15s\n\n", 'CE', 'into') end	
@@ -958,7 +969,8 @@ def popf instruction
 	printf("%-34s%-15s\n\n", '9D', instruction) end	
 def push instruction
 	#Push data to the stack
-	if plusreg(instruction, '50')		
+	if plusreg(instruction, '50')	
+	elsif pushimm(instruction)	
 	else nasm(instruction) end end
 def pushaw instruction
 	#Push All General-Purpose Registers (Word)
@@ -1222,6 +1234,10 @@ def wbinvd instruction
 def wrmsr instruction
 	#Write to Model Specific Register
 	printf("%-34s%-15s\n\n", '0F30', 'wrmsr') end	
+def xabort instruction
+	#Transactional Abort
+	if opimm8(instruction, 'C6F8')		
+	else nasm(instruction) end end
 def xbegin instruction
 	#Transactional Begin
 	if jcc(instruction, 'C7F8')		
@@ -2415,6 +2431,116 @@ def rel8(instruction, m1)
 	return 1
 end
 
+def imm16imm8(instruction, m1)
+	#GateKeeper Parse
+	if extracted = /^\S+\s(\d+),\s*(\d+)$/i.match(instruction) then
+		imm16 = littleend(imm16(extracted.captures[0]))
+		imm8 = imm8(extracted.captures[1])
+	elsif extracted = /^\S+\s(\d+),\s*0x([a-f0-9]+)$/i.match(instruction) then
+		imm16 = littleend(imm16(extracted.captures[0]))
+		imm8 = zeropad(extracted.captures[1], 2)
+	elsif extracted = /^\S+\s0x([a-f0-9]+),\s*(\d+)$/i.match(instruction) then
+		imm16 = littleend(zeropad(extracted.captures[0],4))
+		imm8 = imm8(extracted.captures[1])
+	elsif extracted = /^\S+\s0x([a-f0-9]+),\s*0x([a-f0-9]+)$/i.match(instruction) then
+		imm16 = littleend(zeropad(extracted.captures[0],4))
+		imm8 = zeropad(extracted.captures[1], 2)						
+	else return false end
+
+	instruction_alt = objdump(m1 + imm16 + imm8)
+	printf("%-34s%-15s\n\n", m1 + imm16 + imm8, instruction_alt)	
+	sanity_check(m1 + imm16 + imm8, instruction)	#See if this output matches nasms	
+	return 1
+end
+
+def inaldx(instruction)
+	#GateKeeper Parse
+	if extracted = /^in\sal,\s*dx$/i.match(instruction) then
+		instruction_alt = objdump('ec')
+		printf("%-34s%-15s\n\n", 'EC', instruction_alt)
+	elsif extracted = /^in\sax,\s*dx$/i.match(instruction) then
+		instruction_alt = objdump('ec')
+		printf("%-34s%-15s\n\n", '66ED', instruction_alt)
+	elsif extracted = /^in\seax,\s*dx$/i.match(instruction) then
+		instruction_alt = objdump('ec')
+		printf("%-34s%-15s\n\n", 'ED', instruction_alt)
+	else return false end
+	return 1
+end
+
+def opimm8(instruction, m1)
+	#GateKeeper Parse
+	if extracted = /^int(3|\s*3|\s*0x0?3)$/i.match(instruction) then
+		instruction_alt = objdump("CD03")
+		printf("%-34s%-15s\n\n", "CC03", instruction_alt)	
+		instruction_alt = objdump("CC")
+		printf("%-34s%-15s (One Byte Version)\n\n", "CC", instruction_alt)	
+		return 1	
+	elsif extracted = /^\S+\s(\d+)$/i.match(instruction) then
+		imm8 = imm8(extracted.captures[0])
+	elsif extracted = /^\S+\s0x([0-9a-f]+)$/i.match(instruction) then
+		imm8 = zeropad(extracted.captures[0], 2)
+	else return false end
+
+	instruction_alt = objdump(m1 + imm8)
+	printf("%-34s%-15s\n\n", m1 + imm8, instruction_alt)	
+	sanity_check(m1 + imm8, instruction)	#See if this output matches nasms
+	return 1
+end
+
+def pushimm(instruction)
+	#GateKeeper Parse
+	if extracted = /^push\s(\d+)$/i.match(instruction) then
+		ammount = (extracted.captures[0]).to_i
+		if ammount > -1 and ammount < 256 then
+			ammount = zeropad(ammount.to_s(16), 2)
+			m1 = '6A' 
+		elsif ammount > 255 and ammount < 65536 then
+			ammount1 = littleend(zeropad(ammount.to_s(16), 8))
+			m1 = '68'
+			instruction_alt = objdump(m1 + ammount1)
+			printf("%-34s%-15s\n\n", m1 + ammount1, instruction_alt)	
+			sanity_check(m1 + ammount1, instruction)	#See if this output matches nasms
+			ammount2 = littleend(zeropad(ammount.to_s(16), 4))
+			m1 = '6668'
+			instruction_alt = objdump(m1 + ammount2)
+			printf("%-34s%-15s (WORD Sized Alternate)\n\n", m1 + ammount2, instruction_alt)	
+			return 1
+		elsif ammount > 65535 and ammount < 4294836226 then
+			ammount = littleend(zeropad(ammount.to_s(16), 8))
+			m1 = '68'
+		end 
+		instruction_alt = objdump(m1 + ammount)
+		printf("%-34s%-15s\n\n", m1 + ammount, instruction_alt)	
+		sanity_check(m1 + ammount, instruction)	#See if this output matches nasms
+		return 1
+	elsif extracted = /^push\s0x([a-f0-9]+)$/i.match(instruction) then
+		ammount = (extracted.captures[0])
+		if disp_to_dec(ammount) > -1 and disp_to_dec(ammount) < 256 then
+			ammount = zeropad(ammount, 2)
+			m1 = '6A' 
+		elsif disp_to_dec(ammount) > 255 and disp_to_dec(ammount) < 65536 then
+			ammount1 = littleend(zeropad(ammount, 8))
+			m1 = '68'
+			instruction_alt = objdump(m1 + ammount1)
+			printf("%-34s%-15s\n\n", m1 + ammount1, instruction_alt)	
+			sanity_check(m1 + ammount1, instruction)	#See if this output matches nasms
+			ammount2 = littleend(zeropad(ammount, 4))
+			m1 = '6668'
+			instruction_alt = objdump(m1 + ammount2)
+			printf("%-34s%-15s (WORD Sized Alternate)\n\n", m1 + ammount2, instruction_alt)	
+			return 1
+		elsif disp_to_dec(ammount) > 65535 and disp_to_dec(ammount) < 4294836226 then
+			ammount = littleend(zeropad(ammount, 8))
+			m1 = '68'
+		end 
+		instruction_alt = objdump(m1 + ammount)
+		printf("%-34s%-15s\n\n", m1 + ammount, instruction_alt)	
+		sanity_check(m1 + ammount, instruction)	#See if this output matches nasms
+		return 1
+	else return false end
+end
+
 #--------------------------------
 # 	Other Helper Routines		#
 #--------------------------------
@@ -3397,5 +3523,3 @@ def objdump (data)
 end
 
 main
-
-#Added BOUND instruction (OP reg, pointer)

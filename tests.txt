@@ -1120,3 +1120,1671 @@ Jz -1
 Jz -300
 Jz -70000
 Jz -0x30
+
+Limitted ModRM, ModRM:
+==================
+adcx [eax], ebx
+adcx [eax], bx
+adcx [eax], bl
+adcx ebx, [eax]
+adcx bx, [eax]
+adcx bl, [eax]
+adcx ebx, ecx
+adcx bx, cx
+adcx bl, cl
+adox [eax], ebx
+adox [eax], bx
+adox [eax], bl
+adox ebx, [eax]
+adox bx, [eax]
+adox bl, [eax]
+adox ebx, ecx
+adox bx, cx
+adox bl, cl
+arpl [eax], ebx
+arpl [eax], bx
+arpl [eax], bl
+arpl ebx, [eax]
+arpl bx, [eax]
+arpl bl, [eax]
+arpl ebx, ecx
+arpl bx, cx
+arpl bl, cl
+bsf [eax], ebx
+bsf [eax], bx
+bsf [eax], bl
+bsf ebx, [eax]
+bsf bx, [eax]
+bsf bl, [eax]
+bsf ebx, ecx
+bsf bx, cx
+bsf bl, cl
+bsr [eax], ebx
+bsr [eax], bx
+bsr [eax], bl
+bsr ebx, [eax]
+bsr bx, [eax]
+bsr bl, [eax]
+bsr ebx, ecx
+bsr bx, cx
+bsr bl, cl
+popcnt [eax], ebx
+popcnt [eax], bx
+popcnt [eax], bl
+popcnt ebx, [eax]
+popcnt bx, [eax]
+popcnt bl, [eax]
+popcnt ebx, ecx
+popcnt bx, cx
+popcnt bl, cl
+tzcnt [eax], ebx
+tzcnt [eax], bx
+tzcnt [eax], bl
+tzcnt ebx, [eax]
+tzcnt bx, [eax]
+tzcnt bl, [eax]
+tzcnt ebx, ecx
+tzcnt bx, cx
+tzcnt bl, cl
+vmwrite [eax], ebx
+vmwrite [eax], bx
+vmwrite [eax], bl
+vmwrite ebx, [eax]
+vmwrite bx, [eax]
+vmwrite bl, [eax]
+vmwrite ebx, ecx
+vmwrite bx, cx
+vmwrite bl, cl
+cmpxchg [eax], ebx
+cmpxchg [eax], bx
+cmpxchg [eax], bl
+cmpxchg ebx, [eax]
+cmpxchg bx, [eax]
+cmpxchg bl, [eax]
+cmpxchg ebx, ecx
+cmpxchg bx, cx
+cmpxchg bl, cl
+vmread [eax], ebx
+vmread [eax], bx
+vmread [eax], bl
+vmread ebx, [eax]
+vmread bx, [eax]
+vmread bl, [eax]
+vmread ebx, ecx
+vmread bx, cx
+vmread bl, cl
+xchg [eax], ebx
+xchg [eax], bx
+xchg [eax], bl
+xchg ebx, [eax]
+xchg bx, [eax]
+xchg bl, [eax]
+xchg ebx, ecx
+xchg bx, cx
+xchg bl, cl
+
+plusreg
+==================
+push eax
+push ebx
+push ecx
+push edx
+push esp
+push ebp
+push esi
+push edi
+push ax
+push bx
+push cx
+push dx
+push sp
+push bp
+push si
+push di
+dec ebx
+inc ebx
+pop ebx
+rdrand ebx
+rdseed ebx
+xchg ebx, eax
+cmova bx, cx
+
+cmov
+==================
+cmova ebx, ecx
+cmovae ebx, ecx
+cmovb ebx, ecx
+cmovbe ebx, ecx
+cmovc ebx, ecx
+cmove ebx, ecx
+cmovg ebx, ecx
+cmovge ebx, ecx
+cmovl ebx, ecx
+cmovle ebx, ecx
+cmovna ebx, ecx
+cmovnae ebx, ecx
+cmovnb ebx, ecx
+cmovnbe ebx, ecx
+cmovnc ebx, ecx
+cmovne ebx, ecx
+cmovng ebx, ecx
+cmovnl ebx, ecx
+cmovnle ebx, ecx
+cmovno ebx, ecx
+cmovnp ebx, ecx
+cmovns ebx, ecx
+cmovnz ebx, ecx
+cmovo ebx, ecx
+cmovp ebx, ecx
+cmovpe ebx, ecx
+cmovpo ebx, ecx
+cmovs ebx, ecx
+cmovz ebx, ecx
+cmova bx, cx
+cmovae bx, cx
+cmovb bx, cx
+cmovbe bx, cx
+cmovc bx, cx
+cmove bx, cx
+cmovg bx, cx
+cmovge bx, cx
+cmovl bx, cx
+cmovle bx, cx
+cmovna bx, cx
+cmovnae bx, cx
+cmovnb bx, cx
+cmovnbe bx, cx
+cmovnc bx, cx
+cmovne bx, cx
+cmovng bx, cx
+cmovnl bx, cx
+cmovnle bx, cx
+cmovno bx, cx
+cmovnp bx, cx
+cmovns bx, cx
+cmovnz bx, cx
+cmovo bx, cx
+cmovp bx, cx
+cmovpe bx, cx
+cmovpo bx, cx
+cmovs bx, cx
+cmovz bx, cx
+cmova bl, cl
+cmovae bl, cl
+cmovb bl, cl
+cmovbe bl, cl
+cmovc bl, cl
+cmove bl, cl
+cmovg bl, cl
+cmovge bl, cl
+cmovl bl, cl
+cmovle bl, cl
+cmovna bl, cl
+cmovnae bl, cl
+cmovnb bl, cl
+cmovnbe bl, cl
+cmovnc bl, cl
+cmovne bl, cl
+cmovng bl, cl
+cmovnl bl, cl
+cmovnle bl, cl
+cmovno bl, cl
+cmovnp bl, cl
+cmovns bl, cl
+cmovnz bl, cl
+cmovo bl, cl
+cmovp bl, cl
+cmovpe bl, cl
+cmovpo bl, cl
+cmovs bl, cl
+cmovz bl, cl
+cmova [eax + ebx], ebx
+cmova [eax + ebx], bx
+cmova [eax + ebx], bl
+cmova ebx, [eax + ebx]
+cmova bx, [eax + ebx]
+cmova bl, [eax + ebx]
+
+Op ModRM:
+==================
+sidt al
+sidt cl
+str dl
+str bl
+call ah
+call ch
+div dh
+div bh
+sidt ax
+sidt cx
+str dx
+str bx
+call sp
+call bp
+div si
+div di
+sidt eax
+sidt ecx
+str edx
+str ebx
+call esp
+call ebp
+div esi
+div edi
+sidt byte [eax]
+sidt word [eax]
+sidt dword [eax]
+str byte [eax]
+str word [eax]
+str dword [eax]
+call byte [eax]
+call word [eax]
+call dword [eax]
+div byte [eax]
+div word [eax]
+div dword [eax]
+sidt byte [0x01]
+sidt byte [1]
+sidt byte [eax - 3000000000]
+sidt byte [eax - 130]
+sidt byte [eax - 120]
+sidt byte [eax + 120]
+sidt byte [eax + 130]
+sidt byte [eax + 3000000000]
+sidt byte [eax]
+sidt byte [esp]
+sidt byte [ebp]
+sidt byte [eax * 1]
+sidt byte [esp * 1]
+sidt byte [ebp * 1]
+sidt byte [eax * 2]
+sidt byte [esp * 2]
+sidt byte [ebp * 2]
+sidt byte [eax * 4]
+sidt byte [esp * 4]
+sidt byte [ebp * 4]
+sidt byte [eax * 8]
+sidt byte [esp * 8]
+sidt byte [ebp * 8]
+sidt byte [eax + eax * 1]
+sidt byte [esp + eax * 1]
+sidt byte [ebp + eax * 1]
+sidt byte [eax + esp * 1]
+sidt byte [esp + esp * 1]
+sidt byte [ebp + esp * 1]
+sidt byte [eax + ebp * 1]
+sidt byte [esp + ebp * 1]
+sidt byte [ebp + ebp * 1]
+sidt byte [eax + eax]
+sidt byte [esp + eax]
+sidt byte [ebp + eax]
+sidt byte [eax + esp]
+sidt byte [esp + esp]
+sidt byte [ebp + esp]
+sidt byte [eax + ebp]
+sidt byte [esp + ebp]
+sidt byte [ebp + ebp]
+sidt byte [eax + eax * 2]
+sidt byte [esp + eax * 2]
+sidt byte [ebp + eax * 2]
+sidt byte [eax + esp * 2]
+sidt byte [esp + esp * 2]
+sidt byte [ebp + esp * 2]
+sidt byte [eax + ebp * 2]
+sidt byte [esp + ebp * 2]
+sidt byte [ebp + ebp * 2]
+sidt byte [eax + eax * 4]
+sidt byte [esp + eax * 4]
+sidt byte [ebp + eax * 4]
+sidt byte [eax + esp * 4]
+sidt byte [esp + esp * 4]
+sidt byte [ebp + esp * 4]
+sidt byte [eax + ebp * 4]
+sidt byte [esp + ebp * 4]
+sidt byte [ebp + ebp * 4]
+sidt byte [eax + eax * 8]
+sidt byte [esp + eax * 8]
+sidt byte [ebp + eax * 8]
+sidt byte [eax + esp * 8]
+sidt byte [esp + esp * 8]
+sidt byte [ebp + esp * 8]
+sidt byte [eax + ebp * 8]
+sidt byte [esp + ebp * 8]
+sidt byte [ebp + ebp * 8]
+sidt byte [eax + 0x77]
+sidt byte [esp + 0x77]
+sidt byte [ebp + 0x77]
+sidt byte [eax + 0x13371337]
+sidt byte [esp + 0x13371337]
+sidt byte [ebp + 0x13371337]
+sidt byte [eax + eax * 1 + 0x77]
+sidt byte [esp + eax * 1 + 0x77]
+sidt byte [ebp + eax * 1 + 0x77]
+sidt byte [eax + esp * 1 + 0x77]
+sidt byte [esp + esp * 1 + 0x77]
+sidt byte [ebp + esp * 1 + 0x77]
+sidt byte [eax + ebp * 1 + 0x77]
+sidt byte [esp + ebp * 1 + 0x77]
+sidt byte [ebp + ebp * 1 + 0x77]
+sidt byte [eax + eax + 0x77]
+sidt byte [esp + eax + 0x77]
+sidt byte [ebp + eax + 0x77]
+sidt byte [eax + esp + 0x77]
+sidt byte [esp + esp + 0x77]
+sidt byte [ebp + esp + 0x77]
+sidt byte [eax + ebp + 0x77]
+sidt byte [esp + ebp + 0x77]
+sidt byte [ebp + ebp + 0x77]
+sidt byte [eax + eax * 2 + 0x77]
+sidt byte [esp + eax * 2 + 0x77]
+sidt byte [ebp + eax * 2 + 0x77]
+sidt byte [eax + esp * 2 + 0x77]
+sidt byte [esp + esp * 2 + 0x77]
+sidt byte [ebp + esp * 2 + 0x77]
+sidt byte [eax + ebp * 2 + 0x77]
+sidt byte [esp + ebp * 2 + 0x77]
+sidt byte [ebp + ebp * 2 + 0x77]
+sidt byte [eax + eax * 4 + 0x77]
+sidt byte [esp + eax * 4 + 0x77]
+sidt byte [ebp + eax * 4 + 0x77]
+sidt byte [eax + esp * 4 + 0x77]
+sidt byte [esp + esp * 4 + 0x77]
+sidt byte [ebp + esp * 4 + 0x77]
+sidt byte [eax + ebp * 4 + 0x77]
+sidt byte [esp + ebp * 4 + 0x77]
+sidt byte [ebp + ebp * 4 + 0x77]
+sidt byte [eax + eax * 8 + 0x77]
+sidt byte [esp + eax * 8 + 0x77]
+sidt byte [ebp + eax * 8 + 0x77]
+sidt byte [eax + esp * 8 + 0x77]
+sidt byte [esp + esp * 8 + 0x77]
+sidt byte [ebp + esp * 8 + 0x77]
+sidt byte [eax + ebp * 8 + 0x77]
+sidt byte [esp + ebp * 8 + 0x77]
+sidt byte [ebp + ebp * 8 + 0x77]
+sidt byte [eax + eax * 1 + 0x13371337]
+sidt byte [esp + eax * 1 + 0x13371337]
+sidt byte [ebp + eax * 1 + 0x13371337]
+sidt byte [eax + esp * 1 + 0x13371337]
+sidt byte [esp + esp * 1 + 0x13371337]
+sidt byte [ebp + esp * 1 + 0x13371337]
+sidt byte [eax + ebp * 1 + 0x13371337]
+sidt byte [esp + ebp * 1 + 0x13371337]
+sidt byte [ebp + ebp * 1 + 0x13371337]
+sidt byte [eax + eax + 0x13371337]
+sidt byte [esp + eax + 0x13371337]
+sidt byte [ebp + eax + 0x13371337]
+sidt byte [eax + esp + 0x13371337]
+sidt byte [esp + esp + 0x13371337]
+sidt byte [ebp + esp + 0x13371337]
+sidt byte [eax + ebp + 0x13371337]
+sidt byte [esp + ebp + 0x13371337]
+sidt byte [ebp + ebp + 0x13371337]
+sidt byte [eax + eax * 2 + 0x13371337]
+sidt byte [esp + eax * 2 + 0x13371337]
+sidt byte [ebp + eax * 2 + 0x13371337]
+sidt byte [eax + esp * 2 + 0x13371337]
+sidt byte [esp + esp * 2 + 0x13371337]
+sidt byte [ebp + esp * 2 + 0x13371337]
+sidt byte [eax + ebp * 2 + 0x13371337]
+sidt byte [esp + ebp * 2 + 0x13371337]
+sidt byte [ebp + ebp * 2 + 0x13371337]
+sidt byte [eax + eax * 4 + 0x13371337]
+sidt byte [esp + eax * 4 + 0x13371337]
+sidt byte [ebp + eax * 4 + 0x13371337]
+sidt byte [eax + esp * 4 + 0x13371337]
+sidt byte [esp + esp * 4 + 0x13371337]
+sidt byte [ebp + esp * 4 + 0x13371337]
+sidt byte [eax + ebp * 4 + 0x13371337]
+sidt byte [esp + ebp * 4 + 0x13371337]
+sidt byte [ebp + ebp * 4 + 0x13371337]
+sidt byte [eax + eax * 8 + 0x13371337]
+sidt byte [esp + eax * 8 + 0x13371337]
+sidt byte [ebp + eax * 8 + 0x13371337]
+sidt byte [eax + esp * 8 + 0x13371337]
+sidt byte [esp + esp * 8 + 0x13371337]
+sidt byte [ebp + esp * 8 + 0x13371337]
+sidt byte [eax + ebp * 8 + 0x13371337]
+sidt byte [esp + ebp * 8 + 0x13371337]
+sidt byte [ebp + ebp * 8 + 0x13371337]
+sidt byte [eax * 1 + 0x77]
+sidt byte [esp * 1 + 0x77]
+sidt byte [ebp * 1 + 0x77]
+sidt byte [eax * 2 + 0x77]
+sidt byte [esp * 2 + 0x77]
+sidt byte [ebp * 2 + 0x77]
+sidt byte [eax * 4 + 0x77]
+sidt byte [esp * 4 + 0x77]
+sidt byte [ebp * 4 + 0x77]
+sidt byte [eax * 8 + 0x77]
+sidt byte [esp * 8 + 0x77]
+sidt byte [ebp * 8 + 0x77]
+sidt byte [eax * 1 + 0x13371337]
+sidt byte [esp * 1 + 0x13371337]
+sidt byte [ebp * 1 + 0x13371337]
+sidt byte [eax * 2 + 0x13371337]
+sidt byte [esp * 2 + 0x13371337]
+sidt byte [ebp * 2 + 0x13371337]
+sidt byte [eax * 4 + 0x13371337]
+sidt byte [esp * 4 + 0x13371337]
+sidt byte [ebp * 4 + 0x13371337]
+sidt byte [eax * 8 + 0x13371337]
+sidt byte [esp * 8 + 0x13371337]
+sidt byte [ebp * 8 + 0x13371337]
+sidt byte [eax - 4294967292]
+sidt byte [eax - 3000000000]
+sidt byte [eax - 130]
+sidt byte [eax - 7]
+sidt byte [eax + 7]
+sidt byte [eax + 130]
+sidt byte [eax + 3000000000]
+sidt byte [eax - 0xfffffffc]
+sidt byte [eax - 0xfc]
+sidt byte [eax - 0x07]
+sidt byte [eax + 0x07]
+sidt byte [eax + 0xfc]
+sidt byte [eax + 0xfffffffc]
+sidt byte [eax + 4294967292]
+sidt byte [eax -4294967292]
+sidt byte [eax -3000000000]
+sidt byte [eax -130]
+sidt byte [eax -7]
+sidt byte [eax +7]
+sidt byte [eax +130]
+sidt byte [eax +3000000000]
+sidt byte [eax -0xfffffffc]
+sidt byte [eax -0xfc]
+sidt byte [eax -0x07]
+sidt byte [eax +0x07]
+sidt byte [eax +0xfc]
+sidt byte [eax +0xfffffffc]
+sidt byte [eax +4294967292]
+sidt byte [eax- 4294967292]
+sidt byte [eax- 3000000000]
+sidt byte [eax- 130]
+sidt byte [eax- 7]
+sidt byte [eax+ 7]
+sidt byte [eax+ 130]
+sidt byte [eax+ 3000000000]
+sidt byte [eax- 0xfffffffc]
+sidt byte [eax- 0xfc]
+sidt byte [eax- 0x07]
+sidt byte [eax+ 0x07]
+sidt byte [eax+ 0xfc]
+sidt byte [eax+ 0xfffffffc]
+sidt byte [eax+ 4294967292]
+sidt byte [eax-4294967292]
+sidt byte [eax-3000000000]
+sidt byte [eax-130]
+sidt byte [eax-7]
+sidt byte [eax+7]
+sidt byte [eax+130]
+sidt byte [eax+3000000000]
+sidt byte [eax-0xfffffffc]
+sidt byte [eax-0xfc]
+sidt byte [eax-0x07]
+sidt byte [eax+0x07]
+sidt byte [eax+0xfc]
+sidt byte [eax+0xfffffffc]
+sidt byte [eax+4294967292]
+sidt byte [eax + ebx]
+sidt byte [esp + eax]
+sidt byte [eax + ebp]
+sidt byte [ebp + eax]
+sidt byte [eax + esp * 2]
+sidt byte [eax + 130]
+sidt byte [eax - 130]
+sidt byte [eax + 5]
+sidt byte [eax - 5]
+sidt byte [eax]
+sidt byte [ebp + 0x33]
+sidt byte [ebp + 0x33333333]
+sidt byte [esp]
+sidt byte [eax * 1]
+sidt byte [eax * 4]
+sidt byte [ebp * 4]
+sidt byte [eax * 8]
+sidt byte [ebp * 8]
+sidt byte [eax + ebp]
+sidt byte [ebp + ebp]
+sidt byte [eax * 4 + 0x77]
+sidt byte [ebp * 4 + 0x77]
+sidt byte [ebp * 8 + 0x77]
+str word [0x01]
+str word [1]
+str word [eax - 3000000000]
+str word [eax - 130]
+str word [eax - 120]
+str word [eax + 120]
+str word [eax + 130]
+str word [eax + 3000000000]
+str word [eax]
+str word [esp]
+str word [ebp]
+str word [eax * 1]
+str word [esp * 1]
+str word [ebp * 1]
+str word [eax * 2]
+str word [esp * 2]
+str word [ebp * 2]
+str word [eax * 4]
+str word [esp * 4]
+str word [ebp * 4]
+str word [eax * 8]
+str word [esp * 8]
+str word [ebp * 8]
+str word [eax + eax * 1]
+str word [esp + eax * 1]
+str word [ebp + eax * 1]
+str word [eax + esp * 1]
+str word [esp + esp * 1]
+str word [ebp + esp * 1]
+str word [eax + ebp * 1]
+str word [esp + ebp * 1]
+str word [ebp + ebp * 1]
+str word [eax + eax]
+str word [esp + eax]
+str word [ebp + eax]
+str word [eax + esp]
+str word [esp + esp]
+str word [ebp + esp]
+str word [eax + ebp]
+str word [esp + ebp]
+str word [ebp + ebp]
+str word [eax + eax * 2]
+str word [esp + eax * 2]
+str word [ebp + eax * 2]
+str word [eax + esp * 2]
+str word [esp + esp * 2]
+str word [ebp + esp * 2]
+str word [eax + ebp * 2]
+str word [esp + ebp * 2]
+str word [ebp + ebp * 2]
+str word [eax + eax * 4]
+str word [esp + eax * 4]
+str word [ebp + eax * 4]
+str word [eax + esp * 4]
+str word [esp + esp * 4]
+str word [ebp + esp * 4]
+str word [eax + ebp * 4]
+str word [esp + ebp * 4]
+str word [ebp + ebp * 4]
+str word [eax + eax * 8]
+str word [esp + eax * 8]
+str word [ebp + eax * 8]
+str word [eax + esp * 8]
+str word [esp + esp * 8]
+str word [ebp + esp * 8]
+str word [eax + ebp * 8]
+str word [esp + ebp * 8]
+str word [ebp + ebp * 8]
+str word [eax + 0x77]
+str word [esp + 0x77]
+str word [ebp + 0x77]
+str word [eax + 0x13371337]
+str word [esp + 0x13371337]
+str word [ebp + 0x13371337]
+str word [eax + eax * 1 + 0x77]
+str word [esp + eax * 1 + 0x77]
+str word [ebp + eax * 1 + 0x77]
+str word [eax + esp * 1 + 0x77]
+str word [esp + esp * 1 + 0x77]
+str word [ebp + esp * 1 + 0x77]
+str word [eax + ebp * 1 + 0x77]
+str word [esp + ebp * 1 + 0x77]
+str word [ebp + ebp * 1 + 0x77]
+str word [eax + eax + 0x77]
+str word [esp + eax + 0x77]
+str word [ebp + eax + 0x77]
+str word [eax + esp + 0x77]
+str word [esp + esp + 0x77]
+str word [ebp + esp + 0x77]
+str word [eax + ebp + 0x77]
+str word [esp + ebp + 0x77]
+str word [ebp + ebp + 0x77]
+str word [eax + eax * 2 + 0x77]
+str word [esp + eax * 2 + 0x77]
+str word [ebp + eax * 2 + 0x77]
+str word [eax + esp * 2 + 0x77]
+str word [esp + esp * 2 + 0x77]
+str word [ebp + esp * 2 + 0x77]
+str word [eax + ebp * 2 + 0x77]
+str word [esp + ebp * 2 + 0x77]
+str word [ebp + ebp * 2 + 0x77]
+str word [eax + eax * 4 + 0x77]
+str word [esp + eax * 4 + 0x77]
+str word [ebp + eax * 4 + 0x77]
+str word [eax + esp * 4 + 0x77]
+str word [esp + esp * 4 + 0x77]
+str word [ebp + esp * 4 + 0x77]
+str word [eax + ebp * 4 + 0x77]
+str word [esp + ebp * 4 + 0x77]
+str word [ebp + ebp * 4 + 0x77]
+str word [eax + eax * 8 + 0x77]
+str word [esp + eax * 8 + 0x77]
+str word [ebp + eax * 8 + 0x77]
+str word [eax + esp * 8 + 0x77]
+str word [esp + esp * 8 + 0x77]
+str word [ebp + esp * 8 + 0x77]
+str word [eax + ebp * 8 + 0x77]
+str word [esp + ebp * 8 + 0x77]
+str word [ebp + ebp * 8 + 0x77]
+str word [eax + eax * 1 + 0x13371337]
+str word [esp + eax * 1 + 0x13371337]
+str word [ebp + eax * 1 + 0x13371337]
+str word [eax + esp * 1 + 0x13371337]
+str word [esp + esp * 1 + 0x13371337]
+str word [ebp + esp * 1 + 0x13371337]
+str word [eax + ebp * 1 + 0x13371337]
+str word [esp + ebp * 1 + 0x13371337]
+str word [ebp + ebp * 1 + 0x13371337]
+str word [eax + eax + 0x13371337]
+str word [esp + eax + 0x13371337]
+str word [ebp + eax + 0x13371337]
+str word [eax + esp + 0x13371337]
+str word [esp + esp + 0x13371337]
+str word [ebp + esp + 0x13371337]
+str word [eax + ebp + 0x13371337]
+str word [esp + ebp + 0x13371337]
+str word [ebp + ebp + 0x13371337]
+str word [eax + eax * 2 + 0x13371337]
+str word [esp + eax * 2 + 0x13371337]
+str word [ebp + eax * 2 + 0x13371337]
+str word [eax + esp * 2 + 0x13371337]
+str word [esp + esp * 2 + 0x13371337]
+str word [ebp + esp * 2 + 0x13371337]
+str word [eax + ebp * 2 + 0x13371337]
+str word [esp + ebp * 2 + 0x13371337]
+str word [ebp + ebp * 2 + 0x13371337]
+str word [eax + eax * 4 + 0x13371337]
+str word [esp + eax * 4 + 0x13371337]
+str word [ebp + eax * 4 + 0x13371337]
+str word [eax + esp * 4 + 0x13371337]
+str word [esp + esp * 4 + 0x13371337]
+str word [ebp + esp * 4 + 0x13371337]
+str word [eax + ebp * 4 + 0x13371337]
+str word [esp + ebp * 4 + 0x13371337]
+str word [ebp + ebp * 4 + 0x13371337]
+str word [eax + eax * 8 + 0x13371337]
+str word [esp + eax * 8 + 0x13371337]
+str word [ebp + eax * 8 + 0x13371337]
+str word [eax + esp * 8 + 0x13371337]
+str word [esp + esp * 8 + 0x13371337]
+str word [ebp + esp * 8 + 0x13371337]
+str word [eax + ebp * 8 + 0x13371337]
+str word [esp + ebp * 8 + 0x13371337]
+str word [ebp + ebp * 8 + 0x13371337]
+str word [eax * 1 + 0x77]
+str word [esp * 1 + 0x77]
+str word [ebp * 1 + 0x77]
+str word [eax * 2 + 0x77]
+str word [esp * 2 + 0x77]
+str word [ebp * 2 + 0x77]
+str word [eax * 4 + 0x77]
+str word [esp * 4 + 0x77]
+str word [ebp * 4 + 0x77]
+str word [eax * 8 + 0x77]
+str word [esp * 8 + 0x77]
+str word [ebp * 8 + 0x77]
+str word [eax * 1 + 0x13371337]
+str word [esp * 1 + 0x13371337]
+str word [ebp * 1 + 0x13371337]
+str word [eax * 2 + 0x13371337]
+str word [esp * 2 + 0x13371337]
+str word [ebp * 2 + 0x13371337]
+str word [eax * 4 + 0x13371337]
+str word [esp * 4 + 0x13371337]
+str word [ebp * 4 + 0x13371337]
+str word [eax * 8 + 0x13371337]
+str word [esp * 8 + 0x13371337]
+str word [ebp * 8 + 0x13371337]
+str word [eax - 4294967292]
+str word [eax - 3000000000]
+str word [eax - 130]
+str word [eax - 7]
+str word [eax + 7]
+str word [eax + 130]
+str word [eax + 3000000000]
+str word [eax - 0xfffffffc]
+str word [eax - 0xfc]
+str word [eax - 0x07]
+str word [eax + 0x07]
+str word [eax + 0xfc]
+str word [eax + 0xfffffffc]
+str word [eax + 4294967292]
+str word [eax -4294967292]
+str word [eax -3000000000]
+str word [eax -130]
+str word [eax -7]
+str word [eax +7]
+str word [eax +130]
+str word [eax +3000000000]
+str word [eax -0xfffffffc]
+str word [eax -0xfc]
+str word [eax -0x07]
+str word [eax +0x07]
+str word [eax +0xfc]
+str word [eax +0xfffffffc]
+str word [eax +4294967292]
+str word [eax- 4294967292]
+str word [eax- 3000000000]
+str word [eax- 130]
+str word [eax- 7]
+str word [eax+ 7]
+str word [eax+ 130]
+str word [eax+ 3000000000]
+str word [eax- 0xfffffffc]
+str word [eax- 0xfc]
+str word [eax- 0x07]
+str word [eax+ 0x07]
+str word [eax+ 0xfc]
+str word [eax+ 0xfffffffc]
+str word [eax+ 4294967292]
+str word [eax-4294967292]
+str word [eax-3000000000]
+str word [eax-130]
+str word [eax-7]
+str word [eax+7]
+str word [eax+130]
+str word [eax+3000000000]
+str word [eax-0xfffffffc]
+str word [eax-0xfc]
+str word [eax-0x07]
+str word [eax+0x07]
+str word [eax+0xfc]
+str word [eax+0xfffffffc]
+str word [eax+4294967292]
+str word [eax + ebx]
+str word [esp + eax]
+str word [eax + ebp]
+str word [ebp + eax]
+str word [eax + esp * 2]
+str word [eax + 130]
+str word [eax - 130]
+str word [eax + 5]
+str word [eax - 5]
+str word [eax]
+str word [ebp + 0x33]
+str word [ebp + 0x33333333]
+str word [esp]
+str word [eax * 1]
+str word [eax * 4]
+str word [ebp * 4]
+str word [eax * 8]
+str word [ebp * 8]
+str word [eax + ebp]
+str word [ebp + ebp]
+str word [eax * 4 + 0x77]
+str word [ebp * 4 + 0x77]
+str word [ebp * 8 + 0x77]
+call word [0x01]
+call word [1]
+call word [eax - 3000000000]
+call word [eax - 130]
+call word [eax - 120]
+call word [eax + 120]
+call word [eax + 130]
+call word [eax + 3000000000]
+call word [eax]
+call word [esp]
+call word [ebp]
+call word [eax * 1]
+call word [esp * 1]
+call word [ebp * 1]
+call word [eax * 2]
+call word [esp * 2]
+call word [ebp * 2]
+call word [eax * 4]
+call word [esp * 4]
+call word [ebp * 4]
+call word [eax * 8]
+call word [esp * 8]
+call word [ebp * 8]
+call word [eax + eax * 1]
+call word [esp + eax * 1]
+call word [ebp + eax * 1]
+call word [eax + esp * 1]
+call word [esp + esp * 1]
+call word [ebp + esp * 1]
+call word [eax + ebp * 1]
+call word [esp + ebp * 1]
+call word [ebp + ebp * 1]
+call word [eax + eax]
+call word [esp + eax]
+call word [ebp + eax]
+call word [eax + esp]
+call word [esp + esp]
+call word [ebp + esp]
+call word [eax + ebp]
+call word [esp + ebp]
+call word [ebp + ebp]
+call word [eax + eax * 2]
+call word [esp + eax * 2]
+call word [ebp + eax * 2]
+call word [eax + esp * 2]
+call word [esp + esp * 2]
+call word [ebp + esp * 2]
+call word [eax + ebp * 2]
+call word [esp + ebp * 2]
+call word [ebp + ebp * 2]
+call word [eax + eax * 4]
+call word [esp + eax * 4]
+call word [ebp + eax * 4]
+call word [eax + esp * 4]
+call word [esp + esp * 4]
+call word [ebp + esp * 4]
+call word [eax + ebp * 4]
+call word [esp + ebp * 4]
+call word [ebp + ebp * 4]
+call word [eax + eax * 8]
+call word [esp + eax * 8]
+call word [ebp + eax * 8]
+call word [eax + esp * 8]
+call word [esp + esp * 8]
+call word [ebp + esp * 8]
+call word [eax + ebp * 8]
+call word [esp + ebp * 8]
+call word [ebp + ebp * 8]
+call word [eax + 0x77]
+call word [esp + 0x77]
+call word [ebp + 0x77]
+call word [eax + 0x13371337]
+call word [esp + 0x13371337]
+call word [ebp + 0x13371337]
+call word [eax + eax * 1 + 0x77]
+call word [esp + eax * 1 + 0x77]
+call word [ebp + eax * 1 + 0x77]
+call word [eax + esp * 1 + 0x77]
+call word [esp + esp * 1 + 0x77]
+call word [ebp + esp * 1 + 0x77]
+call word [eax + ebp * 1 + 0x77]
+call word [esp + ebp * 1 + 0x77]
+call word [ebp + ebp * 1 + 0x77]
+call word [eax + eax + 0x77]
+call word [esp + eax + 0x77]
+call word [ebp + eax + 0x77]
+call word [eax + esp + 0x77]
+call word [esp + esp + 0x77]
+call word [ebp + esp + 0x77]
+call word [eax + ebp + 0x77]
+call word [esp + ebp + 0x77]
+call word [ebp + ebp + 0x77]
+call word [eax + eax * 2 + 0x77]
+call word [esp + eax * 2 + 0x77]
+call word [ebp + eax * 2 + 0x77]
+call word [eax + esp * 2 + 0x77]
+call word [esp + esp * 2 + 0x77]
+call word [ebp + esp * 2 + 0x77]
+call word [eax + ebp * 2 + 0x77]
+call word [esp + ebp * 2 + 0x77]
+call word [ebp + ebp * 2 + 0x77]
+call word [eax + eax * 4 + 0x77]
+call word [esp + eax * 4 + 0x77]
+call word [ebp + eax * 4 + 0x77]
+call word [eax + esp * 4 + 0x77]
+call word [esp + esp * 4 + 0x77]
+call word [ebp + esp * 4 + 0x77]
+call word [eax + ebp * 4 + 0x77]
+call word [esp + ebp * 4 + 0x77]
+call word [ebp + ebp * 4 + 0x77]
+call word [eax + eax * 8 + 0x77]
+call word [esp + eax * 8 + 0x77]
+call word [ebp + eax * 8 + 0x77]
+call word [eax + esp * 8 + 0x77]
+call word [esp + esp * 8 + 0x77]
+call word [ebp + esp * 8 + 0x77]
+call word [eax + ebp * 8 + 0x77]
+call word [esp + ebp * 8 + 0x77]
+call word [ebp + ebp * 8 + 0x77]
+call word [eax + eax * 1 + 0x13371337]
+call word [esp + eax * 1 + 0x13371337]
+call word [ebp + eax * 1 + 0x13371337]
+call word [eax + esp * 1 + 0x13371337]
+call word [esp + esp * 1 + 0x13371337]
+call word [ebp + esp * 1 + 0x13371337]
+call word [eax + ebp * 1 + 0x13371337]
+call word [esp + ebp * 1 + 0x13371337]
+call word [ebp + ebp * 1 + 0x13371337]
+call word [eax + eax + 0x13371337]
+call word [esp + eax + 0x13371337]
+call word [ebp + eax + 0x13371337]
+call word [eax + esp + 0x13371337]
+call word [esp + esp + 0x13371337]
+call word [ebp + esp + 0x13371337]
+call word [eax + ebp + 0x13371337]
+call word [esp + ebp + 0x13371337]
+call word [ebp + ebp + 0x13371337]
+call word [eax + eax * 2 + 0x13371337]
+call word [esp + eax * 2 + 0x13371337]
+call word [ebp + eax * 2 + 0x13371337]
+call word [eax + esp * 2 + 0x13371337]
+call word [esp + esp * 2 + 0x13371337]
+call word [ebp + esp * 2 + 0x13371337]
+call word [eax + ebp * 2 + 0x13371337]
+call word [esp + ebp * 2 + 0x13371337]
+call word [ebp + ebp * 2 + 0x13371337]
+call word [eax + eax * 4 + 0x13371337]
+call word [esp + eax * 4 + 0x13371337]
+call word [ebp + eax * 4 + 0x13371337]
+call word [eax + esp * 4 + 0x13371337]
+call word [esp + esp * 4 + 0x13371337]
+call word [ebp + esp * 4 + 0x13371337]
+call word [eax + ebp * 4 + 0x13371337]
+call word [esp + ebp * 4 + 0x13371337]
+call word [ebp + ebp * 4 + 0x13371337]
+call word [eax + eax * 8 + 0x13371337]
+call word [esp + eax * 8 + 0x13371337]
+call word [ebp + eax * 8 + 0x13371337]
+call word [eax + esp * 8 + 0x13371337]
+call word [esp + esp * 8 + 0x13371337]
+call word [ebp + esp * 8 + 0x13371337]
+call word [eax + ebp * 8 + 0x13371337]
+call word [esp + ebp * 8 + 0x13371337]
+call word [ebp + ebp * 8 + 0x13371337]
+call word [eax * 1 + 0x77]
+call word [esp * 1 + 0x77]
+call word [ebp * 1 + 0x77]
+call word [eax * 2 + 0x77]
+call word [esp * 2 + 0x77]
+call word [ebp * 2 + 0x77]
+call word [eax * 4 + 0x77]
+call word [esp * 4 + 0x77]
+call word [ebp * 4 + 0x77]
+call word [eax * 8 + 0x77]
+call word [esp * 8 + 0x77]
+call word [ebp * 8 + 0x77]
+call word [eax * 1 + 0x13371337]
+call word [esp * 1 + 0x13371337]
+call word [ebp * 1 + 0x13371337]
+call word [eax * 2 + 0x13371337]
+call word [esp * 2 + 0x13371337]
+call word [ebp * 2 + 0x13371337]
+call word [eax * 4 + 0x13371337]
+call word [esp * 4 + 0x13371337]
+call word [ebp * 4 + 0x13371337]
+call word [eax * 8 + 0x13371337]
+call word [esp * 8 + 0x13371337]
+call word [ebp * 8 + 0x13371337]
+call word [eax - 4294967292]
+call word [eax - 3000000000]
+call word [eax - 130]
+call word [eax - 7]
+call word [eax + 7]
+call word [eax + 130]
+call word [eax + 3000000000]
+call word [eax - 0xfffffffc]
+call word [eax - 0xfc]
+call word [eax - 0x07]
+call word [eax + 0x07]
+call word [eax + 0xfc]
+call word [eax + 0xfffffffc]
+call word [eax + 4294967292]
+call word [eax -4294967292]
+call word [eax -3000000000]
+call word [eax -130]
+call word [eax -7]
+call word [eax +7]
+call word [eax +130]
+call word [eax +3000000000]
+call word [eax -0xfffffffc]
+call word [eax -0xfc]
+call word [eax -0x07]
+call word [eax +0x07]
+call word [eax +0xfc]
+call word [eax +0xfffffffc]
+call word [eax +4294967292]
+call word [eax- 4294967292]
+call word [eax- 3000000000]
+call word [eax- 130]
+call word [eax- 7]
+call word [eax+ 7]
+call word [eax+ 130]
+call word [eax+ 3000000000]
+call word [eax- 0xfffffffc]
+call word [eax- 0xfc]
+call word [eax- 0x07]
+call word [eax+ 0x07]
+call word [eax+ 0xfc]
+call word [eax+ 0xfffffffc]
+call word [eax+ 4294967292]
+call word [eax-4294967292]
+call word [eax-3000000000]
+call word [eax-130]
+call word [eax-7]
+call word [eax+7]
+call word [eax+130]
+call word [eax+3000000000]
+call word [eax-0xfffffffc]
+call word [eax-0xfc]
+call word [eax-0x07]
+call word [eax+0x07]
+call word [eax+0xfc]
+call word [eax+0xfffffffc]
+call word [eax+4294967292]
+call word [eax + ebx]
+call word [esp + eax]
+call word [eax + ebp]
+call word [ebp + eax]
+call word [eax + esp * 2]
+call word [eax + 130]
+call word [eax - 130]
+call word [eax + 5]
+call word [eax - 5]
+call word [eax]
+call word [ebp + 0x33]
+call word [ebp + 0x33333333]
+call word [esp]
+call word [eax * 1]
+call word [eax * 4]
+call word [ebp * 4]
+call word [eax * 8]
+call word [ebp * 8]
+call word [eax + ebp]
+call word [ebp + ebp]
+call word [eax * 4 + 0x77]
+call word [ebp * 4 + 0x77]
+call word [ebp * 8 + 0x77]
+div word [0x01]
+div word [1]
+div word [eax - 3000000000]
+div word [eax - 130]
+div word [eax - 120]
+div word [eax + 120]
+div word [eax + 130]
+div word [eax + 3000000000]
+div word [eax]
+div word [esp]
+div word [ebp]
+div word [eax * 1]
+div word [esp * 1]
+div word [ebp * 1]
+div word [eax * 2]
+div word [esp * 2]
+div word [ebp * 2]
+div word [eax * 4]
+div word [esp * 4]
+div word [ebp * 4]
+div word [eax * 8]
+div word [esp * 8]
+div word [ebp * 8]
+div word [eax + eax * 1]
+div word [esp + eax * 1]
+div word [ebp + eax * 1]
+div word [eax + esp * 1]
+div word [esp + esp * 1]
+div word [ebp + esp * 1]
+div word [eax + ebp * 1]
+div word [esp + ebp * 1]
+div word [ebp + ebp * 1]
+div word [eax + eax]
+div word [esp + eax]
+div word [ebp + eax]
+div word [eax + esp]
+div word [esp + esp]
+div word [ebp + esp]
+div word [eax + ebp]
+div word [esp + ebp]
+div word [ebp + ebp]
+div word [eax + eax * 2]
+div word [esp + eax * 2]
+div word [ebp + eax * 2]
+div word [eax + esp * 2]
+div word [esp + esp * 2]
+div word [ebp + esp * 2]
+div word [eax + ebp * 2]
+div word [esp + ebp * 2]
+div word [ebp + ebp * 2]
+div word [eax + eax * 4]
+div word [esp + eax * 4]
+div word [ebp + eax * 4]
+div word [eax + esp * 4]
+div word [esp + esp * 4]
+div word [ebp + esp * 4]
+div word [eax + ebp * 4]
+div word [esp + ebp * 4]
+div word [ebp + ebp * 4]
+div word [eax + eax * 8]
+div word [esp + eax * 8]
+div word [ebp + eax * 8]
+div word [eax + esp * 8]
+div word [esp + esp * 8]
+div word [ebp + esp * 8]
+div word [eax + ebp * 8]
+div word [esp + ebp * 8]
+div word [ebp + ebp * 8]
+div word [eax + 0x77]
+div word [esp + 0x77]
+div word [ebp + 0x77]
+div word [eax + 0x13371337]
+div word [esp + 0x13371337]
+div word [ebp + 0x13371337]
+div word [eax + eax * 1 + 0x77]
+div word [esp + eax * 1 + 0x77]
+div word [ebp + eax * 1 + 0x77]
+div word [eax + esp * 1 + 0x77]
+div word [esp + esp * 1 + 0x77]
+div word [ebp + esp * 1 + 0x77]
+div word [eax + ebp * 1 + 0x77]
+div word [esp + ebp * 1 + 0x77]
+div word [ebp + ebp * 1 + 0x77]
+div word [eax + eax + 0x77]
+div word [esp + eax + 0x77]
+div word [ebp + eax + 0x77]
+div word [eax + esp + 0x77]
+div word [esp + esp + 0x77]
+div word [ebp + esp + 0x77]
+div word [eax + ebp + 0x77]
+div word [esp + ebp + 0x77]
+div word [ebp + ebp + 0x77]
+div word [eax + eax * 2 + 0x77]
+div word [esp + eax * 2 + 0x77]
+div word [ebp + eax * 2 + 0x77]
+div word [eax + esp * 2 + 0x77]
+div word [esp + esp * 2 + 0x77]
+div word [ebp + esp * 2 + 0x77]
+div word [eax + ebp * 2 + 0x77]
+div word [esp + ebp * 2 + 0x77]
+div word [ebp + ebp * 2 + 0x77]
+div word [eax + eax * 4 + 0x77]
+div word [esp + eax * 4 + 0x77]
+div word [ebp + eax * 4 + 0x77]
+div word [eax + esp * 4 + 0x77]
+div word [esp + esp * 4 + 0x77]
+div word [ebp + esp * 4 + 0x77]
+div word [eax + ebp * 4 + 0x77]
+div word [esp + ebp * 4 + 0x77]
+div word [ebp + ebp * 4 + 0x77]
+div word [eax + eax * 8 + 0x77]
+div word [esp + eax * 8 + 0x77]
+div word [ebp + eax * 8 + 0x77]
+div word [eax + esp * 8 + 0x77]
+div word [esp + esp * 8 + 0x77]
+div word [ebp + esp * 8 + 0x77]
+div word [eax + ebp * 8 + 0x77]
+div word [esp + ebp * 8 + 0x77]
+div word [ebp + ebp * 8 + 0x77]
+div word [eax + eax * 1 + 0x13371337]
+div word [esp + eax * 1 + 0x13371337]
+div word [ebp + eax * 1 + 0x13371337]
+div word [eax + esp * 1 + 0x13371337]
+div word [esp + esp * 1 + 0x13371337]
+div word [ebp + esp * 1 + 0x13371337]
+div word [eax + ebp * 1 + 0x13371337]
+div word [esp + ebp * 1 + 0x13371337]
+div word [ebp + ebp * 1 + 0x13371337]
+div word [eax + eax + 0x13371337]
+div word [esp + eax + 0x13371337]
+div word [ebp + eax + 0x13371337]
+div word [eax + esp + 0x13371337]
+div word [esp + esp + 0x13371337]
+div word [ebp + esp + 0x13371337]
+div word [eax + ebp + 0x13371337]
+div word [esp + ebp + 0x13371337]
+div word [ebp + ebp + 0x13371337]
+div word [eax + eax * 2 + 0x13371337]
+div word [esp + eax * 2 + 0x13371337]
+div word [ebp + eax * 2 + 0x13371337]
+div word [eax + esp * 2 + 0x13371337]
+div word [esp + esp * 2 + 0x13371337]
+div word [ebp + esp * 2 + 0x13371337]
+div word [eax + ebp * 2 + 0x13371337]
+div word [esp + ebp * 2 + 0x13371337]
+div word [ebp + ebp * 2 + 0x13371337]
+div word [eax + eax * 4 + 0x13371337]
+div word [esp + eax * 4 + 0x13371337]
+div word [ebp + eax * 4 + 0x13371337]
+div word [eax + esp * 4 + 0x13371337]
+div word [esp + esp * 4 + 0x13371337]
+div word [ebp + esp * 4 + 0x13371337]
+div word [eax + ebp * 4 + 0x13371337]
+div word [esp + ebp * 4 + 0x13371337]
+div word [ebp + ebp * 4 + 0x13371337]
+div word [eax + eax * 8 + 0x13371337]
+div word [esp + eax * 8 + 0x13371337]
+div word [ebp + eax * 8 + 0x13371337]
+div word [eax + esp * 8 + 0x13371337]
+div word [esp + esp * 8 + 0x13371337]
+div word [ebp + esp * 8 + 0x13371337]
+div word [eax + ebp * 8 + 0x13371337]
+div word [esp + ebp * 8 + 0x13371337]
+div word [ebp + ebp * 8 + 0x13371337]
+div word [eax * 1 + 0x77]
+div word [esp * 1 + 0x77]
+div word [ebp * 1 + 0x77]
+div word [eax * 2 + 0x77]
+div word [esp * 2 + 0x77]
+div word [ebp * 2 + 0x77]
+div word [eax * 4 + 0x77]
+div word [esp * 4 + 0x77]
+div word [ebp * 4 + 0x77]
+div word [eax * 8 + 0x77]
+div word [esp * 8 + 0x77]
+div word [ebp * 8 + 0x77]
+div word [eax * 1 + 0x13371337]
+div word [esp * 1 + 0x13371337]
+div word [ebp * 1 + 0x13371337]
+div word [eax * 2 + 0x13371337]
+div word [esp * 2 + 0x13371337]
+div word [ebp * 2 + 0x13371337]
+div word [eax * 4 + 0x13371337]
+div word [esp * 4 + 0x13371337]
+div word [ebp * 4 + 0x13371337]
+div word [eax * 8 + 0x13371337]
+div word [esp * 8 + 0x13371337]
+div word [ebp * 8 + 0x13371337]
+div word [eax - 4294967292]
+div word [eax - 3000000000]
+div word [eax - 130]
+div word [eax - 7]
+div word [eax + 7]
+div word [eax + 130]
+div word [eax + 3000000000]
+div word [eax - 0xfffffffc]
+div word [eax - 0xfc]
+div word [eax - 0x07]
+div word [eax + 0x07]
+div word [eax + 0xfc]
+div word [eax + 0xfffffffc]
+div word [eax + 4294967292]
+div word [eax -4294967292]
+div word [eax -3000000000]
+div word [eax -130]
+div word [eax -7]
+div word [eax +7]
+div word [eax +130]
+div word [eax +3000000000]
+div word [eax -0xfffffffc]
+div word [eax -0xfc]
+div word [eax -0x07]
+div word [eax +0x07]
+div word [eax +0xfc]
+div word [eax +0xfffffffc]
+div word [eax +4294967292]
+div word [eax- 4294967292]
+div word [eax- 3000000000]
+div word [eax- 130]
+div word [eax- 7]
+div word [eax+ 7]
+div word [eax+ 130]
+div word [eax+ 3000000000]
+div word [eax- 0xfffffffc]
+div word [eax- 0xfc]
+div word [eax- 0x07]
+div word [eax+ 0x07]
+div word [eax+ 0xfc]
+div word [eax+ 0xfffffffc]
+div word [eax+ 4294967292]
+div word [eax-4294967292]
+div word [eax-3000000000]
+div word [eax-130]
+div word [eax-7]
+div word [eax+7]
+div word [eax+130]
+div word [eax+3000000000]
+div word [eax-0xfffffffc]
+div word [eax-0xfc]
+div word [eax-0x07]
+div word [eax+0x07]
+div word [eax+0xfc]
+div word [eax+0xfffffffc]
+div word [eax+4294967292]
+div word [eax + ebx]
+div word [esp + eax]
+div word [eax + ebp]
+div word [ebp + eax]
+div word [eax + esp * 2]
+div word [eax + 130]
+div word [eax - 130]
+div word [eax + 5]
+div word [eax - 5]
+div word [eax]
+div word [ebp + 0x33]
+div word [ebp + 0x33333333]
+div word [esp]
+div word [eax * 1]
+div word [eax * 4]
+div word [ebp * 4]
+div word [eax * 8]
+div word [ebp * 8]
+div word [eax + ebp]
+div word [ebp + ebp]
+div word [eax * 4 + 0x77]
+div word [ebp * 4 + 0x77]
+div word [ebp * 8 + 0x77]
+
+All Instructions:
+==================
+aaa
+aad
+aam
+aas
+adc al, 0x01
+adc ax, 0x0001
+adc eax, 0x00000001
+adc ebx, 0x01
+adc eax, eax
+adcx eax, eax
+add al, 0x01
+add ax, 0x0001
+add eax, 0x00000001
+add ebx, 0x01
+add eax, eax
+adox eax, eax
+and al, 0x01
+and ax, 0x0001
+and eax, 0x00000001
+and ebx, 0x01
+and eax, eax
+arpl ax, ax
+bound eax, [eax]
+bsf eax, eax
+bsr eax, eax
+bswap eax
+call 0x55
+call 0x1122:0x3344
+call eax
+cbw
+cflush eax
+cwde
+clac
+clc
+cld
+cli
+clts
+cmc
+cmova eax, eax
+cmovae eax, eax
+cmovb eax, eax
+cmovbe eax, eax
+cmovc eax, eax
+cmove eax, eax
+cmovg eax, eax
+cmovge eax, eax
+cmovl eax, eax
+cmovle eax, eax
+cmovna eax, eax
+cmovnae eax, eax
+cmovnb eax, eax
+cmovnbe eax, eax
+cmovnc eax, eax
+cmovne eax, eax
+cmovng eax, eax
+cmovnl eax, eax
+cmovnle eax, eax
+cmovno eax, eax
+cmovnp eax, eax
+cmovns eax, eax
+cmovnz eax, eax
+cmovo eax, eax
+cmovp eax, eax
+cmovpe eax, eax
+cmovpo eax, eax
+cmovs eax, eax
+cmovz eax, eax
+cmp al, 0x01
+cmp ax, 0x0001
+cmp eax, 0x00000001
+cmp ebx, 4
+cmp eax, eax
+cmpsb
+cmpsw
+cmpsd
+cmpxchg eax, eax
+cpuid
+crc32 eax, eax
+cwd
+cdq
+daa
+das
+dec eax
+div eax
+emms
+enter 0x1122, 0x33
+f2xm1
+fabs
+faddp
+fchs
+fclex
+fnclex
+fcom
+fcomp
+fcompp
+fcos
+fdecstp
+fdivp
+fdivrp
+fincstp
+finit
+fninit
+fld1
+fldl2t
+fldl2e
+fldpi
+fldlg2
+fldln2
+fldz
+fmulp
+fnop
+fpatan
+fprem
+fprem1
+fptan
+frndint
+fscale
+fsin
+fsincos
+fsqrt
+fstswax
+fnstswax
+fsubp
+fsubrp
+ftst
+fucom
+fucomp
+fucompp
+fxam
+fxch
+fxtract
+fyl2x
+fyl2xp1
+hlt
+idiv eax
+imul eax, eax
+imul eax
+in al, 0x01
+in al, dx
+inc eax
+insb
+insw
+insd
+int 0x33
+into
+invd
+invlpg byte [eax]
+iret
+iretw
+ja 0x55
+jae 0x55
+jb 0x55
+jbe 0x55
+jc 0x55
+je 0x55
+jg 0x55
+jge 0x55
+jl 0x55
+jle 0x55
+jna 0x55
+jnae 0x55
+jnb 0x55
+jnbe 0x55
+jnc 0x55
+jne 0x55
+jng 0x55
+jnl 0x55
+jnle 0x55
+jno 0x55
+jnp 0x55
+jns 0x55
+jnz 0x55
+jo 0x55
+jp 0x55
+jpe 0x55
+jpo 0x55
+js 0x55
+jmp 0x55
+jmp 0x1122:0x3344
+jmp eax
+jz 0x55
+lahf
+lea eax, [eax]
+leave
+leavew
+lfence
+lldt ax
+lmsw ax
+lodsb
+lodsw
+lodsd
+loop 33
+loope 33
+loopne 33
+ltr ax
+mfence
+monitor
+mov ebx, 4
+mov eax, eax
+movsb
+movsw
+movsd
+mwait
+nop
+nop eax
+or al, 0x01
+or ax, 0x0001
+or eax, 0x00000001
+or ebx, 4
+or eax, eax
+outsb
+outsw
+outsd
+pause
+pop eax
+popaw
+popa
+popcnt eax, eax
+popfw
+popf
+prefetch0 byte [eax]
+prefetch1 byte [eax]
+prefetch2 byte [eax]
+prefetchnta byte [eax]
+prefetchw byte [eax]
+prefetchwt1 byte [eax]
+push eax
+push 44
+pushaw
+pusha
+pushfw
+pushf
+rcl ebx, 4
+rcr ebx, 4
+rol ebx, 4
+ror ebx, 4
+rdmsr
+rdpmc
+rdrand ax
+rdseed ax
+rdtsc
+rdtscp
+ret
+retf
+Rep insb
+Rep insw
+Rep insd
+Rep movsb
+Rep movsw
+Rep movsd
+Rep outsb
+Rep outsw
+Rep outsd
+Rep lodsb
+Rep lodsw
+Rep lodsd
+Rep stosb
+Rep stosw
+Rep stosd
+Repe cmpsb
+Repe cmpsw
+Repe cmpsd
+Repe scasb
+Repe scasw
+Repe scasd
+Repne cmpsb
+Repne cmpsw
+Repne cmpsd
+Repne scasb
+Repne scasw
+Repne scasd
+rsm
+sahf
+sal ebx, 4
+sar ebx, 4
+sbb al, 55
+sbb ax, 5566
+sbb eax, 55667788
+sbb ebx, 4
+sbb eax, eax
+scasb
+scasw
+scasd
+sfence
+sgdt byte [eax]
+shl ebx, 4
+sidt byte [eax]
+shr ebx, 4
+smsw eax
+stac
+stc
+std
+sti
+stosb
+stosw
+stosd
+sub al, 55
+sub ax, 5566
+sub eax, 55667788
+sub ebx, 4
+sub eax, eax
+str ax
+swapgs
+syscall
+sysenter
+sysexit
+sysret
+test al, 0x01
+test ax, 0x0001
+test eax, 0x00000001
+test ebx, 4
+test eax, eax
+tzcnt eax, eax
+ud2
+verr ax
+verw ax
+vmwrite eax, eax
+vmread eax, eax
+wait
+wbinvd
+wrmsr
+xabort 0x33
+xbegin 0x55
+xchg ax
+xchg eax, eax
+xgetbv
+xlat
+xor al, 0x01
+xor ax, 0x0001
+xor eax, 0x00000001
+xor ebx, 4
+xor eax, eax
+xsetbv
+xtest

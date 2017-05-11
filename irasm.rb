@@ -36,7 +36,8 @@ def main
 		elsif /^bsr/i.match(asm) then bsr (asm)
 		elsif /^bswap/i.match(asm) then bswap (asm)			
 		elsif /^call\s/i.match(asm) then call (asm)
-		elsif /^cbw/i.match(asm) then cbw (asm)			
+		elsif /^cbw/i.match(asm) then cbw (asm)
+		elsif /^cflush\s/i.match(asm) then cflush (asm)			
 		elsif /^cwde/i.match(asm) then cwde (asm)
 		elsif /^clac/i.match(asm) then clac (asm)	
 		elsif /^clc/i.match(asm) then clc (asm)		
@@ -79,11 +80,13 @@ def main
 		elsif /^cmpsd/i.match(asm) then cmpsd (asm)	
 		elsif /^cmpxchg/i.match(asm) then cmpxchg (asm)					
 		elsif /^cpuid/i.match(asm) then cpuid (asm)	
+		elsif /^crc32\s/i.match(asm) then crc32 (asm)
 		elsif /^cwd/i.match(asm) then cwd (asm)
 		elsif /^cdq/i.match(asm) then cdq (asm)			
 		elsif /^daa/i.match(asm) then daa (asm)	
 		elsif /^das/i.match(asm) then das (asm)	
 		elsif /^dec/i.match(asm) then dec (asm)				
+		elsif /^div/i.match(asm) then div (asm)			
 		elsif /^emms/i.match(asm) then emms (asm)
 		elsif /^enter/i.match(asm) then enter (asm)
 		elsif /^f2xm1/i.match(asm) then f2xm1 (asm)	
@@ -120,8 +123,8 @@ def main
 		elsif /^fsin$/i.match(asm) then fsin (asm)	
 		elsif /^fsincos$/i.match(asm) then fsincos (asm)		
 		elsif /^fsqrt$/i.match(asm) then fsqrt (asm)
-		elsif /^fstsw ax$/i.match(asm) then fstswax (asm)
-		elsif /^fnstsw ax$/i.match(asm) then fnstswax (asm)		
+		elsif /^fstswax$/i.match(asm) then fstswax (asm)
+		elsif /^fnstswax$/i.match(asm) then fnstswax (asm)		
 		elsif /^fsubp$/i.match(asm) then fsubp (asm)	
 		elsif /^fsubrp$/i.match(asm) then fsubrp (asm)		
 		elsif /^ftst$/i.match(asm) then ftst (asm)	
@@ -134,6 +137,8 @@ def main
 		elsif /^fyl2x$/i.match(asm) then fyl2x (asm)
 		elsif /^fyl2xp1$/i.match(asm) then fyl2xp1 (asm)
 		elsif /^hlt$/i.match(asm) then hlt (asm)	
+		elsif /^idiv\s/i.match(asm) then idiv (asm)		
+		elsif /^imul\s/i.match(asm) then imul (asm)	
 		elsif /^in\s/i.match(asm) then IN (asm)
 		elsif /^int(3$|\s)/i.match(asm) then int (asm)
 		elsif /^inc\s/i.match(asm) then inc (asm)			
@@ -142,6 +147,7 @@ def main
 		elsif /^insd$/i.match(asm) then insd (asm)
 		elsif /^into$/i.match(asm) then into (asm)	
 		elsif /^invd$/i.match(asm) then invd (asm)
+		elsif /^invlpg\s/i.match(asm) then invlpg (asm)
 		elsif /^iretw$/i.match(asm) then iretw (asm)
 		elsif /^iretd?$/i.match(asm) then iret (asm)	
 		elsif /^ja\s/i.match(asm) then ja (asm)	
@@ -179,6 +185,8 @@ def main
 		elsif /^leave$/i.match(asm) then leave (asm)
 		elsif /^leavew$/i.match(asm) then leavew (asm)	
 		elsif /^lfence$/i.match(asm) then lfence (asm)
+		elsif /^lldt\s/i.match(asm) then lldt (asm)
+		elsif /^lmsw\s/i.match(asm) then lmsw (asm)
 		elsif /^lock$/i.match(asm) then lock (asm)
 		elsif /^lodsb$/i.match(asm) then lodsb (asm)
 		elsif /^lodsw$/i.match(asm) then lodsw (asm)
@@ -186,6 +194,7 @@ def main
 		elsif /^loop\s/i.match(asm) then loopx (asm)
 		elsif /^loope\s/i.match(asm) then loope (asm)
 		elsif /^loopne\s/i.match(asm) then loopne (asm)
+		elsif /^ltr\s/i.match(asm) then ltr (asm)
 		elsif /^mov\s/i.match(asm) then mov (asm)			
 		elsif /^mfence$/i.match(asm) then mfence (asm)							
 		elsif /^monitor$/i.match(asm) then monitor (asm)
@@ -194,6 +203,7 @@ def main
 		elsif /^movsd$/i.match(asm) then movsd (asm)		#...	
 		elsif /^mwait$/i.match(asm) then mwait (asm)						
 		elsif /^nop$/i.match(asm) then nop (asm)
+		elsif /^nop\s/i.match(asm) then noprm (asm)
 		elsif /^or\s/i.match(asm) then OR (asm)
 		elsif /^outsb$/i.match(asm) then outsb (asm)			#m,m forms are bullshit
 		elsif /^outsw$/i.match(asm) then outsw (asm)			#...
@@ -206,6 +216,12 @@ def main
 		elsif /^popfw$/i.match(asm) then popfw (asm)
 		elsif /^popfd?$/i.match(asm) then popf (asm)
 		elsif /^popfd?$/i.match(asm) then popf (asm)
+		elsif /^prefetch0\s/i.match(asm) then prefetch0 (asm)
+		elsif /^prefetch1\s/i.match(asm) then prefetch1 (asm)
+		elsif /^prefetch2\s/i.match(asm) then prefetch2 (asm)
+		elsif /^prefetchnta\s/i.match(asm) then prefetchnta (asm)
+		elsif /^prefetchw\s/i.match(asm) then prefetchw (asm)
+		elsif /^prefetchwt1\s/i.match(asm) then prefetchwt1 (asm)
 		elsif /^push\s/i.match(asm) then push (asm)			
 		elsif /^pushaw$/i.match(asm) then pushaw (asm)
 		elsif /^pushad?$/i.match(asm) then pusha (asm)			
@@ -271,8 +287,11 @@ def main
 		elsif /^scasw$/i.match(asm) then scasw (asm)			#...
 		elsif /^scasd$/i.match(asm) then scasd (asm)			#...
 		elsif /^sfence$/i.match(asm) then sfence (asm)
+		elsif /^sgdt\s/i.match(asm) then sgdt (asm)
 		elsif /^shl/i.match(asm) then shl (asm)	
+		elsif /^sidt\s/i.match(asm) then sidt (asm)
 		elsif /^shr/i.match(asm) then shr (asm)						
+		elsif /^smsw\s/i.match(asm) then smsw (asm)
 		elsif /^stac$/i.match(asm) then stac (asm)	
 		elsif /^stc$/i.match(asm) then stc (asm)
 		elsif /^std$/i.match(asm) then std (asm)
@@ -280,6 +299,7 @@ def main
 		elsif /^stosb$/i.match(asm) then stosb (asm)			#m,m forms are bullshit
 		elsif /^stosw$/i.match(asm) then stosw (asm)			#...
 		elsif /^stosd$/i.match(asm) then stosd (asm)			#...
+		elsif /^str\s/i.match(asm) then str (asm)	
 		elsif /^sub/i.match(asm) then sub (asm)	
 		elsif /^swapgs/i.match(asm) then swapgs (asm)	
 		elsif /^syscall/i.match(asm) then syscall (asm)	
@@ -289,6 +309,8 @@ def main
 		elsif /^test/i.match(asm) then test (asm)
 		elsif /^tzcnt/i.match(asm) then tzcnt (asm)
 		elsif /^ud2$/i.match(asm) then ud2 (asm)	
+		elsif /^verr\s/i.match(asm) then verr (asm)
+		elsif /^verw\s/i.match(asm) then verw (asm)
 		elsif /^vmwrite/i.match(asm) then vmwrite (asm)
 		elsif /^vmread/i.match(asm) then vmread (asm)			
 		elsif /^f?wait$/i.match(asm) then wait (asm)
@@ -379,11 +401,16 @@ def bswap instruction
 def call instruction
 	#Transactional Begin
 	if jcc(instruction, 'E8')
-	elsif ptr(instruction, '9A')		
+	elsif ptr(instruction, '9A')	
+	elsif opmodrm(instruction, 'FE', '2')	#Actually FF, but gets converted just fine
 	else nasm(instruction) end end
 def cbw instruction
 	#Convert Byte to Word
 	printf("%-34s%-15s\n\n", '6698', 'cbw')	end		
+def cflush instruction
+	#Flush Case Line
+	if opmodrm(instruction, '0FAE', '7')	#Actually FF, but gets converted just fine
+	else nasm(instruction) end end	
 def cwde instruction
 	#Convert Word to Doubleword
 	printf("%-34s%-15s\n\n", '98', 'cwde')	end		
@@ -545,6 +572,10 @@ def cmpxchg instruction
 def cpuid instruction
 	#CPU Identification
 	printf("%-34s%-15s\n\n", '0FA2', 'cpuid')	end		
+def crc32 instruction
+	#Accumulate CRC32 Value
+	if modrmmodrm(instruction, 'F20F38F1')		
+	else nasm(instruction) end end
 def cwd instruction
 	#Convert Word to Doubleword
 	printf("%-34s%-15s\n\n", '6699', 'cwd')	end
@@ -559,7 +590,11 @@ def das instruction
 	printf("%-34s%-15s\n\n", '2F', 'das')	end
 def dec instruction
 	#Compare Two Operands
-	if plusreg(instruction, '48')		
+	if opmodrm(instruction, 'FE', '1')			
+	else nasm(instruction) end end
+def div instruction
+	#Compare Two Operands
+	if opmodrm(instruction, 'F6', '6')			
 	else nasm(instruction) end end
 def emms instruction
 	#Empty MMX Technology State
@@ -711,6 +746,15 @@ def fyl2xp1 instruction
 def hlt instruction
 	#Halt
 	printf("%-34s%-15s\n\n", 'F4', 'hlt') end	
+def idiv instruction
+	#Compare Two Operands
+	if opmodrm(instruction, 'F6', '7')			
+	else nasm(instruction) end end
+def imul instruction
+	#Compare Two Operands
+	if modrmmodrm(instruction, '0FAF')		
+	elsif opmodrm(instruction, 'F6', '5')
+	else nasm(instruction) end end
 def IN instruction
 	#Input from Port
 	if alimm8_d(instruction, 'E4', 'E5')
@@ -718,7 +762,7 @@ def IN instruction
 	else nasm(instruction) end end
 def inc instruction
 	#Compare Two Operands
-	if plusreg(instruction, '40')		
+	if opmodrm(instruction, 'FE', '0')			
 	else nasm(instruction) end end
 def insb instruction
 	#Input from Port to String (Byte)
@@ -739,6 +783,10 @@ def into instruction
 def invd instruction
 	#Invalidate Internal Caches
 	printf("%-34s%-15s\n\n", '0F08', 'invd') end	
+def invlpg instruction
+	#Invalidate TLB Entries
+	if opmodrm(instruction, '0F01', '7')			
+	else nasm(instruction) end end
 def iret instruction
 	#Interrupt Return, this applies for IRET and IRTED
 	printf("%-34s%-15s\n\n", 'CF', instruction) end	
@@ -860,7 +908,8 @@ def js instruction
 def jmp instruction
 	#Jump
 	if jcc(instruction, 'EB')	
-	elsif ptr(instruction, 'EA')	
+	elsif ptr(instruction, 'EA')
+	elsif opmodrm(instruction, 'FE', '4')	#Actually FF, but gets converted just fine		
 	else nasm(instruction) end end	
 def jz instruction
 	#Jump if Zero
@@ -882,6 +931,14 @@ def leavew instruction
 def lfence instruction
 	#Load Fence
 	fence('lfence', '0FAE', 'E8') end
+def lldt instruction
+	#Load Local Descriptor Table Register
+	if opmodrm(instruction, '0F00', '2')
+	else nasm(instruction) end end	
+def lmsw instruction
+	#Load Machine Status Word
+	if opmodrm(instruction, '0F01', '6')
+	else nasm(instruction) end end	
 def lodsb instruction
 	#Load String (Byte)
 	printf("%-34s%-15s\n\n", 'AC', 'lodsb') end	
@@ -903,6 +960,10 @@ def loopne instruction
 	#Loop if Not Equal
 	if rel8(instruction, 'E0')		
 	else nasm(instruction) end end			
+def ltr instruction
+	#Load Task Register
+	if opmodrm(instruction, '0F00', '3')
+	else nasm(instruction) end end
 def mfence instruction
 	#Memory Fence
 	fence('mfence', '0FAE', 'F0') end
@@ -928,7 +989,11 @@ def mwait instruction
 	printf("%-34s%-15s\n\n", '0F01C9', 'mwait') end	
 def nop instruction
 	#No Operation
-	printf("%-34s%-15s\n\n", '90', 'nop') end		
+	printf("%-34s%-15s\n\n", '90', 'nop') end			
+def noprm instruction
+	#No Operation as a 'multibyte instruction'
+	if opmodrm(instruction, '0F1F', '0')
+	else nasm(instruction) end end			
 def OR instruction
 	#Logical Inclusive OR
 	if alimm8_e(instruction, '0D', '81C8', '660D', '6681C8', '0C', '80C8')
@@ -951,7 +1016,7 @@ def pause instruction
 	printf("%-34s%-15s\n\n", 'F390', 'pause') end		
 def pop instruction
 	#Compare Two Operands
-	if plusreg(instruction, '58')		
+	if opmodrm(instruction, '8F', '0')		
 	else nasm(instruction) end end
 def popaw instruction
 	#Pop All General-Purpose Registers (Word)
@@ -969,9 +1034,33 @@ def popfw instruction
 def popf instruction
 	#Pop Stack into EFLAGS Registers
 	printf("%-34s%-15s\n\n", '9D', instruction) end	
+def prefetch0 instruction
+	#Compare Two Operands
+	if opmodrm(instruction, '0F18', '1')		
+	else nasm(instruction) end end
+def prefetch1 instruction
+	#Compare Two Operands
+	if opmodrm(instruction, '0F18', '2')		
+	else nasm(instruction) end end	
+def prefetch2 instruction
+	#Compare Two Operands
+	if opmodrm(instruction, '0F18', '3')		
+	else nasm(instruction) end end	
+def prefetchnta instruction
+	#Compare Two Operands
+	if opmodrm(instruction, '0F18', '0')		
+	else nasm(instruction) end end	
+def prefetchw instruction
+	#Compare Two Operands
+	if opmodrm(instruction, '0F0D', '1')		
+	else nasm(instruction) end end	
+def prefetchwt1 instruction
+	#Compare Two Operands
+	if opmodrm(instruction, '0F0D', '2')		
+	else nasm(instruction) end end	
 def push instruction
 	#Push data to the stack
-	if plusreg(instruction, '50')	
+	if opmodrm(instruction, 'FE', '6')		#Actually FF, but gets converted just fine
 	elsif pushimm(instruction)	
 	else nasm(instruction) end end
 def pushaw instruction
@@ -1152,13 +1241,25 @@ def scasd instruction
 def sfence instruction
 	#Store Fence
 	fence('sfence', '0FAE', 'F8') end
+def sgdt instruction
+	#Store Global Descriptor Table Register
+	if opmodrm(instruction, '0F01', '0')		
+	else nasm(instruction) end end	
 def shl instruction
 	#Shift Left
 	if modrmimm(instruction, 'shl', 'C0', '4')
 	else nasm(instruction) end end		
+def sidt instruction
+	#Store Interrupt Descriptor Table
+	if opmodrm(instruction, '0F01', '1')		
+	else nasm(instruction) end end
 def shr instruction
 	#Shift Right
 	if modrmimm(instruction, 'shr', 'C0', '5')
+	else nasm(instruction) end end
+def smsw instruction
+	#Store Machine Status Word r32/m16
+	if opmodrm(instruction, '0F01', '4')
 	else nasm(instruction) end end
 def stac instruction
 	#Set AC Flag in EFLAGS Register
@@ -1188,6 +1289,10 @@ def sub instruction
 	elsif eaximm32(instruction, '2D', '81E8', '83E8')
 	elsif modrmimm(instruction, 'sub', '80', '5')	
 	elsif modrmmodrm(instruction, '28')			
+	else nasm(instruction) end end
+def str instruction
+	#Store Task Register
+	if opmodrm(instruction, '0F00', '1')
 	else nasm(instruction) end end
 def swapgs instruction
 	#Swap GS Base Register
@@ -1219,6 +1324,14 @@ def tzcnt instruction
 def ud2 instruction
 	#Undefined Instruction
 	printf("%-34s%-15s\n\n", '0F0B', 'ud2') end	
+def verr instruction
+	#Store Task Register
+	if opmodrm(instruction, '0F00', '4')
+	else nasm(instruction) end end
+def verw instruction
+	#Store Task Register
+	if opmodrm(instruction, '0F00', '5')
+	else nasm(instruction) end end		
 def vmwrite instruction
 	#VMWrite
 	if modrmmodrm(instruction, '0F79')		
@@ -1965,7 +2078,6 @@ def modrmmodrm(instruction, m1)
 	#instruction - full unparsed instruction
 	#op - instruction name
 	#m1 - machine code for it
-	#num - the encoded instruction within the modr/m (i.e ADC r/m8,imm8 is /2)
 
 	#GateKeeper Parse
 	if extracted = /(e?[abcds][xhlpi])\s?,\s?(\[[^\]]+?\])/i.match(instruction)
@@ -1985,8 +2097,8 @@ def modrmmodrm(instruction, m1)
 	#Remove gratuitus byte/word/dword declaration, it is implied by operand
 	instruction = instruction.gsub(/\s*(byte|word|dword)\s*/,' ')
 
-	#Kick the ADCX, ADOX, and VMWRITE and VMREAD instructions out if it's not 32-bit
-	if m1 == '660F38F6' or m1 == 'F30F38F6' or m1 == '0F79' or m1 == '0F78' and not /^e[abcds][xpi]/i.match(reg1) then
+	#Kick the ADCX, ADOX, VMWRITE, VMREAD, and CRC32 instructions out if it's not 32-bit
+	if m1 == '660F38F6' or m1 == 'F30F38F6' or m1 == '0F79' or m1 == '0F78'  or m1 == 'F20F38F1' and not /^e[abcds][xpi]/i.match(reg1) then
 		puts "This instruction only supports 32bit operands\n\n"
 		return 1
 	end
@@ -1997,8 +2109,8 @@ def modrmmodrm(instruction, m1)
 		return 1
 	end
 
-	#Kick the BSF, BSR, POPCNT, TZCNT and BOUND out if it is 8-bit
-	if m1 == '0FBC' or m1 == '0FBD' or m1 == 'F30FB8' or m1 == '62' or m1 == 'F30FBC' or /^cmov/i.match(instruction) and not /^e?[abcds][xpi]/i.match(reg1) then
+	#Kick the BSF, BSR, POPCNT, TZCNT, BOUND, and IMUL out if it is 8-bit
+	if m1 == '0FBC' or m1 == '0FBD' or m1 == 'F30FB8' or m1 == '62' or m1 == 'F30FBC' or m1 == '0FAF' or /^cmov/i.match(instruction) and not /^e?[abcds][xpi]/i.match(reg1) then
 		puts "This instruction does not support 8-bit operands\n\n"
 		return 1
 	end
@@ -2067,7 +2179,7 @@ def modrmmodrm(instruction, m1)
 			m1 = m1.gsub(/^84/i, '85')				
 		else
 			if m1 == '8D' then 
-				puts "LEA is not 8-bit\n"
+				puts "LEA is not 8-bit\n\n"
 				return 1
 			end				
 			m1 = m1.gsub(/^(.)0/i, '\12')
@@ -2241,6 +2353,9 @@ def jcc(instruction, m1)
 		negative = 0
 		value = extracted.captures[0]		
 	else return false end
+
+	#Another GateKeeper; make sure not r/m
+	if extracted = /\S+\s(e?[abcds][xhlpi])/i.match(instruction) or extracted = /\S+\s(\[[^\]]+?\])/i.match(instruction) then return false end
 
 	#Convert to decimal if needed
 	if /0x/i.match(value) then value = disp_to_dec(value) end
@@ -2590,7 +2705,174 @@ def ptr(instruction, m1)
 	printf("%-34s%-15s\n\n", m1 + num2 + num1, instruction_alt)	
 	sanity_check(m1 + num2 + num1, instruction)	#See if this output matches nasms
 	return 1
+end
 
+def opmodrm(instruction, m1, num)
+	#instruction - full unparsed instruction
+	#op - instruction name
+	#m1 - machine code for it
+	#num - the encoded instruction within the modr/m (i.e CALL r/m16 is/2)
+	#GateKeeper Parse
+	if extracted = /^\S+\s(e?[abcds][xhlpi])/i.match(instruction)
+		form = 'register'
+		reg = extracted.captures[0]
+		#Remove gratuitus byte/word/dword declaration, it is implied by operand
+		instruction = instruction.gsub(/\s*(byte|word|dword)\s*/,' ')
+	elsif extracted = /^\S+\s*(byte|word|dword)?\s*(\[[^\]]+?\])/i.match(instruction)
+		form = 'pointer'
+		mem = extracted.captures[1]	
+		#Parse wordsize and make sure it exists	
+		if extracted = /(byte|word|dword)/i.match(instruction)
+			datasize = extracted.captures[0]
+		else
+			puts "Must specify datasize for this kind of instruction (i.e.: dec byte [eax + ebx])\n\n"
+			return 1
+		end
+	else return false end
+
+	#Kick 8-bit instructions out
+	if /^(call|jmp|nop|pop|push)/i.match(instruction) and (datasize == 'byte' or /(al|cl|dl|bl|ah|ch|dh|bh)/i.match(reg)) then
+		puts "This instruction doesn't support 8-bit OP r/m instructions\n\n"
+		return 1
+	end
+
+	#Only keep if 16-bit
+	if /^(lldt|lmsw|ltr|str|verr|verw)/i.match(instruction) and (datasize != 'word' and not /^(ax|cx|dx|bx|sp|bp|si|di)$/i.match(reg)) then
+		puts "This instruction only supports 16-bit OP r/m instructions\n\n"
+		return 1
+	end
+
+	#Only keep if 16-bit
+	if /^(smsw)/i.match(instruction) and (datasize != 'word' and not /^(eax|ecx|edx|ebx|esp|ebp|esi|edi)$/i.match(reg)) then
+		puts "This instruction only supports 16-bit OP r/m instructions\n\n"
+		return 1
+	end
+
+	#Only keep if 8-bit pointer
+	if /^(cflush|invlpg|prefetch0|prefetch1|prefetch2|prefetchnta|prefetchw|prefetchwt1|sgdt|sidt)/i.match(instruction) and (datasize != 'byte' or form != "pointer") then
+		puts "This instruction only supports 8-bit pointers\n\n"
+		return 1
+	end
+
+	#Process/Convert machinecode for opcode (8/16/32 bit conversion)
+	if form == 'pointer' then
+		#Kick out instructions
+
+		#if 16-bit	
+		if datasize == 'word' then
+			m1 = m1.gsub(/^FE/i, '66FF')		#DEC/INC/PUSH
+			m1 = m1.gsub(/^F6/i, '66F7')		#DIV/IDIV/IMUL
+			m1 = m1.gsub(/^0F1F/i, '660F1F')	#NOP	
+			m1 = m1.gsub(/^8F/i, '668F')		#POP					
+		end
+		#if 32-bit
+		if datasize == 'dword' then
+			m1 = m1.gsub(/^FE/i, 'FF')			#DEC/INC/PUSH
+			m1 = m1.gsub(/^F6/i, 'F7')			#DIV/IDIV/IMUL						
+		end
+	elsif form == 'register' then
+		#Kick out instructions
+	
+		#if 16-bit
+		if /^[abcds][xpi]/i.match(reg) then
+			m1 = m1.gsub(/^FE/i, '66FF')		#DEC/INC/PUSH
+			m1 = m1.gsub(/^F6/i, '66F7')		#DIV/IDIV/IMUL
+			m1 = m1.gsub(/^0F1F/i, '660F1F')	#NOP
+			m1 = m1.gsub(/^8F/i, '668F')		#POP								
+		end
+		#if 32-bit						
+		if /^e[abcds][xpi]/i.match(reg) then
+			m1 = m1.gsub(/^FE/i, 'FF')			#DEC/INC/PUSH
+			m1 = m1.gsub(/^F6/i, 'F7')			#DIV/IDIV/IMUL										
+		end
+
+		#mod = 2 (11xxxxxx) / 192
+		#op = num (xxoooxxx) / num * 8
+		#register = (xxxxxrrr)
+		modrm = 192 + (num.to_i * 8)
+		if /e?c[lx]/i.match(reg) then modrm = modrm + 1
+		elsif /e?d[lx]/i.match(reg) then modrm = modrm + 2
+		elsif /e?b[lx]/i.match(reg) then modrm = modrm + 3
+		elsif /e?[as][hp]/i.match(reg) then modrm = modrm + 4
+		elsif /e?(ch|bp)/i.match(reg) then modrm = modrm + 5
+		elsif /e?[sd][hi]/i.match(reg) then modrm = modrm + 6
+		elsif /e?[bd][hi]/i.match(reg) then modrm = modrm + 7	
+		end									
+		modrm = (modrm.to_s(16)).upcase	
+
+		if /^dec/i.match(instruction) and /FF$/i.match(m1) then
+			plusreg(instruction, "48")
+			instruction_alt = objdump(m1 + modrm)
+			printf("%-34s%-15s (ModRM Alternate)\n\n", m1 + modrm, instruction_alt)
+		elsif /^inc/i.match(instruction) and /FF$/i.match(m1) then
+			plusreg(instruction, "40")
+			instruction_alt = objdump(m1 + modrm)
+			printf("%-34s%-15s (ModRM Alternate)\n\n", m1 + modrm, instruction_alt)
+		elsif /^pop/i.match(instruction) and /8F$/i.match(m1) then
+			plusreg(instruction, "58")
+			instruction_alt = objdump(m1 + modrm)
+			printf("%-34s%-15s (ModRM Alternate)\n\n", m1 + modrm, instruction_alt)		
+		elsif /^push/i.match(instruction) and /FF$/i.match(m1) then
+			plusreg(instruction, "50")
+			instruction_alt = objdump(m1 + modrm)
+			printf("%-34s%-15s (ModRM Alternate)\n\n", m1 + modrm, instruction_alt)					
+		else
+			instruction_alt = objdump(m1 + modrm)
+			printf("%-34s%-15s\n\n", m1 + modrm, instruction_alt)
+		end
+		return 1	
+	end
+
+	###############################
+	#           PARSING           #
+	###############################	
+
+	#Parse register with no offset or scaled register
+	if extracted = /\[[^\]]*?(e[acdbs][xip])[^\]]*?\]/i.match(mem)
+		register = extracted.captures[0]
+		offset = '0'
+		multiplier = '0'
+		mreg = ''
+	end
+
+	#Parse offset
+	#Is there a decimal formatted offset
+	if extracted = /\[[^\]]*?(?<![x*\s]{2})(\d+)[^\]]*?\]/i.match(mem)
+		offset = extracted.captures[0]				#parse disp
+	end		
+	if extracted = /\[[^\]]*?-\s*?\d+/i.match(mem) then negative = 1 end		#parse negative value
+	#Is there a hex formatted offset
+	if extracted = /\[[^\]]*?(0x[0-9a-f]+)[^\]]*?\]/i.match(mem)
+		offset = extracted.captures[0]				#parse disp	
+	end
+	negative = 0
+	if extracted = /\[[^\]]*?-\s*(0x[0-9a-f]+)/i.match(mem) then negative = 1 end #parse negative value
+	if $debug == 1 then puts "negative value?: %i" % negative end
+	#Is there a scale
+	if extracted = /\[[^\]]*?(e[acdbs][xip])\s*?\*\s*?([1248])[^\]]*?\]/i.match(mem)
+		mreg = extracted.captures[0] 				#parse scaled register
+		multiplier = extracted.captures[1]			#parse scale
+		if mem !~ /e[acdbs][xip].+e[acdbs][xip]/i	#parse possibility of no base register
+			register = 'none'
+		end
+	end
+
+	#Have to handle implicit * 1 with kid gloves, ie adc eax, [eax + ebp]
+	#For the regex, if there's a register followed by adding another register that does not have a scale after it
+	if extracted = /\[[^\]]*?(e[acdbs][xip])\s*?\+\s*?(e[acdbs][xip])(([^*]+)|(\s*\*\s*1.+))$/i.match(mem) then
+		reg_a = extracted.captures[0]	#parse first register
+		reg_b = extracted.captures[1]	#parse second register
+		tworegs = 1
+	end	
+
+	#POCESSING
+	modrm_p, sib_p, offset, esp_areg_p, multiplier_p, register_p, mreg_p, ebp_areg = pointer3(negative, reg_a, reg_b, register, offset, multiplier, mreg, num)
+	if modrm_p == 'error' then return 1 end
+
+	opmodrm_results(multiplier_p, esp_areg_p, m1, modrm_p, instruction, register_p, mreg_p, offset, sib_p, ebp_areg)	
+	opmodrm_pointer_alternates(reg_a, reg_b, tworegs, modrm_p, sib_p, esp_areg_p, multiplier_p, register_p, mreg_p, negative, register, offset, multiplier, mreg, m1, instruction, num)
+
+	return 1
 end
 
 #--------------------------------
@@ -2749,6 +3031,67 @@ def modrmmodrm_pointer_alternates (reg_a, reg_b, tworegs, modrm_p, sib_p, esp_ar
 	if sibdoublemodrmmodrm(tworegs, reg_a, reg_b, modrm_p, sib_p, offset, m1, negative, reg1) then extra_space = 1 end
 	if extra_space == 1 then puts "\n" end
 end
+
+
+
+
+def opmodrm_results (multiplier_p, esp_areg_p, m1, modrm_p, instruction, register_p, mreg_p, offset, sib_p, ebp_areg)		
+	if ebp_areg and offset == '0' then
+		if multiplier_p == '0' and !esp_areg_p then
+			instruction_alt = objdump(m1 + modrm_p + '00')				
+			printf("%-34s%-15s\n\n", m1 + modrm_p + '00', instruction_alt)
+			sanity_check(m1 + modrm_p + '00', instruction)	#See if this output matches nasms
+		else 
+			instruction_alt = objdump(m1 + modrm_p + sib_p + '00')				
+			printf("%-34s%-15s\n\n", m1 + modrm_p + sib_p + '00', instruction_alt)
+			sanity_check(m1 + modrm_p + sib_p + '00', instruction)	#See if this output matches nasms
+		end
+	else
+		if offset != '0'		#if there's a displacment
+			if multiplier_p == '0' and !esp_areg_p then
+				instruction_alt = objdump(m1 + modrm_p + offset)			
+				printf("%-34s%-15s\n\n", m1 + modrm_p + offset, instruction_alt)
+				sanity_check(m1 + modrm_p + offset, instruction)	#See if this output matches nasms
+			elsif !register_p and !multiplier_p and !mreg_p and offset then
+				instruction_alt = objdump(m1 + modrm_p + offset)				
+				printf("%-34s%-15s\n\n", m1 + modrm_p + offset, instruction_alt)
+				sanity_check(m1 + modrm_p + offset, instruction)	#See if this output matches nasms
+			else 
+				instruction_alt = objdump(m1 + modrm_p + sib_p + offset)			
+				printf("%-34s%-15s\n\n", m1 + modrm_p + sib_p + offset, instruction_alt)				
+				sanity_check(m1 + modrm_p + sib_p + offset, instruction)	#See if this output matches nasms
+			end
+		else
+			if multiplier_p == '0' and !esp_areg_p then
+				instruction_alt = objdump(m1 + modrm_p)				
+				printf("%-34s%-15s\n\n", m1 + modrm_p, instruction_alt)
+				sanity_check(m1 + modrm_p, instruction)	#See if this output matches nasms
+			else 
+				instruction_alt = objdump(m1 + modrm_p + sib_p)				
+				printf("%-34s%-15s\n\n", m1 + modrm_p + sib_p, instruction_alt)
+				sanity_check(m1 + modrm_p + sib_p, instruction)	#See if this output matches nasms
+			end
+		end
+	end
+end
+
+def opmodrm_pointer_alternates (reg_a, reg_b, tworegs, modrm_p, sib_p, esp_areg_p, multiplier_p, register_p, mreg_p, negative, register, offset, multiplier, mreg, m1, instruction, num)
+	extra_space = 0
+	#Try to force commutative property
+	if fcpopmodrm(reg_a, reg_b, tworegs, modrm_p, sib_p, esp_areg_p, multiplier_p, register_p, mreg_p, negative, register, offset, multiplier, mreg, m1, instruction, num) then extra_space = 1 end
+	#Gratuitous disp (convert 1 byte disp to 4 byte disp)
+	if disp8to32opmodrm(offset, negative, modrm_p, register_p, multiplier_p, mreg_p, esp_areg_p, m1, sib_p) then extra_space = 1 end
+	#If there is no displacement, make a displacement of 0x00...
+	if addnullopmodrm(offset, modrm_p, m1, sib_p, register_p, multiplier_p, esp_areg_p) then extra_space = 1 end
+	#Force communative property with added null disp8 (if possible)
+	if addnullfcpopmodrm(reg_a, reg_b, tworegs, modrm_p, sib_p, esp_areg_p, multiplier_p, register_p, mreg_p, negative, register, offset, multiplier, mreg, m1, instruction, num) then extra_space = 1 end
+	#SIB Doubles (Base register must be same as scaled register at scale of 1, disp required even if zero)
+	if sibdoubleopmodrm(tworegs, reg_a, reg_b, modrm_p, sib_p, offset, m1, negative) then extra_space = 1 end
+	if extra_space == 1 then puts "\n" end
+end
+
+
+
 
 def pointer (negative, reg_a, reg_b, register, s_operand, offset, multiplier, mreg, num)
 	#If multiplied register is scaled by 1, and there is no base register, then just use register as base
@@ -3025,6 +3368,186 @@ def pointer2 (negative, reg_a, reg_b, register, offset, multiplier, mreg, reg1, 
 	end
 
 	#Process Instruction (ModR/M)ss
+	if multiplier == '0' and !esp_areg then
+		#Process Register (ModR/M)
+		if register == 'ecx' then modrm = modrm + 1
+			elsif register == 'edx' then modrm = modrm + 2
+			elsif register == 'ebx' then modrm = modrm + 3
+			elsif register == 'ebp' and disp_to_dec(offset) > 0 then modrm = modrm + 5
+			elsif register == 'esi' then modrm = modrm + 6
+			elsif register == 'edi' then modrm = modrm + 7
+		end
+	else
+		#Proccess Scale (SIB)
+		modrm = modrm + 4	#Activate SIB byte in ModR/M
+		if multiplier == '2' then sib = 64
+			elsif multiplier == '4' then sib = 128
+			elsif multiplier == '8' then sib = 192
+		end
+		#Process The Index/Register (SIB)
+		if mreg == 'ecx' then sib = sib + 8
+			elsif mreg == 'edx' then sib = sib + 16
+			elsif mreg == 'ebx' then sib = sib + 24
+			elsif mreg == 'ebp' then sib = sib + 40
+			elsif mreg == 'esi' then sib = sib + 48
+			elsif mreg == 'edi' then sib = sib + 56
+		end
+		if register == 'ecx' then sib = sib + 1
+			elsif register == 'edx' then sib = sib + 2
+			elsif register == 'ebx' then sib = sib + 3
+			elsif register == 'esp' then sib = sib + 4
+			elsif register == 'esi' then sib = sib + 6
+			elsif register == 'edi' then sib = sib + 7
+		end
+		if register == 'none' and multiplier == '2' then 
+			if mreg == 'eax' then sib = 0
+				elsif mreg == 'ecx' then sib = 9
+				elsif mreg == 'edx' then sib = 18
+				elsif mreg == 'ebx' then sib = 27
+				elsif mreg == 'ebp' then sib = 45	
+				elsif mreg == 'esi' then sib = 54
+				elsif mreg == 'edi' then sib = 63
+			end
+		end	
+		if ebp_areg then sib = sib + 5 end 
+		if esp_areg and multiplier == '0' then sib = sib + 32 end
+	end
+	#if there's no base register, and not scaled esp, then add 5 to SIB (for the [*] no base register)
+	#	32-bit displacement also needed (handled in displacement processing later)
+	if register == 'none' and (multiplier == '4' or multiplier == '8') then sib = sib + 5 end
+
+	if $debug == 1 then puts "offset is %i" % disp_to_dec(offset) end
+	#if there's no base register, and not scaled esp, then 32-bit displacemnet needed
+	if disp_to_dec(offset) > 4294967040 and not negative == 1 then
+		#32bit conversion to 8bit 2's compliment	
+		offset = (256 - disp_to_dec((4294967296 - disp_to_dec(offset).to_i).to_s).to_i).to_s #Get absolute number and 2's compliment 8bit	
+		if $debug == 1 then puts "Offset is %i" % disp_to_dec(offset) end
+		if register == 'none' and (multiplier == '4' or multiplier == '8') then
+			offset = littleend(zeropad(imm32(offset),8))
+			modrm = modrm - 64
+		else offset = littleend(zeropad(imm8(offset),2)) end	
+	elsif disp_to_dec(offset) > 2147483647 and negative == 1 then
+		puts "Invalid negative displacement\n\n"
+		return ["error", '0', '0', '0', '0', '0', '0', '0']
+	elsif disp_to_dec(offset) < 2147483648 and disp_to_dec(offset) > 128 and negative == 1	then
+		#32bit 2's compliment
+		offset = (4294967296 - disp_to_dec(offset).to_i).to_s	#2's compliment
+		if $debug == 1 then puts "Offset is %i" % disp_to_dec(offset) end
+		if register == 'none' and (multiplier == '4' or multiplier == '8') then modrm = modrm - 128 end
+		offset = littleend(zeropad(imm32(offset),8))	
+	elsif disp_to_dec(offset) < 129 and disp_to_dec(offset) > 0 and negative == 1 then
+		#8bit 2's compliment
+		offset = (256 - disp_to_dec(offset).to_i).to_s			#2's compliment
+		if register == 'none' and (multiplier == '4' or multiplier == '8') then
+			offset = littleend(zeropad(imm32(offset),8))
+			modrm = modrm - 64
+		else offset = littleend(zeropad(imm8(offset),2)) end		
+	elsif disp_to_dec(offset) > 0 and disp_to_dec(offset) < 128 and negative == 0 then
+		#8bit
+		if register == 'none' and (multiplier == '4' or multiplier == '8') then
+			offset = littleend(zeropad(imm32(offset),8))
+			modrm = modrm - 64
+		else offset = littleend(zeropad(imm8(offset),2)) end	
+	elsif disp_to_dec(offset) > 127 and negative == 0 then
+		#32bit
+		if register == 'none' and (multiplier == '4' or multiplier == '8') then modrm = modrm - 128 end
+		offset = littleend(zeropad(imm32(offset),8))			
+	elsif disp_to_dec(offset) == 0 then
+		if register == 'none' and (multiplier == '4' or multiplier == '8') then
+			offset = littleend(zeropad(imm32(offset),8))	
+		end			
+		if ebp_areg then 
+			modrm = modrm + 64
+			if multiplier == '0' then modrm = modrm + 5 end
+		end	
+	end
+
+	sib = zeropad(sib.to_s(16), 2)
+	modrm = zeropad(modrm.to_s(16), 2)
+	return [modrm, sib, offset, esp_areg, multiplier, register, mreg, ebp_areg]
+end
+
+def pointer3 (negative, reg_a, reg_b, register, offset, multiplier, mreg, num)
+	#If multiplied register is scaled by 1, and there is no base register, then just use register as base
+	if mreg != '' and  multiplier == '1' and register == 'none' then 
+		register = mreg 	#base register is now the scaled register
+		mreg = ''			#there is no longer a scaled register
+		multiplier = '0'	#there is no longer a scale
+	end
+	
+	#Handle ESP scale exception, unless it's * 1, and make it base and make the base scaled by * 1
+	if mreg == 'esp' then
+		if multiplier == '1' and register != 'esp' then
+			mreg = register
+			register = 'esp'
+		else 
+			printf("esp is an invalid Scaled Index\n\n") 
+			return ["error", '0', '0', '0', '0', '0', '0']
+		end
+	end	
+
+	#Have to handle implicit * 1 with kid gloves, ie adc byte [eax + ebp], 88
+	if (reg_a.to_s).length > 0 and (reg_b.to_s).length > 0 then
+		if $debug == 1 then puts "reg1 is %s" % reg_a end
+		if $debug == 1 then puts "reg2 is %s" % reg_b end
+		if reg_a == 'esp' and reg_b == 'esp' then
+			printf("esp is an invalid Scaled Index\n\n") 
+			return ["error", '0', '0', '0', '0', '0', '0']
+		end
+		if reg_b == 'esp' then			#esp can't be scaled / can't be 2nd register
+			mreg = reg_a				#make first register the scaled one
+			register = reg_b			#make second register the base one
+		else
+			mreg = reg_b				#first is fine as base
+			register = reg_a			#second is fine as scaled
+		end
+		multiplier = '1'				#scale will always be '1' here; as it's implied by not have a scale for second reg
+	end
+
+	#All Values parsed:
+	if $debug == 1 then puts "Register: %s" % register end
+	if $debug == 1 then puts "Offset: %s" % offset end
+	if $debug == 1 then puts "Multiplier %s" % multiplier end
+	if $debug == 1 then puts "Multiplied Register %s" % mreg end
+
+	#if ebp *2, base reg is ebp, scaled reg is ebp * 1
+	if register == 'none' and mreg == 'ebp' and multiplier == '2' then
+		register = 'ebp'
+		multiplier = '1'
+	end 
+
+	# Set Flags
+	if register == 'esp' then esp_areg = 1 end
+	if register == 'ebp' then ebp_areg = 1 end
+
+	if $debug == 1 then puts "esp areg is %s" % esp_areg end
+	if $debug == 1 then puts "ebp areg is %s" % ebp_areg end
+
+	#if all we have is the displacement, the we are ready to output the machine code for it
+	if !register and !multiplier and !mreg and offset then
+		if negative == 1 then
+			offset = (256 - disp_to_dec(offset).to_i).to_s			#2's compliment	8bit	
+			sib = 0
+			return ['15', sib, esp_areg, multiplier, register, mreg]
+		else
+			sib = 0
+			return ['15', sib, esp_areg, multiplier, register, mreg]
+		end
+	end
+
+	sib = 0 #default
+	#Process Mod (ModR/M)
+	if disp_to_dec(offset) > 4294967040 then modrm = 64
+		elsif disp_to_dec(offset) > 2147483647 and negative == 1 then modrm = 128
+		elsif disp_to_dec(offset) < 2147483648 and disp_to_dec(offset) > 128 and negative == 1 then modrm = 128 
+		elsif disp_to_dec(offset) < 129 and disp_to_dec(offset) > 0 and negative == 1 then modrm = 64
+		elsif disp_to_dec(offset) > 0 and disp_to_dec(offset) < 128 and negative == 0 then modrm = 64
+		elsif disp_to_dec(offset) > 127 and negative == 0 then modrm = 128
+		else modrm = 0
+	end
+
+	#Process Instruction (ModR/M)
+	modrm = modrm + (num.to_i * 8)
 	if multiplier == '0' and !esp_areg then
 		#Process Register (ModR/M)
 		if register == 'ecx' then modrm = modrm + 1
@@ -3511,6 +4034,125 @@ def sibdoublemodrmmodrm (tworegs, reg_a, reg_b, modrm_p, sib_p, offset, m1, nega
 	return false
 end
 
+def fcpopmodrm (reg_a, reg_b, tworegs, modrm_p, sib_p, esp_areg_p, multiplier_p, register_p, mreg_p, negative, register, offset, multiplier, mreg, m1, instruction, num)
+	#Force commutative property
+	if reg_a != 'esp' and reg_b != 'esp' and tworegs == 1 and reg_a != reg_b then		#If it's machine possible to swap registers
+		reg_a, reg_b = reg_b, reg_a		#swapem
+		#Re-Process
+		modrm_p, sib_p, offset, esp_areg_p, multiplier_p, register_p, mreg_p = pointer3(negative, reg_a, reg_b, register, offset, multiplier, mreg, num)
+		instruction_alt = objdump(m1+modrm_p+sib_p)
+		printf("%-34s%-15s (Forced commutative property)\n", m1 + modrm_p + sib_p, instruction_alt)
+		return 1
+	end
+	return false
+end
+
+def disp8to32opmodrm (offset, negative, modrm_p, register_p, multiplier_p, mreg_p, esp_areg_p, m1, sib_p)
+	#Gratuitous disp (convert 1 byte disp to 4 byte disp)
+	#This routine requires disp to be in 0xhex format
+	offset = "0x%s" % offset #change it to hex format
+	if (disp_to_dec(offset) < 128 and negative != '1') or (disp_to_dec(offset) < 129 and negative == '1') and register_p != 'ebp' and multiplier_p != '4' and multiplier_p != '8' then		
+		if extracted = /.+([0-9a-f]{2})/i.match(offset) then		
+			if disp_to_dec(offset) == 0 then
+				modrm_p = zeropad(((modrm_p.to_i(16).to_s(10)).to_i + 128).to_s(16), 2)	#modify modrm to be disp32 instead of no disp
+			else
+				modrm_p = zeropad(((modrm_p.to_i(16).to_s(10)).to_i + 64).to_s(16), 2)	#modify modrm to be disp32 instead of disp8
+			end
+
+			#Extend the offset
+			if /^0x[89abcdf]/i.match(offset) then
+				offset = offset.gsub(/0x(.+)/, '\1FFFFFF')					
+			else
+				offset = offset.gsub(/0x(.+)/, '\1000000')
+			end
+
+			if !register_p and !multiplier_p and !mreg_p and offset then			#if it's just the offset
+				#Don't do anything, it's actually already supposed to be encoded as disp32
+				return false
+			elsif multiplier_p == '0' and !esp_areg_p then			
+				instruction_alt = objdump(m1 + modrm_p)
+				printf("%-34s%-15s (disp8 -> disp32 extended)\n", m1 + modrm_p + offset, instruction_alt)
+			elsif 
+				instruction_alt = objdump(m1 + modrm_p + sib_p)
+				printf("%-34s%-15s (disp8 -> disp32 extended)\n", m1 + modrm_p + sib_p + offset, instruction_alt) 
+			else
+				return false
+			end
+		end
+		return 1			
+	end
+end
+
+def addnullopmodrm (offset, modrm_p, m1, sib_p, register_p, multiplier_p, esp_areg_p)
+	#If there is no displacement, make a displacement of 0x00...
+	if disp_to_dec(offset) == 0 and register_p != 'ebp' and multiplier_p != '4' and multiplier_p != '8' then	#If there's no offset and this isn't ebp register (becuase it already requires disp8)
+		modrm_p = zeropad(((modrm_p.to_i(16).to_s(10)).to_i + 64).to_s(16), 2)	#modify to be disp8
+		if multiplier_p == '0' and !esp_areg_p then
+			instruction_alt = objdump(m1+modrm_p + '00')
+			printf("%-34s%-15s (Additional null disp8)\n", m1 + modrm_p + '00', instruction_alt)
+		else
+			instruction_alt = objdump(m1+modrm_p + sib_p + '00')
+			printf("%-34s%-15s (Additional null disp8)\n", m1 + modrm_p + sib_p + '00', instruction_alt)
+		end
+		return 1
+	end	
+	return false
+end
+
+def addnullfcpopmodrm (reg_a, reg_b, tworegs, modrm_p, sib_p, esp_areg_p, multiplier_p, register_p, mreg_p, negative, register, offset, multiplier, mreg, m1, instruction, num)
+	#Force communative property with added null disp8 (if possible)
+	if reg_a != 'esp' and reg_b != 'esp' and reg_b != 'ebp' and tworegs == 1 and reg_a != reg_b and disp_to_dec(offset) == 0 then	#If it's machine possible to swap registers and there's no offset
+		reg_a, reg_b = reg_b, reg_a		#swapem
+		#Re-Process
+		modrm_p, sib_p, s_operand_p, esp_areg_p, multiplier_p, register_p, mreg_p = pointer3(negative, reg_a, reg_b, register, offset, multiplier, mreg, num)
+		modrm_p = zeropad(((modrm_p.to_i(16).to_s(10)).to_i + 64).to_s(16), 2)	#modify to be disp8
+		instruction_alt = objdump(m1+modrm_p + sib_p + '00' + s_operand_p)
+		printf("%-34s%-15s (Forced commutative property, Additional null disp8)\n", m1 + modrm_p + sib_p + '00' + s_operand_p, instruction_alt)
+		return 1
+	end	
+	return false
+end
+
+def sibdoubleopmodrm (tworegs, reg_a, reg_b, modrm_p, sib_p, offset, m1, negative)
+	#SIB Doubles (Base register must be same as scaled register at scale of 1, disp required even if zero)
+
+	if tworegs == 1 and reg_a == reg_b then
+		if reg_a == 'eax' then sib_p = '45'
+		elsif reg_a == 'ecx' then sib_p = '4D'
+		elsif reg_a == 'edx' then sib_p = '55'
+		elsif reg_a == 'ebx' then sib_p = '5D'
+		elsif reg_a == 'ebp' then sib_p = '6D'
+		elsif reg_a == 'esi' then sib_p = '75'
+		elsif reg_a == 'edi' then sib_p = '7D'
+		end
+
+		if disp_to_dec(offset) == 0 then
+			if reg_a == 'ebp' then 
+				modrm_p = zeropad((((zeropad(modrm_p.to_i(16).to_s(2), 8)).gsub(/^.{2}(.{6})/, '00\1')).to_i(2)).to_s(16),2)
+			end
+			padding = '00000000'
+			instruction_alt = objdump(m1 + modrm_p + sib_p + padding)
+			printf("%-34s%-15s (SIB Double)\n", m1 + modrm_p + sib_p + padding, instruction_alt)
+		else
+
+			#zeros out 2 most significant bits
+			modrm_p = zeropad((((zeropad(modrm_p.to_i(16).to_s(2), 8)).gsub(/^.{2}(.{6})/, '00\1')).to_i(2)).to_s(16),2)
+
+			if (disp_to_dec(offset) < 128 and negative != '1') or (disp_to_dec(offset) < 129 and negative == '1')
+				offset = "0x%s" % offset				#change it to 0xhex format
+				if extracted = /^0?x?([0-9a-f]{2}$)/i.match(offset) then
+					offset = littleend(signed_pad(offset, negative))		#sign extend the disp
+				end
+			end
+			#Make s_operand_p disp32
+			instruction_alt = objdump(m1 + modrm_p + sib_p + offset)
+			printf("%-34s%-15s (SIB Double)\n", m1 + modrm_p + sib_p + offset, instruction_alt)
+		end
+		return 1
+	end	
+	return false
+end
+
 def nasm (data)
 	cmd = `nasm -v 2> /dev/null`
 	if /nasm\s+version/i.match(cmd) then
@@ -3575,3 +4217,16 @@ def objdump (data)
 end
 
 main
+# Added encoding for OP r/m instructions of various byte sizes and limitations
+# This includes the following instructions as completely finished:
+	#CALL, CLFLUSH, DEC, DIV, IDIV, INC, INVLPG, LLDT, LMSW, LTR, NOP, POP, PREFETCH0, 
+	#PREFETCH1, PREFETCH2, PREFETCHNTA, PREFETCHW, PREFETCHWT1, PUSH, SGDT, SIDT,
+	#SMSW, STR, VERR, and VERW
+# This added partial support for the following instructions:
+	#CRC32
+	#IMUL
+	#JMP
+# This is NOT a stable release, have not bug tested many possibilities. This instruction
+# is a bug: push dword [ebx + ecx + 0x33], there are MANY more new bugs
+
+# The most stable recent release was on May 3, 2017

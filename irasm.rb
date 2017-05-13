@@ -21,1367 +21,1108 @@ def main
 			exit								#	Exit the script
 		end										#Otherwise start looking for instruction names
 
-		if /^aaa/i.match(asm) then aaa (asm)
-		elsif /^aad/i.match(asm) then aad (asm)
-		elsif /^aam/i.match(asm) then aam (asm)
-		elsif /^aas/i.match(asm) then aas (asm)
-		elsif /^adc[^x]/i.match(asm) then adc (asm)
-		elsif /^adcx/i.match(asm) then adcx (asm)			
-		elsif /^add/i.match(asm) then add (asm)	
-		elsif /^adox/i.match(asm) then adox (asm)
-		elsif /^and/i.match(asm) then andi (asm)
-		elsif /^arpl/i.match(asm) then arpl (asm)
-		elsif /^bound/i.match(asm) then bound (asm)			
-		elsif /^bsf/i.match(asm) then bsf (asm)	
-		elsif /^bsr/i.match(asm) then bsr (asm)
-		elsif /^bswap/i.match(asm) then bswap (asm)			
-		elsif /^call\s/i.match(asm) then call (asm)
-		elsif /^cbw/i.match(asm) then cbw (asm)
-		elsif /^cflush\s/i.match(asm) then cflush (asm)			
-		elsif /^cwde/i.match(asm) then cwde (asm)
-		elsif /^clac/i.match(asm) then clac (asm)	
-		elsif /^clc/i.match(asm) then clc (asm)		
-		elsif /^cld/i.match(asm) then cld (asm)
-		elsif /^cli/i.match(asm) then cli (asm)	
-		elsif /^clts/i.match(asm) then clts (asm)
-		elsif /^cmc/i.match(asm) then cmc (asm)	
-		elsif /^cmova\s/i.match(asm) then cmova (asm)	
-		elsif /^cmovae\s/i.match(asm) then cmovae (asm)
-		elsif /^cmovb\s/i.match(asm) then cmovb (asm)
-		elsif /^cmovbe\s/i.match(asm) then cmovbe (asm)
-		elsif /^cmovc\s/i.match(asm) then cmovc (asm)
-		elsif /^cmove\s/i.match(asm) then cmove (asm)
-		elsif /^cmovg\s/i.match(asm) then cmovg (asm)
-		elsif /^cmovge\s/i.match(asm) then cmovge (asm)
-		elsif /^cmovl\s/i.match(asm) then cmovl (asm)
-		elsif /^cmovle\s/i.match(asm) then cmovle (asm)
-		elsif /^cmovna\s/i.match(asm) then cmovna (asm)
-		elsif /^cmovnae\s/i.match(asm) then cmovnae (asm)
-		elsif /^cmovnb\s/i.match(asm) then cmovnb (asm)
-		elsif /^cmovnbe\s/i.match(asm) then cmovnbe (asm)
-		elsif /^cmovnc\s/i.match(asm) then cmovnc (asm)
-		elsif /^cmovne\s/i.match(asm) then cmovne (asm)
-		elsif /^cmovng\s/i.match(asm) then cmovng (asm)
-		elsif /^cmovnl\s/i.match(asm) then cmovnl (asm)
-		elsif /^cmovnle\s/i.match(asm) then cmovnle (asm)
-		elsif /^cmovno\s/i.match(asm) then cmovno (asm)
-		elsif /^cmovnp\s/i.match(asm) then cmovnp (asm)
-		elsif /^cmovns\s/i.match(asm) then cmovns (asm)
-		elsif /^cmovnz\s/i.match(asm) then cmovnz (asm)
-		elsif /^cmovo\s/i.match(asm) then cmovo (asm)
-		elsif /^cmovp\s/i.match(asm) then cmovp (asm)
-		elsif /^cmovpe\s/i.match(asm) then cmovpe (asm)
-		elsif /^cmovpo\s/i.match(asm) then cmovpo (asm)
-		elsif /^cmovs\s/i.match(asm) then cmovs (asm)		
-		elsif /^cmovz\s/i.match(asm) then cmovz (asm)	
-		elsif /^cmp[^sx]/i.match(asm) then cmp (asm)	
-		elsif /^cmpsb/i.match(asm) then cmpsb (asm)	
-		elsif /^cmpsw/i.match(asm) then cmpsw (asm)	
-		elsif /^cmpsd/i.match(asm) then cmpsd (asm)	
-		elsif /^cmpxchg/i.match(asm) then cmpxchg (asm)					
-		elsif /^cpuid/i.match(asm) then cpuid (asm)	
-		elsif /^crc32\s/i.match(asm) then crc32 (asm)
-		elsif /^cwd/i.match(asm) then cwd (asm)
-		elsif /^cdq/i.match(asm) then cdq (asm)			
-		elsif /^daa/i.match(asm) then daa (asm)	
-		elsif /^das/i.match(asm) then das (asm)	
-		elsif /^dec/i.match(asm) then dec (asm)				
-		elsif /^div/i.match(asm) then div (asm)			
-		elsif /^emms/i.match(asm) then emms (asm)
-		elsif /^enter/i.match(asm) then enter (asm)
-		elsif /^f2xm1/i.match(asm) then f2xm1 (asm)	
-		elsif /^fabs/i.match(asm) then fabs (asm)	
-		elsif /^faddp/i.match(asm) then faddp (asm)	
-		elsif /^fchs/i.match(asm) then fchs (asm)
-		elsif /^fclex/i.match(asm) then fclex (asm)
-		elsif /^fnclex/i.match(asm) then fnclex (asm)		
-		elsif /^fcom$/i.match(asm) then fcom (asm)
-		elsif /^fcomp$/i.match(asm) then fcomp (asm)
-		elsif /^fcompp/i.match(asm) then fcompp (asm)
-		elsif /^fcos/i.match(asm) then fcos (asm)
-		elsif /^fdecstp/i.match(asm) then fdecstp (asm)	
-		elsif /^fdivp/i.match(asm) then fdivp (asm)		
-		elsif /^fdivrp/i.match(asm) then fdivrp (asm)
-		elsif /^fincstp/i.match(asm) then fincstp (asm)	
-		elsif /^finit/i.match(asm) then finit (asm)	
-		elsif /^fninit/i.match(asm) then fninit (asm)
-		elsif /^fld1$/i.match(asm) then fld1 (asm)
-		elsif /^fldl2t$/i.match(asm) then fldl2t (asm)
-		elsif /^fldl2e$/i.match(asm) then fldl2e (asm)
-		elsif /^fldpi$/i.match(asm) then fldpi (asm)
-		elsif /^fldlg2$/i.match(asm) then fldlg2 (asm)
-		elsif /^fldln2$/i.match(asm) then fldln2 (asm)
-		elsif /^fldz$/i.match(asm) then fldz (asm)
-		elsif /^fmulp/i.match(asm) then fmulp (asm)
-		elsif /^fnop$/i.match(asm) then fnop (asm)
-		elsif /^fpatan$/i.match(asm) then fpatan (asm)
-		elsif /^fprem$/i.match(asm) then fprem (asm)
-		elsif /^fprem1$/i.match(asm) then fprem1 (asm)	
-		elsif /^fptan$/i.match(asm) then fptan (asm)	
-		elsif /^frndint$/i.match(asm) then frndint (asm)
-		elsif /^fscale$/i.match(asm) then fscale (asm)
-		elsif /^fsin$/i.match(asm) then fsin (asm)	
-		elsif /^fsincos$/i.match(asm) then fsincos (asm)		
-		elsif /^fsqrt$/i.match(asm) then fsqrt (asm)
-		elsif /^fstswax$/i.match(asm) then fstswax (asm)
-		elsif /^fnstswax$/i.match(asm) then fnstswax (asm)		
-		elsif /^fsubp$/i.match(asm) then fsubp (asm)	
-		elsif /^fsubrp$/i.match(asm) then fsubrp (asm)		
-		elsif /^ftst$/i.match(asm) then ftst (asm)	
-		elsif /^fucom$/i.match(asm) then fucom (asm)	
-		elsif /^fucomp$/i.match(asm) then fucomp (asm)	
-		elsif /^fucompp$/i.match(asm) then fucompp (asm)
-		elsif /^fxam$/i.match(asm) then fxam (asm)	
-		elsif /^fxch$/i.match(asm) then fxch (asm)
-		elsif /^fxtract$/i.match(asm) then fxtract (asm)	
-		elsif /^fyl2x$/i.match(asm) then fyl2x (asm)
-		elsif /^fyl2xp1$/i.match(asm) then fyl2xp1 (asm)
-		elsif /^hlt$/i.match(asm) then hlt (asm)	
-		elsif /^idiv\s/i.match(asm) then idiv (asm)		
-		elsif /^imul\s/i.match(asm) then imul (asm)	
-		elsif /^in\s/i.match(asm) then IN (asm)
-		elsif /^int(3$|\s)/i.match(asm) then int (asm)
-		elsif /^inc\s/i.match(asm) then inc (asm)			
-		elsif /^insb$/i.match(asm) then insb (asm)
-		elsif /^insw$/i.match(asm) then insw (asm)
-		elsif /^insd$/i.match(asm) then insd (asm)
-		elsif /^into$/i.match(asm) then into (asm)	
-		elsif /^invd$/i.match(asm) then invd (asm)
-		elsif /^invlpg\s/i.match(asm) then invlpg (asm)
-		elsif /^iretw$/i.match(asm) then iretw (asm)
-		elsif /^iretd?$/i.match(asm) then iret (asm)	
-		elsif /^ja\s/i.match(asm) then ja (asm)	
-		elsif /^jae\s/i.match(asm) then jae (asm)
-		elsif /^jb\s/i.match(asm) then jb (asm)
-		elsif /^jbe\s/i.match(asm) then jbe (asm)
-		elsif /^jc\s/i.match(asm) then jc (asm)
-		elsif /^je\s/i.match(asm) then je (asm)
-		elsif /^jg\s/i.match(asm) then jg (asm)
-		elsif /^jge\s/i.match(asm) then jge (asm)
-		elsif /^jl\s/i.match(asm) then jl (asm)
-		elsif /^jle\s/i.match(asm) then jle (asm)
-		elsif /^jna\s/i.match(asm) then jna (asm)
-		elsif /^jnae\s/i.match(asm) then jnae (asm)
-		elsif /^jnb\s/i.match(asm) then jnb (asm)
-		elsif /^jnbe\s/i.match(asm) then jnbe (asm)
-		elsif /^jnc\s/i.match(asm) then jnc (asm)
-		elsif /^jne\s/i.match(asm) then jne (asm)
-		elsif /^jng\s/i.match(asm) then jng (asm)
-		elsif /^jnl\s/i.match(asm) then jnl (asm)
-		elsif /^jnle\s/i.match(asm) then jnle (asm)
-		elsif /^jno\s/i.match(asm) then jno (asm)
-		elsif /^jnp\s/i.match(asm) then jnp (asm)
-		elsif /^jns\s/i.match(asm) then jns (asm)
-		elsif /^jnz\s/i.match(asm) then jnz (asm)
-		elsif /^jo\s/i.match(asm) then jo (asm)
-		elsif /^jp\s/i.match(asm) then jp (asm)
-		elsif /^jpe\s/i.match(asm) then jpe (asm)
-		elsif /^jpo\s/i.match(asm) then jpo (asm)
-		elsif /^js\s/i.match(asm) then js (asm)		
-		elsif /^jmp\s/i.match(asm) then jmp (asm)
-		elsif /^jz\s/i.match(asm) then jz (asm)				
-		elsif /^lahf$/i.match(asm) then lahf (asm)	
-		elsif /^lea\s/i.match(asm) then lea (asm)
-		elsif /^leave$/i.match(asm) then leave (asm)
-		elsif /^leavew$/i.match(asm) then leavew (asm)	
-		elsif /^lfence$/i.match(asm) then lfence (asm)
-		elsif /^lldt\s/i.match(asm) then lldt (asm)
-		elsif /^lmsw\s/i.match(asm) then lmsw (asm)
-		elsif /^lock$/i.match(asm) then lock (asm)
-		elsif /^lodsb$/i.match(asm) then lodsb (asm)
-		elsif /^lodsw$/i.match(asm) then lodsw (asm)
-		elsif /^lodsd$/i.match(asm) then lodsd (asm)
-		elsif /^loop\s/i.match(asm) then loopx (asm)
-		elsif /^loope\s/i.match(asm) then loope (asm)
-		elsif /^loopne\s/i.match(asm) then loopne (asm)
-		elsif /^ltr\s/i.match(asm) then ltr (asm)
-		elsif /^mov\s/i.match(asm) then mov (asm)			
-		elsif /^mfence$/i.match(asm) then mfence (asm)							
-		elsif /^monitor$/i.match(asm) then monitor (asm)
-		elsif /^movsb$/i.match(asm) then movsb (asm)		#m,m forms are bullshit
-		elsif /^movsw$/i.match(asm) then movsw (asm)		#...
-		elsif /^movsd$/i.match(asm) then movsd (asm)		#...	
-		elsif /^mwait$/i.match(asm) then mwait (asm)						
-		elsif /^nop$/i.match(asm) then nop (asm)
-		elsif /^nop\s/i.match(asm) then noprm (asm)
-		elsif /^or\s/i.match(asm) then OR (asm)
-		elsif /^outsb$/i.match(asm) then outsb (asm)			#m,m forms are bullshit
-		elsif /^outsw$/i.match(asm) then outsw (asm)			#...
-		elsif /^outsd$/i.match(asm) then outsd (asm)			#...
-		elsif /^pause$/i.match(asm) then pause (asm)		
-		elsif /^pop\s/i.match(asm) then pop (asm)
-		elsif /^popaw$/i.match(asm) then popaw (asm)
-		elsif /^popad?$/i.match(asm) then popa (asm)
-		elsif /^popcnt/i.match(asm) then popcnt (asm)			
-		elsif /^popfw$/i.match(asm) then popfw (asm)
-		elsif /^popfd?$/i.match(asm) then popf (asm)
-		elsif /^popfd?$/i.match(asm) then popf (asm)
-		elsif /^prefetch0\s/i.match(asm) then prefetch0 (asm)
-		elsif /^prefetch1\s/i.match(asm) then prefetch1 (asm)
-		elsif /^prefetch2\s/i.match(asm) then prefetch2 (asm)
-		elsif /^prefetchnta\s/i.match(asm) then prefetchnta (asm)
-		elsif /^prefetchw\s/i.match(asm) then prefetchw (asm)
-		elsif /^prefetchwt1\s/i.match(asm) then prefetchwt1 (asm)
-		elsif /^push\s/i.match(asm) then push (asm)			
-		elsif /^pushaw$/i.match(asm) then pushaw (asm)
-		elsif /^pushad?$/i.match(asm) then pusha (asm)			
-		elsif /^pushfw$/i.match(asm) then pushfw (asm)
-		elsif /^pushfd?$/i.match(asm) then pushf (asm)
-		elsif /^rcl/i.match(asm) then rcl (asm)
-		elsif /^rcr/i.match(asm) then rcr (asm)					
-		elsif /^rdmsr$/i.match(asm) then rdmsr (asm)
-		elsif /^rdpmc$/i.match(asm) then rdpmc (asm)
-		elsif /^rdrand\s/i.match(asm) then rdrand (asm)
-		elsif /^rdseed\s/i.match(asm) then rdseed (asm)
-		elsif /^rdtsc$/i.match(asm) then rdtsc (asm)
-		elsif /^rdtscp$/i.match(asm) then rdtscp (asm)
-		elsif /^ret$/i.match(asm) then ret (asm)
-		elsif /^retf$/i.match(asm) then retf (asm)
-		elsif /^rep\sinsb$/i.match(asm) then rep_insb (asm)
-		elsif /^rep\sinsw$/i.match(asm) then rep_insw (asm)
-		elsif /^rep\sinsd$/i.match(asm) then rep_insd (asm)	
-		elsif /^rep\smovsb$/i.match(asm) then rep_movsb (asm)				
-		elsif /^rep\smovsw$/i.match(asm) then rep_movsw (asm)	
-		elsif /^rep\smovsd$/i.match(asm) then rep_movsd (asm)				
-		elsif /^rep\soutsb$/i.match(asm) then rep_outsb (asm)
-		elsif /^rep\soutsw$/i.match(asm) then rep_outsw (asm)
-		elsif /^rep\soutsd$/i.match(asm) then rep_outsd (asm)					
-		elsif /^rep\slodsb$/i.match(asm) then rep_lodsb (asm)
-		elsif /^rep\slodsw$/i.match(asm) then rep_lodsw (asm)
-		elsif /^rep\slodsd$/i.match(asm) then rep_lodsd (asm)
-		elsif /^rep\sstosb$/i.match(asm) then rep_stosb (asm)
-		elsif /^rep\sstosw$/i.match(asm) then rep_stosw (asm)
-		elsif /^rep\sstosd$/i.match(asm) then rep_stosd (asm)
-		elsif /^repe\scmpsb$/i.match(asm) then repe_cmpsb (asm)
-		elsif /^repe\scmpsw$/i.match(asm) then repe_cmpsw (asm)
-		elsif /^repe\scmpsd$/i.match(asm) then repe_cmpsd (asm)		
-		elsif /^repz\scmpsb$/i.match(asm) then repe_cmpsb (asm)
-		elsif /^repz\scmpsw$/i.match(asm) then repe_cmpsw (asm)
-		elsif /^repz\scmpsd$/i.match(asm) then repe_cmpsd (asm)	
-		elsif /^repe\sscasb$/i.match(asm) then repe_scasb (asm)
-		elsif /^repe\sscasw$/i.match(asm) then repe_scasw (asm)
-		elsif /^repe\sscasd$/i.match(asm) then repe_scasd (asm)		
-		elsif /^repz\sscasb$/i.match(asm) then repe_scasb (asm)
-		elsif /^repz\sscasw$/i.match(asm) then repe_scasw (asm)
-		elsif /^repz\sscasd$/i.match(asm) then repe_scasd (asm)						
-		elsif /^repne\scmpsb$/i.match(asm) then repne_cmpsb (asm)
-		elsif /^repne\scmpsw$/i.match(asm) then repne_cmpsw (asm)
-		elsif /^repne\scmpsd$/i.match(asm) then repne_cmpsd (asm)		
-		elsif /^repnz\scmpsb$/i.match(asm) then repne_cmpsb (asm)
-		elsif /^repnz\scmpsw$/i.match(asm) then repne_cmpsw (asm)
-		elsif /^repnz\scmpsd$/i.match(asm) then repne_cmpsd (asm)	
-		elsif /^repne\sscasb$/i.match(asm) then repne_scasb (asm)
-		elsif /^repne\sscasw$/i.match(asm) then repne_scasw (asm)
-		elsif /^repne\sscasd$/i.match(asm) then repne_scasd (asm)		
-		elsif /^repnz\sscasb$/i.match(asm) then repne_scasb (asm)
-		elsif /^repnz\sscasw$/i.match(asm) then repne_scasw (asm)
-		elsif /^repnz\sscasd$/i.match(asm) then repne_scasd (asm)	
-		elsif /^rol/i.match(asm) then rol (asm)	
-		elsif /^ror/i.match(asm) then ror (asm)						
-		elsif /^rsm$/i.match(asm) then rsm (asm)
-		elsif /^sahf$/i.match(asm) then sahf (asm)
-		elsif /^sal/i.match(asm) then sal (asm)	
-		elsif /^sar/i.match(asm) then sar (asm)						
-		elsif /^sbb/i.match(asm) then sbb (asm)			
-		elsif /^scasb$/i.match(asm) then scasb (asm)			#m,m forms are bullshit
-		elsif /^scasw$/i.match(asm) then scasw (asm)			#...
-		elsif /^scasd$/i.match(asm) then scasd (asm)			#...
-		elsif /^sfence$/i.match(asm) then sfence (asm)
-		elsif /^sgdt\s/i.match(asm) then sgdt (asm)
-		elsif /^shl/i.match(asm) then shl (asm)	
-		elsif /^sidt\s/i.match(asm) then sidt (asm)
-		elsif /^shr/i.match(asm) then shr (asm)						
-		elsif /^smsw\s/i.match(asm) then smsw (asm)
-		elsif /^stac$/i.match(asm) then stac (asm)	
-		elsif /^stc$/i.match(asm) then stc (asm)
-		elsif /^std$/i.match(asm) then std (asm)
-		elsif /^sti$/i.match(asm) then sti (asm)
-		elsif /^stosb$/i.match(asm) then stosb (asm)			#m,m forms are bullshit
-		elsif /^stosw$/i.match(asm) then stosw (asm)			#...
-		elsif /^stosd$/i.match(asm) then stosd (asm)			#...
-		elsif /^str\s/i.match(asm) then str (asm)	
-		elsif /^sub/i.match(asm) then sub (asm)	
-		elsif /^swapgs/i.match(asm) then swapgs (asm)	
-		elsif /^syscall/i.match(asm) then syscall (asm)	
-		elsif /^sysenter/i.match(asm) then sysenter (asm)
-		elsif /^sysexit/i.match(asm) then sysexit (asm)	
-		elsif /^sysret/i.match(asm) then sysret (asm)	
-		elsif /^test/i.match(asm) then test (asm)
-		elsif /^tzcnt/i.match(asm) then tzcnt (asm)
-		elsif /^ud2$/i.match(asm) then ud2 (asm)	
-		elsif /^verr\s/i.match(asm) then verr (asm)
-		elsif /^verw\s/i.match(asm) then verw (asm)
-		elsif /^vmwrite/i.match(asm) then vmwrite (asm)
-		elsif /^vmread/i.match(asm) then vmread (asm)			
-		elsif /^f?wait$/i.match(asm) then wait (asm)
-		elsif /^wbinvd$/i.match(asm) then wbinvd (asm)		
-		elsif /^wrmsr$/i.match(asm) then wrmsr (asm)
-		elsif /^xabort\s/i.match(asm) then xabort (asm)			
-		elsif /^xbegin/i.match(asm) then xbegin (asm)
-		elsif /^xchg/i.match(asm) then xchg (asm)
-		elsif /^xgetbv$/i.match(asm) then xgetbv (asm)
-		elsif /^xlat$/i.match(asm) then xlat (asm)
-		elsif /^xor/i.match(asm) then xor (asm)
-		elsif /^xsetbv/i.match(asm) then xsetbv (asm)
-		elsif /^xtest/i.match(asm) then xtest (asm)																																																																																																																																																																							
-		else nasm(asm) end
-	end
-end
-
 #--------------------------------------------
 # 	Routines for Each Instruction			#
 #--------------------------------------------
 
-def aaa instruction
-	#ASCII Adjust After Addition
-	printf("%-34s%-15s\n\n", '37', 'aaa')	end
-def aad instruction
-	#ASCII Adjust AX Before Division
-	printf("%-34s%-15s\n\n", 'D50A', 'aad')
-	printf("%-34s%-15s\n\n", 'D5XX', 'aad imm8 (Machine Code Only, XX is base)')	end		
-def aam instruction
-	#ASCII Adjust AX After Multiply
-	printf("%-34s%-15s\n\n", 'D40A', 'aam')
-	printf("%-34s%-15s\n\n", 'D4XX', 'aam imm8 (Machine Code Only, XX is base)')	end	
-def aas instruction
-	#ASCII Adjust AL After Subtraction
-	printf("%-34s%-15s\n\n", '3F', 'aas')	end	
-def adc instruction
-	#Add with Carry
-	if alimm8(instruction, '14', '80D0')	
-	elsif aximm16(instruction, '6615', '6681D0', '6683D0')
-	elsif eaximm32(instruction, '15', '81D0', '83D0')		
-	elsif modrmimm(instruction, 'adc', '80', '2')
-	elsif modrmmodrm(instruction, '10')		
-	else nasm(instruction) end end
-def adcx instruction
-	#Unsigned Integer Addition of Two Operands with Cary Flag
-	if modrmmodrm(instruction, '660F38F6')		
-	else nasm(instruction) end end
-def add instruction
-	#Add
-	if alimm8(instruction, '04', '80C0')
-	elsif aximm16(instruction, '6605', '6681C0', '6683C0')
-	elsif eaximm32(instruction, '05', '81C0', '83C0')
-	elsif modrmimm(instruction, 'add', '80', '0')	
-	elsif modrmmodrm(instruction, '00')			
-	else nasm(instruction) end end
-def adox instruction
-	#Unsigned Integer Addition of Two Operands with Overflow Flag
-	if modrmmodrm(instruction, 'F30F38F6')		
-	else nasm(instruction) end end
-def andi instruction
-	#Logical AND
-	if alimm8_b(instruction, '25', '81E0', '6625', '6681E0', '24', '80E0', '6683E0')
-	elsif aximm16_b(instruction, '25', '81E0', '6625', '6681E0', '24', '80E0', '6683E0')
-	elsif eaximm32_b(instruction, '25', '81E0', '6625', '6681E0', '24', '80E0', '6683E0')
-	elsif modrmimm(instruction, 'and', '80', '4')	
-	elsif modrmmodrm(instruction, '20')			
-	else nasm(instruction) end end
-def arpl instruction
-	#Unsigned Integer Addition of Two Operands with Overflow Flag
-	if modrmmodrm(instruction, '63')		
-	else nasm(instruction) end end
-def bound instruction
-	#Logical AND	
-	if modrmmodrm(instruction, '62')			
-	else nasm(instruction) end end
-def bsf instruction
-	#Bit Scan Forward
-	if modrmmodrm(instruction, '0FBC')		
-	else nasm(instruction) end end
-def bsr instruction
-	#Bit Scan Reverse
-	if modrmmodrm(instruction, '0FBD')		
-	else nasm(instruction) end end		
-def bswap instruction
-	#Compare Two Operands
-	if plusreg(instruction, '0FC8')		
-	else nasm(instruction) end end
-def call instruction
-	#Transactional Begin
-	if jcc(instruction, 'E8')
-	elsif ptr(instruction, '9A')	
-	elsif opmodrm(instruction, 'FE', '2')	#Actually FF, but gets converted just fine
-	else nasm(instruction) end end
-def cbw instruction
-	#Convert Byte to Word
-	printf("%-34s%-15s\n\n", '6698', 'cbw')	end		
-def cflush instruction
-	#Flush Case Line
-	if opmodrm(instruction, '0FAE', '7')	#Actually FF, but gets converted just fine
-	else nasm(instruction) end end	
-def cwde instruction
-	#Convert Word to Doubleword
-	printf("%-34s%-15s\n\n", '98', 'cwde')	end		
-def clac instruction
-	#Clear AC Flag in EFLAGS Register
-	printf("%-34s%-15s\n\n", '0F01CA', 'clac')	end		
-def clc instruction
-	#Clear Carry Flag
-	printf("%-34s%-15s\n\n", 'F8', 'clc')	end		
-def cld instruction
-	#Clear Direction Flag
-	printf("%-34s%-15s\n\n", 'FC', 'cld')	end		
-def cli instruction
-	#Clear Interupt Flag
-	printf("%-34s%-15s\n\n", 'FA', 'cli')	end		
-def clts instruction
-	#Clear Task-Switched Flag in CR0
-	printf("%-34s%-15s\n\n", '0F06', 'clts')	end		
-def cmc instruction
-	#Complement Carry Flag
-	printf("%-34s%-15s\n\n", 'F5', 'cmc')	end		
-def cmova instruction
-	#Move if Above
-	if modrmmodrm(instruction, '0F47')		
-	else nasm(instruction) end end
-def cmovae instruction
-	#Move if Above or Equal
-	if modrmmodrm(instruction, '0F43')		
-	else nasm(instruction) end end	
-def cmovb instruction
-	#Move if Below
-	if modrmmodrm(instruction, '0F42')		
-	else nasm(instruction) end end	
-def cmovbe instruction
-	#Move if Below or Equal
-	if modrmmodrm(instruction, '0F46')		
-	else nasm(instruction) end end	
-def cmovc instruction
-	#Move if Carry
-	if modrmmodrm(instruction, '0F42')		
-	else nasm(instruction) end end
-def cmove instruction
-	#Move if Equal
-	if modrmmodrm(instruction, '0F44')		
-	else nasm(instruction) end end	
-def cmovg instruction
-	#Move if Greater Than
-	if modrmmodrm(instruction, '0F4F')		
-	else nasm(instruction) end end
-def cmovge instruction
-	#Move if Greater Than or Equal
-	if modrmmodrm(instruction, '0F4D')		
-	else nasm(instruction) end end	
-def cmovl instruction
-	#Move if Lesser Than
-	if modrmmodrm(instruction, '0F4C')		
-	else nasm(instruction) end end	
-def cmovle instruction
-	#Move if Lesser Than or Equal
-	if modrmmodrm(instruction, '0F4E')		
-	else nasm(instruction) end end		
-def cmovna instruction
-	#Move if Not Above
-	if modrmmodrm(instruction, '0F46')		
-	else nasm(instruction) end end	
-def cmovnae instruction
-	#Move if Not Above or Equal
-	if modrmmodrm(instruction, '0F42')		
-	else nasm(instruction) end end	
-def cmovnb instruction
-	#Move if Not Below
-	if modrmmodrm(instruction, '0F43')		
-	else nasm(instruction) end end	
-def cmovnbe instruction
-	#Move if Not Below or Equal
-	if modrmmodrm(instruction, '0F47')		
-	else nasm(instruction) end end		
-def cmovnc instruction
-	#Move if Not Carry
-	if modrmmodrm(instruction, '0F43')		
-	else nasm(instruction) end end	
-def cmovne instruction
-	#Move if Not Equal
-	if modrmmodrm(instruction, '0F45')		
-	else nasm(instruction) end end	
-def cmovng instruction
-	#Move if Not Greater Than
-	if modrmmodrm(instruction, '0F4E')		
-	else nasm(instruction) end end	
-def cmovnl instruction
-	#Move if Not Lesser Than
-	if modrmmodrm(instruction, '0F4D')		
-	else nasm(instruction) end end	
-def cmovnle instruction
-	#Move if Not Lesser Than or Equal
-	if modrmmodrm(instruction, '0F4F')		
-	else nasm(instruction) end end
-def cmovno instruction
-	#Move if Not Over
-	if modrmmodrm(instruction, '0F41')		
-	else nasm(instruction) end end	
-def cmovnp instruction
-	#Move if Not Parity
-	if modrmmodrm(instruction, '0F4B')		
-	else nasm(instruction) end end	
-def cmovns instruction
-	#Move if Not Sign Flag
-	if modrmmodrm(instruction, '0F49')		
-	else nasm(instruction) end end		
-def cmovnz instruction
-	#Move if Not Zero
-	if modrmmodrm(instruction, '0F45')		
-	else nasm(instruction) end end	
-def cmovo instruction
-	#Move if Over
-	if modrmmodrm(instruction, '0F40')		
-	else nasm(instruction) end end	
-def cmovp instruction
-	#Move if Parity
-	if modrmmodrm(instruction, '0F4A')		
-	else nasm(instruction) end end	
-def cmovpe instruction
-	#Move if Parity Even
-	if modrmmodrm(instruction, '0F4A')		
-	else nasm(instruction) end end	
-def cmovpo instruction
-	#Move if Parity Odd
-	if modrmmodrm(instruction, '0F4B')		
-	else nasm(instruction) end end	
-def cmovs instruction
-	#Move if Sign Flag
-	if modrmmodrm(instruction, '0F48')		
-	else nasm(instruction) end end	
-def cmovz instruction
-	#Move if Zero
-	if modrmmodrm(instruction, '0F44')		
-	else nasm(instruction) end end															
-def cmp instruction
-	#Compare Two Operands
-	if alimm8_c(instruction, '3C', '80F8')
-	elsif aximm16_c(instruction, '663D', '6681F8', '6683F8')
-	elsif eaximm32_c(instruction, '3D', '81F8', '83F8')
-	elsif modrmimm(instruction, 'cmp', '80', '7')	
-	elsif modrmmodrm(instruction, '38')			
-	else nasm(instruction) end end
-def cmpsb instruction
-	#Compare String Operands (Byte)
-	printf("%-34s%-15s\n\n", 'A6', 'cmpsb')	end		
-def cmpsw instruction
-	#Compare String Operands (Word)
-	printf("%-34s%-15s\n\n", '66A7', 'cmpsw (WORD PTR ds:[esi],WORD PTR es:[edi])')	end
-def cmpsd instruction
-	#Compare String Operands (Doubleword)
-	printf("%-34s%-15s\n\n", 'A7', 'cmpsd (DWORD PTR ds:[esi],DWORD PTR es:[edi])')	end	
-def cmpxchg instruction
-	#Compare Two Operands
-	if modrmmodrm(instruction, '0FB0')			
-	else nasm(instruction) end end
-def cpuid instruction
-	#CPU Identification
-	printf("%-34s%-15s\n\n", '0FA2', 'cpuid')	end		
-def crc32 instruction
-	#Accumulate CRC32 Value
-	if modrmmodrm(instruction, 'F20F38F1')		
-	else nasm(instruction) end end
-def cwd instruction
-	#Convert Word to Doubleword
-	printf("%-34s%-15s\n\n", '6699', 'cwd')	end
-def cdq instruction
-	#Convert Doubleword to Quadword
-	printf("%-34s%-15s\n\n", '99', 'cdq')	end
-def daa instruction
-	#Decimal Adjust AL after Addition
-	printf("%-34s%-15s\n\n", '27', 'daa')	end
-def das instruction
-	#Decimal Adjust AL after Subtraction
-	printf("%-34s%-15s\n\n", '2F', 'das')	end
-def dec instruction
-	#Compare Two Operands
-	if opmodrm(instruction, 'FE', '1')			
-	else nasm(instruction) end end
-def div instruction
-	#Compare Two Operands
-	if opmodrm(instruction, 'F6', '6')			
-	else nasm(instruction) end end
-def emms instruction
-	#Empty MMX Technology State
-	printf("%-34s%-15s\n\n", '0F77', 'emms')	end
-def enter instruction
-	if imm16imm8(instruction, 'C8')		
-	else nasm(instruction) end end
-def f2xm1 instruction
-	#Compute 2^x-1
-	printf("%-34s%-15s\n\n", 'D9F0', 'f2xm1')	end	
-def fabs instruction
-	#Absolute Value
-	printf("%-34s%-15s\n\n", 'D9E1', 'fabs')	end	
-def faddp instruction
-	#Floating Point Add
-	printf("%-34s%-15s\n\n", 'DEC1', 'faddp (faddp  st(1),st)')	end	
-def fchs instruction
-	#Change Sign
-	printf("%-34s%-15s\n\n", 'D9E0', 'fchs')	end	
-def fclex instruction
-	#Clear Exceptions
-	printf("%-34s%-15s\n\n", '9BDBE2', 'fclex')	end
-def fnclex instruction
-	#Clear Exceptions
-	printf("%-34s%-15s\n\n", 'DBE2', 'fnclex')	end	
-def fcom instruction
-	#Compare Floating Point Values
-	printf("%-34s%-15s\n\n", 'D8D1', 'fcom (st(1))')	end
-def fcomp instruction
-	#Compare Floating Point Values and Pop
-	printf("%-34s%-15s\n\n", 'D8D9', 'fcomp (st(1))')	end	
-def fcompp instruction
-	#Compare Floating Point Values and Pop Twice
-	printf("%-34s%-15s\n\n", 'DED9', 'fcompp')	end	
-def fcos instruction
-	#Cosine
-	printf("%-34s%-15s\n\n", 'D9FF', 'fcos')	end	
-def fdecstp instruction
-	#Decrement Stack-Top Pointer
-	printf("%-34s%-15s\n\n", 'D9F6', 'fdecstp')	end	
-def fdivp instruction
-	#Divide
-	printf("%-34s%-15s\n\n", 'DEF9', 'fdivp (st(1),st)')	end		
-def fdivrp instruction
-	#Reverese Divide
-	printf("%-34s%-15s\n\n", 'DEF1', 'fdivrp (st(1),st)')	end	
-def fincstp instruction
-	#Increment Stack-Top Pointer
-	printf("%-34s%-15s\n\n", 'D9F7', 'fincstp')	end	
-def finit instruction
-	#Initialize Floating-Point Unit
-	printf("%-34s%-15s\n\n", '9BDBE3', 'finit')	end	
-def fninit instruction
-	#Initialize Floating-Point Unit
-	printf("%-34s%-15s\n\n", 'DBE3', 'fninit')	end	
-def fld1 instruction
-	#Load Constant (Push +1.0 onto the FPU register stack)
-	printf("%-34s%-15s\n\n", 'D9E8', 'fld1')	end	
-def fldl2t instruction
-	#Load Constant (Push log2,10 onto the FPU register stack)
-	printf("%-34s%-15s\n\n", 'D9E9', 'fldl2t')	end	
-def fldl2e instruction
-	#Load Constant (Push log2,e onto the FPU register stack)
-	printf("%-34s%-15s\n\n", 'D9EA', 'fldl2e')	end	
-def fldpi instruction
-	#Load Constant (Push pi onto the FPU register stack)
-	printf("%-34s%-15s\n\n", 'D9EB', 'fldpi')	end	
-def fldlg2 instruction
-	#Load Constant (Push log10,2 onto the FPU register stack)
-	printf("%-34s%-15s\n\n", 'D9EC', 'fldlg2')	end	
-def fldln2 instruction
-	#Load Constant (Push log e,2 onto the FPU register stack)
-	printf("%-34s%-15s\n\n", 'D9ED', 'fldln2')	end	
-def fldz instruction
-	#Load Constant (Push +0.0 onto the FPU register stack)
-	printf("%-34s%-15s\n\n", 'D9EE', 'fldz')	end	
-def fmulp instruction
-	#Multiply
-	printf("%-34s%-15s\n\n", 'DEC9', 'fmulp (st(1),st)') end	
-def fnop instruction
-	#Floating Point NOP
-	printf("%-34s%-15s\n\n", 'D9D0', 'fnop') end	
-def fpatan instruction
-	#Partial Arctangent
-	printf("%-34s%-15s\n\n", 'D9F3', 'fpatan') end	
-def fprem instruction
-	#Partial Remainder
-	printf("%-34s%-15s\n\n", 'D9F8', 'fprem') end	
-def fprem1 instruction
-	#Partial Remainder
-	printf("%-34s%-15s\n\n", 'D9F5', 'fprem1') end	
-def fptan instruction
-	#Partial Tangent
-	printf("%-34s%-15s\n\n", 'D9F2', 'fptan') end	
-def frndint instruction
-	#Round to Integer
-	printf("%-34s%-15s\n\n", 'D9FC', 'frndint') end	
-def fscale instruction
-	#Scale
-	printf("%-34s%-15s\n\n", 'D9FD', 'fscale') end	
-def fsin instruction
-	#Sine
-	printf("%-34s%-15s\n\n", 'D9FE', 'fsin') end	
-def fsincos instruction
-	#Sine and Cosine
-	printf("%-34s%-15s\n\n", 'D9FB', 'fsincos') end	
-def fsqrt instruction
-	#Square Root
-	printf("%-34s%-15s\n\n", 'D9FA', 'fsqrt') end	
-def fstswax instruction
-	#Store x87 FPU Status Word
-	printf("%-34s%-15s\n\n", '9BDFE0', 'fstsw ax') end	
-def fnstswax instruction
-	#Store x87 FPU Status Word (without checking for pending unmasked floating-point exceptions)
-	printf("%-34s%-15s\n\n", 'DFE0', 'fnstsw ax') end	
-def fsubp instruction
-	#Subtract
-	printf("%-34s%-15s\n\n", 'DEE9', 'fsubp') end	
-def fsubrp instruction
-	#Reverse Subtract
-	printf("%-34s%-15s\n\n", 'DEE1', 'fsubrp') end	
-def ftst instruction
-	#Test
-	printf("%-34s%-15s\n\n", 'D9E4', 'ftst') end	
-def fucom instruction
-	#Unordered Compare Floating Point Values
-	printf("%-34s%-15s\n\n", 'DDE1', 'fucom (st(1))') end	
-def fucomp instruction
-	#Unordered Compare Floating Point Values and pop register stack
-	printf("%-34s%-15s\n\n", 'DDE9', 'fucomp (st(1))') end	
-def fucompp instruction
-	#Unordered Compare Floating Point Values and pop register stack twice
-	printf("%-34s%-15s\n\n", 'DAE9', 'fucompp') end	
-def fxam instruction
-	#Examine ModR/M
-	printf("%-34s%-15s\n\n", 'D9E5', 'fxam') end	
-def fxch instruction
-	#Exchange Register Contents
-	printf("%-34s%-15s\n\n", 'D9C9', 'fxch (st(1))') end	
-def fxtract instruction
-	#Extract Exponent and Significand
-	printf("%-34s%-15s\n\n", 'D9F4', 'fxtract') end	
-def fyl2x instruction
-	#Compute y * log2, x
-	printf("%-34s%-15s\n\n", 'D9F1', 'fyl2x') end	
-def fyl2xp1 instruction
-	#Compute y * log2(x+1)
-	printf("%-34s%-15s\n\n", 'D9F9', 'fyl2xp1') end	
-def hlt instruction
-	#Halt
-	printf("%-34s%-15s\n\n", 'F4', 'hlt') end	
-def idiv instruction
-	#Compare Two Operands
-	if opmodrm(instruction, 'F6', '7')			
-	else nasm(instruction) end end
-def imul instruction
-	#Compare Two Operands
-	if modrmmodrm(instruction, '0FAF')		
-	elsif opmodrm(instruction, 'F6', '5')
-	else nasm(instruction) end end
-def IN instruction
-	#Input from Port
-	if alimm8_d(instruction, 'E4', 'E5')
-	elsif inaldx(instruction)		
-	else nasm(instruction) end end
-def inc instruction
-	#Compare Two Operands
-	if opmodrm(instruction, 'FE', '0')			
-	else nasm(instruction) end end
-def insb instruction
-	#Input from Port to String (Byte)
-	printf("%-34s%-15s\n\n", '6C', 'insb (BYTE PTR es:[edi],dx)') end	
-def insw instruction
-	#Input from Port to String (Word)
-	printf("%-34s%-15s\n\n", '666D', 'insw (WORD PTR es:[edi],dx)') end	
-def insd instruction
-	#Input from Port to String (DWword)
-	printf("%-34s%-15s\n\n", '6D', 'insd (DWORD PTR es:[edi],dx)') end	
-def int instruction
-	#Interupt
-	if opimm8(instruction, 'CD')		
-	else nasm(instruction) end end
-def into instruction
-	#Call to Interrupt Procedure
-	printf("%-34s%-15s\n\n", 'CE', 'into') end	
-def invd instruction
-	#Invalidate Internal Caches
-	printf("%-34s%-15s\n\n", '0F08', 'invd') end	
-def invlpg instruction
-	#Invalidate TLB Entries
-	if opmodrm(instruction, '0F01', '7')			
-	else nasm(instruction) end end
-def iret instruction
-	#Interrupt Return, this applies for IRET and IRTED
-	printf("%-34s%-15s\n\n", 'CF', instruction) end	
-def iretw instruction
-	#Interrupt Return (Word)
-	printf("%-34s%-15s\n\n", '66CF', 'iretw') end	
-def ja instruction
-	#Jump if Above
-	if jcc(instruction, '77')		
-	else nasm(instruction) end end
-def jae instruction
-	#Jump if Above or Equal
-	if jcc(instruction, '73')		
-	else nasm(instruction) end end	
-def jb instruction
-	#Jump if Below
-	if jcc(instruction, '72')		
-	else nasm(instruction) end end	
-def jbe instruction
-	#Jump if Below or Equal
-	if jcc(instruction, '76')		
-	else nasm(instruction) end end	
-def jc instruction
-	#Jump if Carry
-	if jcc(instruction, '72')		
-	else nasm(instruction) end end
-def je instruction
-	#Jump if Equal
-	if jcc(instruction, '74')		
-	else nasm(instruction) end end	
-def jg instruction
-	#Jump if Greater Than
-	if jcc(instruction, '7F')		
-	else nasm(instruction) end end
-def jge instruction
-	#Jump if Greater Than or Equal
-	if jcc(instruction, '7D')		
-	else nasm(instruction) end end	
-def jl instruction
-	#Jump if Lesser Than
-	if jcc(instruction, '7C')		
-	else nasm(instruction) end end	
-def jle instruction
-	#Jump if Lesser Than or Equal
-	if jcc(instruction, '7E')		
-	else nasm(instruction) end end		
-def jna instruction
-	#Jump if Not Above
-	if jcc(instruction, '76')		
-	else nasm(instruction) end end	
-def jnae instruction
-	#Jump if Not Above or Equal
-	if jcc(instruction, '72')		
-	else nasm(instruction) end end	
-def jnb instruction
-	#Jump if Not Below
-	if jcc(instruction, '73')		
-	else nasm(instruction) end end	
-def jnbe instruction
-	#Jump if Not Below or Equal
-	if jcc(instruction, '77')		
-	else nasm(instruction) end end		
-def jnc instruction
-	#Jump if Not Carry
-	if jcc(instruction, '73')		
-	else nasm(instruction) end end	
-def jne instruction
-	#Jump if Not Equal
-	if jcc(instruction, '75')		
-	else nasm(instruction) end end	
-def jng instruction
-	#Jump if Not Greater Than
-	if jcc(instruction, '7E')		
-	else nasm(instruction) end end	
-def jnl instruction
-	#Jump if Not Lesser Than
-	if jcc(instruction, '7D')		
-	else nasm(instruction) end end	
-def jnle instruction
-	#Jump if Not Lesser Than or Equal
-	if jcc(instruction, '7F')		
-	else nasm(instruction) end end
-def jno instruction
-	#Jump if Not Over
-	if jcc(instruction, '71')		
-	else nasm(instruction) end end	
-def jnp instruction
-	#Jump if Not Parity
-	if jcc(instruction, '7B')		
-	else nasm(instruction) end end	
-def jns instruction
-	#Jump if Not Sign Flag
-	if jcc(instruction, '79')		
-	else nasm(instruction) end end		
-def jnz instruction
-	#Jump if Not Zero
-	if jcc(instruction, '75')		
-	else nasm(instruction) end end	
-def jo instruction
-	#Jump if Over
-	if jcc(instruction, '70')		
-	else nasm(instruction) end end	
-def jp instruction
-	#Jump if Parity
-	if jcc(instruction, '7A')		
-	else nasm(instruction) end end	
-def jpe instruction
-	#Jump if Parity Even
-	if jcc(instruction, '7A')		
-	else nasm(instruction) end end	
-def jpo instruction
-	#Jump if Parity Odd
-	if jcc(instruction, '7B')		
-	else nasm(instruction) end end	
-def js instruction
-	#Jump if Sign Flag
-	if jcc(instruction, '78')		
-	else nasm(instruction) end end	
-def jmp instruction
-	#Jump
-	if jcc(instruction, 'EB')	
-	elsif ptr(instruction, 'EA')
-	elsif opmodrm(instruction, 'FE', '4')	#Actually FF, but gets converted just fine		
-	else nasm(instruction) end end	
-def jz instruction
-	#Jump if Zero
-	if jcc(instruction, '74')		
-	else nasm(instruction) end end															
-def lahf instruction
-	#Load Status Flags into AH Register
-	printf("%-34s%-15s\n\n", '9F', 'lahf') end	
-def lea instruction
-	#lea
-	if modrmmodrm(instruction, '8D')		
-	else nasm(instruction) end end	
-def leave instruction
-	#High Level Procedure Exit
-	printf("%-34s%-15s\n\n", 'C9', 'leave') end	
-def leavew instruction
-	#High Level Procedure Exit (Word)
-	printf("%-34s%-15s\n\n", '66C9', 'leavew') end	
-def lfence instruction
-	#Load Fence
-	fence('lfence', '0FAE', 'E8') end
-def lldt instruction
-	#Load Local Descriptor Table Register
-	if opmodrm(instruction, '0F00', '2')
-	else nasm(instruction) end end	
-def lmsw instruction
-	#Load Machine Status Word
-	if opmodrm(instruction, '0F01', '6')
-	else nasm(instruction) end end	
-def lodsb instruction
-	#Load String (Byte)
-	printf("%-34s%-15s\n\n", 'AC', 'lodsb') end	
-def lodsw instruction
-	#Load String (Word)
-	printf("%-34s%-15s\n\n", '66AD', 'lodsw') end	
-def lodsd instruction
-	#Load String (Doubleword)
-	printf("%-34s%-15s\n\n", 'AD', 'lodsd') end	
-def loopx instruction
-	#Loop
-	if rel8(instruction, 'E2')		
-	else nasm(instruction) end end	
-def loope instruction
-	#Loop if Equal
-	if rel8(instruction, 'E1')		
-	else nasm(instruction) end end	
-def loopne instruction
-	#Loop if Not Equal
-	if rel8(instruction, 'E0')		
-	else nasm(instruction) end end			
-def ltr instruction
-	#Load Task Register
-	if opmodrm(instruction, '0F00', '3')
-	else nasm(instruction) end end
-def mfence instruction
-	#Memory Fence
-	fence('mfence', '0FAE', 'F0') end
-def monitor instruction
-	#Set Up Monitor Address
-	printf("%-34s%-15s\n\n", '0F01C8', 'monitor') end	
-def mov instruction
-	#Move
-	if modrmimm(instruction, 'mov', 'C6', '0')
-	elsif modrmmodrm(instruction, '88')			
-	else nasm(instruction) end end		
-def movsb instruction
-	#Move Data from String to String (Byte)
-	printf("%-34s%-15s\n\n", 'A4', 'movsb') end	
-def movsw instruction
-	#Move Data from String to String (Word)
-	printf("%-34s%-15s\n\n", '66A5', 'movsw') end	
-def movsd instruction
-	#Move Data from String to String (Doubleword)
-	printf("%-34s%-15s\n\n", 'A5', 'movsd') end	
-def mwait instruction
-	#Monitor Wait
-	printf("%-34s%-15s\n\n", '0F01C9', 'mwait') end	
-def nop instruction
-	#No Operation
-	printf("%-34s%-15s\n\n", '90', 'nop') end			
-def noprm instruction
-	#No Operation as a 'multibyte instruction'
-	if opmodrm(instruction, '0F1F', '0')
-	else nasm(instruction) end end			
-def OR instruction
-	#Logical Inclusive OR
-	if alimm8_e(instruction, '0D', '81C8', '660D', '6681C8', '0C', '80C8')
-	elsif aximm16_e(instruction, '0D', '81C8', '660D', '6681C8', '0C', '80C8', '6683C8')
-	elsif eaximm32_e(instruction, '0D', '81C8', '660D', '6681C8', '0C', '80C8', '83C8')
-	elsif modrmimm(instruction, 'or', '80', '1')		
-	elsif modrmmodrm(instruction, '08')			
-	else nasm(instruction) end end
-def outsb instruction
-	#Output String to Port (Byte)
-	printf("%-34s%-15s\n\n", '6E', 'outsb') end		
-def outsw instruction
-	#Output String to Port (Word)
-	printf("%-34s%-15s\n\n", '666F', 'outsw') end		
-def outsd instruction
-	#Output String to Port (Doubleword)
-	printf("%-34s%-15s\n\n", '6F', 'outsd') end	
-def pause instruction
-	#Spin Loop Hint
-	printf("%-34s%-15s\n\n", 'F390', 'pause') end		
-def pop instruction
-	#Compare Two Operands
-	if opmodrm(instruction, '8F', '0')		
-	else nasm(instruction) end end
-def popaw instruction
-	#Pop All General-Purpose Registers (Word)
-	printf("%-34s%-15s\n\n", '6661', 'popaw') end	
-def popa instruction
-	#Pop All General-Purpose Registers
-	printf("%-34s%-15s\n\n", '61', instruction) end	
-def popcnt instruction
-	#Return the Count of Number of Bits set to 1
-	if modrmmodrm(instruction, 'F30FB8')		
-	else nasm(instruction) end end
-def popfw instruction
-	#Pop Stack into EFLAGS Registers (Word)
-	printf("%-34s%-15s\n\n", '669D', 'popfw') end	
-def popf instruction
-	#Pop Stack into EFLAGS Registers
-	printf("%-34s%-15s\n\n", '9D', instruction) end	
-def prefetch0 instruction
-	#Compare Two Operands
-	if opmodrm(instruction, '0F18', '1')		
-	else nasm(instruction) end end
-def prefetch1 instruction
-	#Compare Two Operands
-	if opmodrm(instruction, '0F18', '2')		
-	else nasm(instruction) end end	
-def prefetch2 instruction
-	#Compare Two Operands
-	if opmodrm(instruction, '0F18', '3')		
-	else nasm(instruction) end end	
-def prefetchnta instruction
-	#Compare Two Operands
-	if opmodrm(instruction, '0F18', '0')		
-	else nasm(instruction) end end	
-def prefetchw instruction
-	#Compare Two Operands
-	if opmodrm(instruction, '0F0D', '1')		
-	else nasm(instruction) end end	
-def prefetchwt1 instruction
-	#Compare Two Operands
-	if opmodrm(instruction, '0F0D', '2')		
-	else nasm(instruction) end end	
-def push instruction
-	#Push data to the stack
-	if opmodrm(instruction, 'FE', '6')		#Actually FF, but gets converted just fine
-	elsif pushimm(instruction)	
-	else nasm(instruction) end end
-def pushaw instruction
-	#Push All General-Purpose Registers (Word)
-	printf("%-34s%-15s\n\n", '6660', 'pushaw') end	
-def pusha instruction
-	#Push All General-Purpose Registers
-	printf("%-34s%-15s\n\n", '60', instruction) end	
-def pushfw instruction
-	#Push EFLAGS Register onto the Stack (Word)
-	printf("%-34s%-15s\n\n", '669C', 'pushfw') end	
-def pushf instruction
-	#Push EFLAGS Register onto the Stack
-	printf("%-34s%-15s\n\n", '9C', instruction) end	
-def rcl instruction
-	#Rotate with Carry to the Left
-	if modrmimm(instruction, 'rcl', 'C0', '2')		
-	else nasm(instruction) end end		
-def rcr instruction
-	#Rotate with Carry to the Right
-	if modrmimm(instruction, 'rcr', 'C0', '3')
-	else nasm(instruction) end end			
-def rol instruction
-	#Rotate to the Left
-	if modrmimm(instruction, 'rol', 'C0', '0')
-	else nasm(instruction) end end		
-def ror instruction
-	#Rotate to the Right
-	if modrmimm(instruction, 'ror', 'C0', '1')
-	else nasm(instruction) end end				
-def rdmsr instruction
-	#Read from Model Specific Register
-	printf("%-34s%-15s\n\n", '0F32', 'rdmsr') end	
-def rdpmc instruction
-	#Read Performance-Monitoring Counters
-	printf("%-34s%-15s\n\n", '0F33', 'rdpmc') end	
-def rdrand instruction
-	#Randome
-	if plusreg(instruction, '0FC7F0')		
-	else nasm(instruction) end end
-def rdseed instruction
-	#Create Seed for Random
-	if plusreg(instruction, '0FC7F8')		
-	else nasm(instruction) end end		
-def rdtsc instruction
-	#Read Time-Stamp Counter
-	printf("%-34s%-15s\n\n", '0F31', 'rdtsc') end	
-def rdtscp instruction
-	#Read Time-Stamp Counter and Processor ID
-	printf("%-34s%-15s\n\n", '0F01F9', 'rdtscp') end	
-def ret instruction
-	#Return from Procedure
-	printf("%-34s%-15s\n\n", 'C3', 'ret') end	
-def retf instruction
-	#Return from Procedure (Far)
-	printf("%-34s%-15s\n\n", 'CB', 'retf') end	
-def rep_insb instruction
-	#Return from Procedure (Far)
-	printf("%-34s%-15s\n\n", 'F36C', 'rep insb') end	
-def rep_insw instruction
-	#Return from Procedure (Far)
-	printf("%-34s%-15s\n\n", 'F3666D', 'rep insw')
-	printf("%-34s%-15s (prefix swap)\n\n", '66F36D', 'rep insw') end
-def rep_insd instruction
-	#Return from Procedure (Far)
-	printf("%-34s%-15s\n\n", 'F36D', 'rep insd') end	
-def rep_movsb instruction
-	#Return from Procedure (Far)
-	printf("%-34s%-15s\n\n", 'F3A4', 'rep movsb') end
-def rep_movsw instruction
-	#Return from Procedure (Far)
-	printf("%-34s%-15s\n\n", 'F366A5', 'rep movsw')
-	printf("%-34s%-15s (prefix swap)\n\n", '66F3A5', 'rep movsw') end	
-def rep_movsd instruction
-	#Return from Procedure (Far)
-	printf("%-34s%-15s\n\n", 'F3A5', 'rep movsd') end	
-def rep_outsb instruction
-	#Return from Procedure (Far)
-	printf("%-34s%-15s\n\n", 'F36E', 'rep outsb') end
-def rep_outsw instruction
-	#Return from Procedure (Far)
-	printf("%-34s%-15s\n\n", 'F3666F', 'rep outsw')
-	printf("%-34s%-15s (prefix swap)\n\n", '66F36F', 'rep outsw') end	
-def rep_outsd instruction
-	#Return from Procedure (Far)
-	printf("%-34s%-15s\n\n", 'F36F', 'rep outsd') end
-def rep_lodsb instruction
-	#Return from Procedure (Far)
-	printf("%-34s%-15s\n\n", 'F3AC', 'rep lodsb') end
-def rep_lodsw instruction
-	#Return from Procedure (Far)
-	printf("%-34s%-15s\n\n", 'F366AD', 'rep lodsw')
-	printf("%-34s%-15s (prefix swap)\n\n", '66F3AD', 'rep lodsw') end	
-def rep_lodsd instruction
-	#Return from Procedure (Far)
-	printf("%-34s%-15s\n\n", 'F3AD', 'rep lodsd') end
-def rep_stosb instruction
-	#Return from Procedure (Far)
-	printf("%-34s%-15s\n\n", 'F3AA', 'rep stosb') end
-def rep_stosw instruction
-	#Return from Procedure (Far)
-	printf("%-34s%-15s\n\n", 'F366AB', 'rep stosw')
-	printf("%-34s%-15s (prefix swap)\n\n", '66F3AB', 'rep stosw') end	
-def rep_stosd instruction
-	#Return from Procedure (Far)
-	printf("%-34s%-15s\n\n", 'F3AB', 'rep lodsd') end
-def repe_cmpsb instruction
-	#Return from Procedure (Far)
-	printf("%-34s%-15s\n\n", 'F3A6', 'repe cmpsb') end
-def repe_cmpsw instruction
-	#Return from Procedure (Far)
-	printf("%-34s%-15s\n\n", 'F366A7', 'repe cmpsw')
-	printf("%-34s%-15s (prefix swap)\n\n", '66F3A7', 'repe cmpsw') end	
-def repe_cmpsd instruction
-	#Return from Procedure (Far)
-	printf("%-34s%-15s\n\n", 'F3A7', 'repe cmpsd') end
-def repe_scasb instruction
-	#Return from Procedure (Far)
-	printf("%-34s%-15s\n\n", 'F3AE', 'repe scasb') end	
-def repe_scasw instruction
-	#Return from Procedure (Far)
-	printf("%-34s%-15s\n\n", 'F366AF', 'repe scasw')
-	printf("%-34s%-15s (prefix swap)\n\n", '66F3AF', 'repe scasw') end	
-def repe_scasd instruction
-	#Return from Procedure (Far)
-	printf("%-34s%-15s\n\n", 'F3AF', 'repe scasd') end	
-def repne_cmpsb instruction
-	#Return from Procedure (Far)
-	printf("%-34s%-15s\n\n", 'F2A6', 'repne cmpsb') end
-def repne_cmpsw instruction
-	#Return from Procedure (Far)
-	printf("%-34s%-15s\n\n", 'F266A7', 'repne cmpsw')
-	printf("%-34s%-15s (prefix swap)\n\n", '66F2A7', 'repne cmpsw') end	
-def repne_cmpsd instruction
-	#Return from Procedure (Far)
-	printf("%-34s%-15s\n\n", 'F2A7', 'repne cmpsd') end
-def repne_scasb instruction
-	#Return from Procedure (Far)
-	printf("%-34s%-15s\n\n", 'F2AE', 'repne scasb') end	
-def repne_scasw instruction
-	#Return from Procedure (Far)
-	printf("%-34s%-15s\n\n", 'F266AF', 'repne scasw')
-	printf("%-34s%-15s (prefix swap)\n\n", '66F3AF', 'repne scasw') end	
-def repne_scasd instruction
-	#Return from Procedure (Far)
-	printf("%-34s%-15s\n\n", 'F2AF', 'repne scasd') end	
-def rsm instruction
-	#Resume from System Management Mode
-	printf("%-34s%-15s\n\n", '0FAA', 'rsm') end	
-def sahf instruction
-	#Store AH into Flags
-	printf("%-34s%-15s\n\n", '9E', 'sahf') end	
-def sal instruction
-	#Shift Arithmetic Left (SHL is the official for this)
-	if modrmimm(instruction, 'sal', 'C0', '6')
-	else nasm(instruction) end end		
-def sar instruction
-	#Shift Arithmetic Right
-	if modrmimm(instruction, 'sar', 'C0', '7')
-	else nasm(instruction) end end
-def sbb instruction
-	#Integer Subtraction with Borrow
-	if alimm8(instruction, '1C', '80D8')
-	elsif aximm16(instruction, '661D', '6681D8', '6683D8')
-	elsif eaximm32(instruction, '1D', '81D8', '83D8')	
-	elsif modrmimm(instruction, 'sbb', '80', '3')	
-	elsif modrmmodrm(instruction, '18')			
-	else nasm(instruction) end end
-def scasb instruction
-	#Scan String (Byte)
-	printf("%-34s%-15s\n\n", 'AE', 'scasb') end	
-def scasw instruction
-	#Scan String (Word)
-	printf("%-34s%-15s\n\n", '66AF', 'scasw') end	
-def scasd instruction
-	#Scan String (Doubleword)
-	printf("%-34s%-15s\n\n", 'AF', 'scasd') end	
-def sfence instruction
-	#Store Fence
-	fence('sfence', '0FAE', 'F8') end
-def sgdt instruction
-	#Store Global Descriptor Table Register
-	if opmodrm(instruction, '0F01', '0')		
-	else nasm(instruction) end end	
-def shl instruction
-	#Shift Left
-	if modrmimm(instruction, 'shl', 'C0', '4')
-	else nasm(instruction) end end		
-def sidt instruction
-	#Store Interrupt Descriptor Table
-	if opmodrm(instruction, '0F01', '1')		
-	else nasm(instruction) end end
-def shr instruction
-	#Shift Right
-	if modrmimm(instruction, 'shr', 'C0', '5')
-	else nasm(instruction) end end
-def smsw instruction
-	#Store Machine Status Word r32/m16
-	if opmodrm(instruction, '0F01', '4')
-	else nasm(instruction) end end
-def stac instruction
-	#Set AC Flag in EFLAGS Register
-	printf("%-34s%-15s\n\n", '0F01CB', 'stac') end	
-def stc instruction
-	#Set Carry Flag
-	printf("%-34s%-15s\n\n", 'F9', 'stc') end	
-def std instruction
-	#Set Direction Flag
-	printf("%-34s%-15s\n\n", 'FD', 'std') end	
-def sti instruction
-	#Set Interrupt Flag
-	printf("%-34s%-15s\n\n", 'FB', 'sti') end	
-def stosb instruction
-	#Store String (Byte)
-	printf("%-34s%-15s\n\n", 'AA', 'stosb') end	
-def stosw instruction
-	#Store String (Word)
-	printf("%-34s%-15s\n\n", '66AB', 'stosw') end	
-def stosd instruction
-	#Store String (Doubleword)
-	printf("%-34s%-15s\n\n", 'AB', 'stosd') end	
-def sub instruction
-	#Subtract
-	if alimm8(instruction, '2C', '80E8')
-	elsif aximm16(instruction, '662D', '6681E8', '6683E8')
-	elsif eaximm32(instruction, '2D', '81E8', '83E8')
-	elsif modrmimm(instruction, 'sub', '80', '5')	
-	elsif modrmmodrm(instruction, '28')			
-	else nasm(instruction) end end
-def str instruction
-	#Store Task Register
-	if opmodrm(instruction, '0F00', '1')
-	else nasm(instruction) end end
-def swapgs instruction
-	#Swap GS Base Register
-	printf("%-34s%-15s\n\n", '0F01F8', 'swapgs') end	
-def syscall instruction
-	#Fast System Call
-	printf("%-34s%-15s\n\n", '0F05', 'syscall') end	
-def sysenter instruction
-	#Fast System Call
-	printf("%-34s%-15s\n\n", '0F34', 'sysenter') end	
-def sysexit instruction
-	#Fast Return from Fast System Call
-	printf("%-34s%-15s\n\n", '0F35', 'sysexit') end	
-def sysret instruction
-	#Return From Fast System Call
-	printf("%-34s%-15s\n\n", '0F07', 'sysret') end	
-def test instruction
-	#Logical Compare
-	if alimm8_c(instruction, 'A8', 'F6C0')
-	elsif aximm16_c(instruction, '66A9', '66F7C0', 'invalid')
-	elsif eaximm32_c(instruction, 'A9', 'F7C0', 'invalid')		
-	elsif modrmimm(instruction, 'test', 'F6', '0')	
-	elsif modrmmodrm(instruction, '84')			
-	else nasm(instruction) end end
-def tzcnt instruction
-	#Count the number of trailing zero bits
-	if modrmmodrm(instruction, 'F30FBC')		
-	else nasm(instruction) end end
-def ud2 instruction
-	#Undefined Instruction
-	printf("%-34s%-15s\n\n", '0F0B', 'ud2') end	
-def verr instruction
-	#Store Task Register
-	if opmodrm(instruction, '0F00', '4')
-	else nasm(instruction) end end
-def verw instruction
-	#Store Task Register
-	if opmodrm(instruction, '0F00', '5')
-	else nasm(instruction) end end		
-def vmwrite instruction
-	#VMWrite
-	if modrmmodrm(instruction, '0F79')		
-	else nasm(instruction) end end
-def vmread instruction
-	#VMRead
-	if modrmmodrm(instruction, '0F78')		
-	else nasm(instruction) end end
-def wait instruction
-	#Wait
-	printf("%-34s%-15s\n\n", '9B', 'wait') end	
-def wbinvd instruction
-	#Write Back and Invalidate Cache
-	printf("%-34s%-15s\n\n", '0F09', 'wbinvd') end	
-def wrmsr instruction
-	#Write to Model Specific Register
-	printf("%-34s%-15s\n\n", '0F30', 'wrmsr') end	
-def xabort instruction
-	#Transactional Abort
-	if opimm8(instruction, 'C6F8')		
-	else nasm(instruction) end end
-def xbegin instruction
-	#Transactional Begin
-	if jcc(instruction, 'C7F8')		
-	else nasm(instruction) end end
-def xchg instruction
-	#Exchange two registers
-	if plusreg(instruction, '90')	
-	elsif modrmmodrm(instruction, '86')
-	else nasm(instruction) end end
-def xgetbv instruction
-	#Get Value of Extended Control Register
-	printf("%-34s%-15s\n\n", '0F01D0', 'xgetbv') end	
-def xlat instruction
-	#Table Look-up Translation
-	printf("%-34s%-15s\n\n", 'D7', 'xlat (BYTE PTR ds:[ebx])') end	
-def xor instruction
-	#Logical Exlusive OR
-	if alimm8_c(instruction, '34', '80F0')
-	elsif aximm16_c(instruction, '6635', '6681F0', '6683F0')
-	elsif eaximm32_c(instruction, '35', '81F0', '83F0')	
-	elsif modrmimm(instruction, 'xor', '80', '6')	
-	elsif modrmmodrm(instruction, '30')		
-	else nasm(instruction) end end
-def xsetbv instruction
-	#Set Extended Control Register
-	printf("%-34s%-15s\n\n", '0F01D1', 'xsetbv') end	
-def xtest instruction
-	#Test If in Transactional Execution
-	printf("%-34s%-15s\n\n", '0F01D6', 'xtest') end	
+		case
+			when asm.match(/^aaa/i)
+				#ASCII Adjust After Addition
+				printf("%-34s%-15s\n\n", '37', 'aaa')
+			when asm.match(/^aad/i)
+				#ASCII Adjust AX Before Division
+				printf("%-34s%-15s\n\n", 'D50A', 'aad')
+				printf("%-34s%-15s\n\n", 'D5XX', 'aad imm8 (Machine Code Only, XX is base)')
+			when asm.match(/^aam/i)
+				#ASCII Adjust AX After Multiply
+				printf("%-34s%-15s\n\n", 'D40A', 'aam')
+				printf("%-34s%-15s\n\n", 'D4XX', 'aam imm8 (Machine Code Only, XX is base)')	
+			when asm.match(/^aas/i)
+				#ASCII Adjust AL After Subtraction
+				printf("%-34s%-15s\n\n", '3F', 'aas')
+			when asm.match(/^adc[^x]/i)
+				#Add with Carry
+				if alimm8(asm, '14', '80D0')	
+				elsif aximm16(asm, '6615', '6681D0', '6683D0')
+				elsif eaximm32(asm, '15', '81D0', '83D0')		
+				elsif modrmimm(asm, 'adc', '80', '2')
+				elsif modrmmodrm(asm, '10')		
+				else nasm(asm) end
+			when asm.match(/^adcx/i)
+				#Unsigned Integer Addition of Two Operands with Cary Flag
+				if modrmmodrm(asm, '660F38F6')		
+				else nasm(asm) end
+			when asm.match(/^add/i)
+				#Add
+				if alimm8(asm, '04', '80C0')
+				elsif aximm16(asm, '6605', '6681C0', '6683C0')
+				elsif eaximm32(asm, '05', '81C0', '83C0')
+				elsif modrmimm(asm, 'add', '80', '0')	
+				elsif modrmmodrm(asm, '00')			
+				else nasm(asm) end
+			when asm.match(/^adox/i)
+				#Unsigned Integer Addition of Two Operands with Overflow Flag
+				if modrmmodrm(asm, 'F30F38F6')		
+				else nasm(asm) end
+			when asm.match(/^and/i)
+				#Logical AND
+				if alimm8_b(asm, '25', '81E0', '6625', '6681E0', '24', '80E0', '6683E0')
+				elsif aximm16_b(asm, '25', '81E0', '6625', '6681E0', '24', '80E0', '6683E0')
+				elsif eaximm32_b(asm, '25', '81E0', '6625', '6681E0', '24', '80E0', '6683E0')
+				elsif modrmimm(asm, 'and', '80', '4')	
+				elsif modrmmodrm(asm, '20')			
+				else nasm(asm) end
+			when asm.match(/^arpl/i)
+				#Unsigned Integer Addition of Two Operands with Overflow Flag
+				if modrmmodrm(asm, '63')		
+				else nasm(asm) end
+			when asm.match(/^bound/i)
+				#Bound
+				if modrmmodrm(asm, '62')			
+				else nasm(asm) end
+			when asm.match(/^bsf/i)
+				#Bit Scan Forward
+				if modrmmodrm(asm, '0FBC')		
+				else nasm(asm) end
+			when asm.match(/^bsr/i)
+				#Bit Scan Reverse
+				if modrmmodrm(asm, '0FBD')		
+				else nasm(asm) end
+			when asm.match(/^bswap/i)
+				#Compare Two Operands
+				if plusreg(asm, '0FC8')		
+				else nasm(asm) end
+			when asm.match(/^call\s/i)
+				#Call
+				if jcc(asm, 'E8')
+				elsif ptr(asm, '9A')	
+				elsif opmodrm(asm, 'FE', '2')	#Actually FF, but gets converted just fine
+				else nasm(asm) end
+			when asm.match(/^cbw/i)
+				#Convert Byte to Word
+				printf("%-34s%-15s\n\n", '6698', 'cbw')
+			when asm.match(/^cflush\s/i)
+				#Flush Case Line
+				if opmodrm(asm, '0FAE', '7')	#Actually FF, but gets converted just fine
+				else nasm(asm) end
+			when asm.match(/^cwde/i)
+				#Convert Word to Doubleword
+				printf("%-34s%-15s\n\n", '98', 'cwde')
+			when asm.match(/^clac/i)
+				#Clear AC Flag in EFLAGS Register
+				printf("%-34s%-15s\n\n", '0F01CA', 'clac')
+			when asm.match(/^clc/i)
+				#Clear Carry Flag
+				printf("%-34s%-15s\n\n", 'F8', 'clc')
+			when asm.match(/^cld/i)
+				#Clear Direction Flag
+				printf("%-34s%-15s\n\n", 'FC', 'cld')
+			when asm.match(/^cli/i)
+				#Clear Interupt Flag
+				printf("%-34s%-15s\n\n", 'FA', 'cli')
+			when asm.match(/^clts/i)
+				#Clear Task-Switched Flag in CR0
+				printf("%-34s%-15s\n\n", '0F06', 'clts')
+			when asm.match(/^cmc/i)
+				#Complement Carry Flag
+				printf("%-34s%-15s\n\n", 'F5', 'cmc')
+			when asm.match(/^cmova\s/i)
+				#Move if Above
+				if modrmmodrm(asm, '0F47')		
+				else nasm(asm) end
+			when asm.match(/^cmovae\s/i)
+				#Move if Above or Equal
+				if modrmmodrm(asm, '0F43')		
+				else nasm(asm) end
+			when asm.match(/^cmovb\s/i)
+				#Move if Below
+				if modrmmodrm(asm, '0F42')		
+				else nasm(asm) end
+			when asm.match(/^cmovbe\s/i)
+				#Move if Below or Equal
+				if modrmmodrm(asm, '0F46')		
+				else nasm(asm) end
+			when asm.match(/^cmovc\s/i)
+				#Move if Carry
+				if modrmmodrm(asm, '0F42')		
+				else nasm(asm) end
+			when asm.match(/^cmove\s/i)
+				#Move if Equal
+				if modrmmodrm(asm, '0F44')		
+				else nasm(asm) end
+			when asm.match(/^cmovg\s/i)
+				#Move if Greater Than
+				if modrmmodrm(asm, '0F4F')		
+				else nasm(asm) end
+			when asm.match(/^cmovge\s/i)
+				#Move if Greater Than or Equal
+				if modrmmodrm(asm, '0F4D')		
+				else nasm(asm) end
+			when asm.match(/^cmovl\s/i)
+				#Move if Lesser Than
+				if modrmmodrm(asm, '0F4C')		
+				else nasm(asm) end
+			when asm.match(/^cmovle\s/i)
+				#Move if Lesser Than or Equal
+				if modrmmodrm(asm, '0F4E')		
+				else nasm(asm) end
+			when asm.match(/^cmovna\s/i)
+				#Move if Not Above
+				if modrmmodrm(asm, '0F46')		
+				else nasm(asm) end
+			when asm.match(/^cmovnae\s/i)
+				#Move if Not Above or Equal
+				if modrmmodrm(asm, '0F42')		
+				else nasm(asm) end
+			when asm.match(/^cmovnb\s/i)
+				#Move if Not Below
+				if modrmmodrm(asm, '0F43')		
+				else nasm(asm) end
+			when asm.match(/^cmovnbe\s/i)
+				#Move if Not Below or Equal
+				if modrmmodrm(asm, '0F47')		
+				else nasm(asm) end
+			when asm.match(/^cmovnc\s/i)
+				#Move if Not Carry
+				if modrmmodrm(asm, '0F43')		
+				else nasm(asm) end
+			when asm.match(/^cmovne\s/i)
+				#Move if Not Equal
+				if modrmmodrm(asm, '0F45')		
+				else nasm(asm) end
+			when asm.match(/^cmovng\s/i)
+				#Move if Not Greater Than
+				if modrmmodrm(asm, '0F4E')		
+				else nasm(asm) end
+			when asm.match(/^cmovnl\s/i)
+				#Move if Not Lesser Than
+				if modrmmodrm(asm, '0F4D')		
+				else nasm(asm) end
+			when asm.match(/^cmovnle\s/i)
+				#Move if Not Lesser Than or Equal
+				if modrmmodrm(asm, '0F4F')		
+				else nasm(asm) end
+			when asm.match(/^cmovno\s/i)
+				#Move if Not Over
+				if modrmmodrm(asm, '0F41')		
+				else nasm(asm) end
+			when asm.match(/^cmovnp\s/i)
+				#Move if Not Parity
+				if modrmmodrm(asm, '0F4B')		
+				else nasm(asm) end
+			when asm.match(/^cmovns\s/i)
+				#Move if Not Sign Flag
+				if modrmmodrm(asm, '0F49')		
+				else nasm(asm) end
+			when asm.match(/^cmovnz\s/i)
+				#Move if Not Zero
+				if modrmmodrm(asm, '0F45')		
+				else nasm(asm) end
+			when asm.match(/^cmovo\s/i)
+				#Move if Over
+				if modrmmodrm(asm, '0F40')		
+				else nasm(asm) end
+			when asm.match(/^cmovp\s/i)
+				#Move if Parity
+				if modrmmodrm(asm, '0F4A')		
+				else nasm(asm) end
+			when asm.match(/^cmovpe\s/i)
+				#Move if Parity Even
+				if modrmmodrm(asm, '0F4A')		
+				else nasm(asm) end
+			when asm.match(/^cmovpo\s/i)
+				#Move if Parity Odd
+				if modrmmodrm(asm, '0F4B')		
+				else nasm(asm) end
+			when asm.match(/^cmovs\s/i)
+				#Move if Sign Flag
+				if modrmmodrm(asm, '0F48')		
+				else nasm(asm) end
+			when asm.match(/^cmovz\s/i)
+				#Move if Zero
+				if modrmmodrm(asm, '0F44')		
+				else nasm(asm) end
+			when asm.match(/^cmp[^sx]/i)
+				#Compare Two Operands
+				if alimm8_c(asm, '3C', '80F8')
+				elsif aximm16_c(asm, '663D', '6681F8', '6683F8')
+				elsif eaximm32_c(asm, '3D', '81F8', '83F8')
+				elsif modrmimm(asm, 'cmp', '80', '7')	
+				elsif modrmmodrm(asm, '38')			
+				else nasm(asm) end
+			when asm.match(/^cmpsb/i)
+				#Compare String Operands (Byte)
+				printf("%-34s%-15s\n\n", 'A6', 'cmpsb')
+			when asm.match(/^cmpsw/i)
+				#Compare String Operands (Word)
+				printf("%-34s%-15s\n\n", '66A7', 'cmpsw (WORD PTR ds:[esi],WORD PTR es:[edi])')
+			when asm.match(/^cmpsd/i)
+				#Compare String Operands (Doubleword)
+				printf("%-34s%-15s\n\n", 'A7', 'cmpsd (DWORD PTR ds:[esi],DWORD PTR es:[edi])')
+			when asm.match(/^cmpxchg/i)
+				#Compare Two Operands
+				if modrmmodrm(asm, '0FB0')			
+				else nasm(asm) end
+			when asm.match(/^cpuid/i)
+				#CPU Identification
+				printf("%-34s%-15s\n\n", '0FA2', 'cpuid')
+			when asm.match(/^crc32\s/i)
+				#Accumulate CRC32 Value
+				if modrmmodrm(asm, 'F20F38F1')		
+				else nasm(asm) end
+			when asm.match(/^cwd/i)
+				#Convert Word to Doubleword
+				printf("%-34s%-15s\n\n", '6699', 'cwd')
+			when asm.match(/^cdq/i)
+				#Convert Doubleword to Quadword
+				printf("%-34s%-15s\n\n", '99', 'cdq')
+			when asm.match(/^daa/i)
+				#Decimal Adjust AL after Addition
+				printf("%-34s%-15s\n\n", '27', 'daa')
+			when asm.match(/^das/i)
+				#Decimal Adjust AL after Subtraction
+				printf("%-34s%-15s\n\n", '2F', 'das')
+			when asm.match(/^dec/i)
+				#Compare Two Operands
+				if opmodrm(asm, 'FE', '1')			
+				else nasm(asm) end
+			when asm.match(/^div/i)
+				#Compare Two Operands
+				if opmodrm(asm, 'F6', '6')			
+				else nasm(asm) end
+			when asm.match(/^emms/i)
+				#Empty MMX Technology State
+				printf("%-34s%-15s\n\n", '0F77', 'emms')
+			when asm.match(/^enter/i)
+				if imm16imm8(asm, 'C8')		
+				else nasm(asm) end
+			when asm.match(/^f2xm1/i)
+				#Compute 2^x-1
+				printf("%-34s%-15s\n\n", 'D9F0', 'f2xm1')
+			when asm.match(/^fabs/i)
+				#Absolute Value
+				printf("%-34s%-15s\n\n", 'D9E1', 'fabs')
+			when asm.match(/^faddp/i)
+				#Floating Point Add
+				printf("%-34s%-15s\n\n", 'DEC1', 'faddp (faddp  st(1),st)')
+			when asm.match(/^fchs/i)
+				#Change Sign
+				printf("%-34s%-15s\n\n", 'D9E0', 'fchs')
+			when asm.match(/^fclex/i)
+				#Clear Exceptions
+				printf("%-34s%-15s\n\n", '9BDBE2', 'fclex')
+			when asm.match(/^fnclex/i)
+				#Clear Exceptions
+				printf("%-34s%-15s\n\n", 'DBE2', 'fnclex')
+			when asm.match(/^fcom$/i)
+				#Compare Floating Point Values
+				printf("%-34s%-15s\n\n", 'D8D1', 'fcom (st(1))')
+			when asm.match(/^fcomp$/i)
+				#Compare Floating Point Values and Pop
+				printf("%-34s%-15s\n\n", 'D8D9', 'fcomp (st(1))')
+			when asm.match(/^fcompp/i)
+				#Compare Floating Point Values and Pop Twice
+				printf("%-34s%-15s\n\n", 'DED9', 'fcompp')
+			when asm.match(/^fcos/i)
+				#Cosine
+				printf("%-34s%-15s\n\n", 'D9FF', 'fcos')
+			when asm.match(/^fdecstp/i)
+				#Decrement Stack-Top Pointer
+				printf("%-34s%-15s\n\n", 'D9F6', 'fdecstp')
+			when asm.match(/^fdivp/i)
+				#Divide
+				printf("%-34s%-15s\n\n", 'DEF9', 'fdivp (st(1),st)')
+			when asm.match(/^fdivrp/i)
+				#Reverese Divide
+				printf("%-34s%-15s\n\n", 'DEF1', 'fdivrp (st(1),st)')
+			when asm.match(/^fincstp/i)
+				#Increment Stack-Top Pointer
+				printf("%-34s%-15s\n\n", 'D9F7', 'fincstp')
+			when asm.match(/^finit/i)
+				#Initialize Floating-Point Unit
+				printf("%-34s%-15s\n\n", '9BDBE3', 'finit')
+			when asm.match(/^fninit/i)
+				#Initialize Floating-Point Unit
+				printf("%-34s%-15s\n\n", 'DBE3', 'fninit')
+			when asm.match(/^fld1$/i)
+				#Load Constant (Push +1.0 onto the FPU register stack)
+				printf("%-34s%-15s\n\n", 'D9E8', 'fld1')
+			when asm.match(/^fldl2t$/i)
+				#Load Constant (Push log2,10 onto the FPU register stack)
+				printf("%-34s%-15s\n\n", 'D9E9', 'fldl2t')				
+			when asm.match(/^fldl2e$/i)
+				#Load Constant (Push log2,e onto the FPU register stack)
+				printf("%-34s%-15s\n\n", 'D9EA', 'fldl2e')
+			when asm.match(/^fldpi$/i)
+				#Load Constant (Push pi onto the FPU register stack)
+				printf("%-34s%-15s\n\n", 'D9EB', 'fldpi')
+			when asm.match(/^fldlg2$/i)
+				#Load Constant (Push log10,2 onto the FPU register stack)
+				printf("%-34s%-15s\n\n", 'D9EC', 'fldlg2')
+			when asm.match(/^fldln2$/i)
+				#Load Constant (Push log e,2 onto the FPU register stack)
+				printf("%-34s%-15s\n\n", 'D9ED', 'fldln2')
+			when asm.match(/^fldz$/i)
+				#Load Constant (Push +0.0 onto the FPU register stack)
+				printf("%-34s%-15s\n\n", 'D9EE', 'fldz')
+			when asm.match(/^fmulp/i)
+				#Multiply
+				printf("%-34s%-15s\n\n", 'DEC9', 'fmulp (st(1),st)')
+			when asm.match(/^fnop$/i)
+				#Floating Point NOP
+				printf("%-34s%-15s\n\n", 'D9D0', 'fnop')
+			when asm.match(/^fpatan$/i)
+				#Partial Arctangent
+				printf("%-34s%-15s\n\n", 'D9F3', 'fpatan')
+			when asm.match(/^fprem$/i)
+				#Partial Remainder
+				printf("%-34s%-15s\n\n", 'D9F8', 'fprem')
+			when asm.match(/^fprem1$/i)
+				#Partial Remainder
+				printf("%-34s%-15s\n\n", 'D9F5', 'fprem1')
+			when asm.match(/^fptan$/i)
+				#Partial Tangent
+				printf("%-34s%-15s\n\n", 'D9F2', 'fptan')
+			when asm.match(/^frndint$/i)
+				#Round to Integer
+				printf("%-34s%-15s\n\n", 'D9FC', 'frndint')
+			when asm.match(/^fscale$/i)
+				#Scale
+				printf("%-34s%-15s\n\n", 'D9FD', 'fscale')
+			when asm.match(/^fsin$/i)
+				#Sine
+				printf("%-34s%-15s\n\n", 'D9FE', 'fsin')
+			when asm.match(/^fsincos$/i)
+				#Sine and Cosine
+				printf("%-34s%-15s\n\n", 'D9FB', 'fsincos')
+			when asm.match(/^fsqrt$/i)
+				#Square Root
+				printf("%-34s%-15s\n\n", 'D9FA', 'fsqrt')
+			when asm.match(/^fstswax$/i)
+				#Store x87 FPU Status Word
+				printf("%-34s%-15s\n\n", '9BDFE0', 'fstsw ax')
+			when asm.match(/^fnstswax$/i)
+				#Store x87 FPU Status Word (without checking for pending unmasked floating-point exceptions)
+				printf("%-34s%-15s\n\n", 'DFE0', 'fnstsw ax')
+			when asm.match(/^fsubp$/i)
+				#Subtract
+				printf("%-34s%-15s\n\n", 'DEE9', 'fsubp')
+			when asm.match(/^fsubrp$/i)
+				#Reverse Subtract
+				printf("%-34s%-15s\n\n", 'DEE1', 'fsubrp')
+			when asm.match(/^ftst$/i)
+				#Test
+				printf("%-34s%-15s\n\n", 'D9E4', 'ftst')
+			when asm.match(/^fucom$/i)
+				#Unordered Compare Floating Point Values
+				printf("%-34s%-15s\n\n", 'DDE1', 'fucom (st(1))')
+			when asm.match(/^fucomp$/i)
+				#Unordered Compare Floating Point Values and pop register stack
+				printf("%-34s%-15s\n\n", 'DDE9', 'fucomp (st(1))')
+			when asm.match(/^fucompp$/i)
+				#Unordered Compare Floating Point Values and pop register stack twice
+				printf("%-34s%-15s\n\n", 'DAE9', 'fucompp')
+			when asm.match(/^fxam$/i)
+				#Examine ModR/M
+				printf("%-34s%-15s\n\n", 'D9E5', 'fxam')
+			when asm.match(/^fxch$/i)
+				#Exchange Register Contents
+				printf("%-34s%-15s\n\n", 'D9C9', 'fxch (st(1))')
+			when asm.match(/^fxtract$/i)
+				#Extract Exponent and Significand
+				printf("%-34s%-15s\n\n", 'D9F4', 'fxtract') 
+			when asm.match(/^fyl2x$/i)
+				#Compute y * log2, x
+				printf("%-34s%-15s\n\n", 'D9F1', 'fyl2x')
+			when asm.match(/^fyl2xp1$/i)
+				#Compute y * log2(x+1)
+				printf("%-34s%-15s\n\n", 'D9F9', 'fyl2xp1')
+			when asm.match(/^hlt$/i)
+				#Halt
+				printf("%-34s%-15s\n\n", 'F4', 'hlt')
+			when asm.match(/^idiv\s/i)
+				#Compare Two Operands
+				if opmodrm(asm, 'F6', '7')			
+				else nasm(asm) end
+			when asm.match(/^imul\s/i)
+				#Compare Two Operands
+				if modrmmodrm(asm, '0FAF')		
+				elsif opmodrm(asm, 'F6', '5')
+				else nasm(asm) end
+			when asm.match(/^in\s/i)
+				#Input from Port
+				if alimm8_d(asm, 'E4', 'E5')
+				elsif inaldx(asm)		
+				else nasm(asm) end
+			when asm.match(/^int(3$|\s)/i)
+				#Interupt
+				if opimm8(asm, 'CD')		
+				else nasm(asm) end
+			when asm.match(/^inc\s/i)
+				#Compare Two Operands
+				if opmodrm(asm, 'FE', '0')			
+				else nasm(asm) end
+			when asm.match(/^insb$/i)
+				#Input from Port to String (Byte)
+				printf("%-34s%-15s\n\n", '6C', 'insb (BYTE PTR es:[edi],dx)')
+			when asm.match(/^insw$/i)
+				#Input from Port to String (Word)
+				printf("%-34s%-15s\n\n", '666D', 'insw (WORD PTR es:[edi],dx)')
+			when asm.match(/^insd$/i)
+				#Input from Port to String (DWword)
+				printf("%-34s%-15s\n\n", '6D', 'insd (DWORD PTR es:[edi],dx)')
+			when asm.match(/^into$/i)
+				#Call to Interrupt Procedure
+				printf("%-34s%-15s\n\n", 'CE', 'into')
+			when asm.match(/^invd$/i)
+				#Invalidate Internal Caches
+				printf("%-34s%-15s\n\n", '0F08', 'invd')
+			when asm.match(/^invlpg\s/i)
+				#Invalidate TLB Entries
+				if opmodrm(asm, '0F01', '7')			
+				else nasm(asm) end
+			when asm.match(/^iretw$/i)
+				#Interrupt Return (Word)
+				printf("%-34s%-15s\n\n", '66CF', 'iretw')
+			when asm.match(/^iretd?$/i)
+				#Interrupt Return, this applies for IRET and IRTED
+				printf("%-34s%-15s\n\n", 'CF', asm)
+			when asm.match(/^ja\s/i)
+				#Jump if Above
+				if jcc(asm, '77')		
+				else nasm(asm) end
+			when asm.match(/^jae\s/i)
+				#Jump if Above or Equal
+				if jcc(asm, '73')		
+				else nasm(asm) end
+			when asm.match(/^jb\s/i)
+				#Jump if Below
+				if jcc(asm, '72')		
+				else nasm(asm) end
+			when asm.match(/^jbe\s/i)
+				#Jump if Below or Equal
+				if jcc(asm, '76')		
+				else nasm(asm) end
+			when asm.match(/^jc\s/i)
+				#Jump if Carry
+				if jcc(asm, '72')		
+				else nasm(asm) end
+			when asm.match(/^je\s/i)
+				#Jump if Equal
+				if jcc(asm, '74')		
+				else nasm(asm) end
+			when asm.match(/^jg\s/i)
+				#Jump if Greater Than
+				if jcc(asm, '7F')		
+				else nasm(asm) end
+			when asm.match(/^jge\s/i)
+				#Jump if Greater Than or Equal
+				if jcc(asm, '7D')		
+				else nasm(asm) end
+			when asm.match(/^jl\s/i)
+				#Jump if Lesser Than
+				if jcc(asm, '7C')		
+				else nasm(asm) end
+			when asm.match(/^jle\s/i)
+				#Jump if Lesser Than or Equal
+				if jcc(asm, '7E')		
+				else nasm(asm) end
+			when asm.match(/^jna\s/i)
+				#Jump if Not Above
+				if jcc(asm, '76')		
+				else nasm(asm) end
+			when asm.match(/^jnae\s/i)
+				#Jump if Not Above or Equal
+				if jcc(asm, '72')		
+				else nasm(asm) end
+			when asm.match(/^jnb\s/i)
+				#Jump if Not Below
+				if jcc(asm, '73')		
+				else nasm(asm) end
+			when asm.match(/^jnbe\s/i)
+				#Jump if Not Below or Equal
+				if jcc(asm, '77')		
+				else nasm(asm) end
+			when asm.match(/^jnc\s/i)
+				#Jump if Not Carry
+				if jcc(asm, '73')		
+				else nasm(asm) end
+			when asm.match(/^jne\s/i)
+				#Jump if Not Equal
+				if jcc(asm, '75')		
+				else nasm(asm) end
+			when asm.match(/^jng\s/i)
+				#Jump if Not Greater Than
+				if jcc(asm, '7E')		
+				else nasm(asm) end
+			when asm.match(/^jnl\s/i)
+				#Jump if Not Lesser Than
+				if jcc(asm, '7D')		
+				else nasm(asm) end
+			when asm.match(/^jnle\s/i)
+				#Jump if Not Lesser Than or Equal
+				if jcc(asm, '7F')		
+				else nasm(asm) end
+			when asm.match(/^jno\s/i)
+				#Jump if Not Over
+				if jcc(asm, '71')		
+				else nasm(asm) end
+			when asm.match(/^jnp\s/i)
+				#Jump if Not Parity
+				if jcc(asm, '7B')		
+				else nasm(asm) end
+			when asm.match(/^jns\s/i)
+				#Jump if Not Sign Flag
+				if jcc(asm, '79')		
+				else nasm(asm) end
+			when asm.match(/^jnz\s/i)
+				#Jump if Not Zero
+				if jcc(asm, '75')		
+				else nasm(asm) end
+			when asm.match(/^jo\s/i)
+				#Jump if Over
+				if jcc(asm, '70')		
+				else nasm(asm) end
+			when asm.match(/^jp\s/i)
+				#Jump if Parity
+				if jcc(asm, '7A')		
+				else nasm(asm) end
+			when asm.match(/^jpe\s/i)
+				#Jump if Parity Even
+				if jcc(asm, '7A')		
+				else nasm(asm) end
+			when asm.match(/^jpo\s/i)
+				#Jump if Parity Odd
+				if jcc(asm, '7B')		
+				else nasm(asm) end
+			when asm.match(/^js\s/i)
+				#Jump if Sign Flag
+				if jcc(asm, '78')		
+				else nasm(asm) end
+			when asm.match(/^jmp\s/i)
+				#Jump
+				if jcc(asm, 'EB')	
+				elsif ptr(asm, 'EA')
+				elsif opmodrm(asm, 'FE', '4')	#Actually FF, but gets converted just fine		
+				else nasm(asm) end
+			when asm.match(/^jz\s/i)
+				#Jump if Zero
+				if jcc(asm, '74')		
+				else nasm(asm) end
+			when asm.match(/^lahf$/i)
+				#Load Status Flags into AH Register
+				printf("%-34s%-15s\n\n", '9F', 'lahf')
+			when asm.match(/^lea\s/i)
+				#lea
+				if modrmmodrm(asm, '8D')		
+				else nasm(asm) end
+			when asm.match(/^leave$/i)
+				#High Level Procedure Exit
+				printf("%-34s%-15s\n\n", 'C9', 'leave') 
+			when asm.match(/^leavew$/i)
+				#High Level Procedure Exit (Word)
+				printf("%-34s%-15s\n\n", '66C9', 'leavew')
+			when asm.match(/^lfence$/i)
+				#Load Fence
+				fence('lfence', '0FAE', 'E8')
+			when asm.match(/^lldt\s/i)
+				#Load Local Descriptor Table Register
+				if opmodrm(asm, '0F00', '2')
+				else nasm(asm) end
+			when asm.match(/^lmsw\s/i)
+				#Load Machine Status Word
+				if opmodrm(asm, '0F01', '6')
+				else nasm(asm) end
+			when asm.match(/^lock$/i)
+				lock(asm)					#Find a way to handle
+			when asm.match(/^lodsb$/i)
+				#Load String (Byte)
+				printf("%-34s%-15s\n\n", 'AC', 'lodsb')
+			when asm.match(/^lodsw$/i)
+				#Load String (Word)
+				printf("%-34s%-15s\n\n", '66AD', 'lodsw')
+			when asm.match(/^lodsd$/i)
+				#Load String (Doubleword)
+				printf("%-34s%-15s\n\n", 'AD', 'lodsd')
+			when asm.match(/^loop\s/i)
+				#Loop
+				if rel8(asm, 'E2')		
+				else nasm(asm) end
+			when asm.match(/^loope\s/i)
+				#Loop if Equal
+				if rel8(asm, 'E1')		
+				else nasm(asm) end
+			when asm.match(/^loopne\s/i)
+				#Loop if Not Equal
+				if rel8(asm, 'E0')		
+				else nasm(asm) end
+			when asm.match(/^ltr\s/i)
+				#Load Task Register
+				if opmodrm(asm, '0F00', '3')
+				else nasm(asm) end
+			when asm.match(/^mov\s/i)
+				#Move
+				if modrmimm(asm, 'mov', 'C6', '0')
+				elsif modrmmodrm(asm, '88')			
+				else nasm(asm) end
+			when asm.match(/^mfence$/i)
+				#Memory Fence
+				fence('mfence', '0FAE', 'F0')
+			when asm.match(/^monitor$/i)
+				#Set Up Monitor Address
+				printf("%-34s%-15s\n\n", '0F01C8', 'monitor')
+			when asm.match(/^movsb$/i)
+				#Move Data from String to String (Byte)
+				printf("%-34s%-15s\n\n", 'A4', 'movsb')
+			when asm.match(/^movsw$/i)
+				#Move Data from String to String (Word)
+				printf("%-34s%-15s\n\n", '66A5', 'movsw')
+			when asm.match(/^movsd$/i)
+				#Move Data from String to String (Doubleword)
+				printf("%-34s%-15s\n\n", 'A5', 'movsd')
+			when asm.match(/^mwait$/i)
+				#Monitor Wait
+				printf("%-34s%-15s\n\n", '0F01C9', 'mwait')
+			when asm.match(/^nop$/i)
+				#No Operation
+				printf("%-34s%-15s\n\n", '90', 'nop')
+			when asm.match(/^nop\s/i)
+				#No Operation as a 'multibyte asm'
+				if opmodrm(asm, '0F1F', '0')
+				else nasm(asm) end
+			when asm.match(/^or\s/i)
+				#Logical Inclusive OR
+				if alimm8_e(asm, '0D', '81C8', '660D', '6681C8', '0C', '80C8')
+				elsif aximm16_e(asm, '0D', '81C8', '660D', '6681C8', '0C', '80C8', '6683C8')
+				elsif eaximm32_e(asm, '0D', '81C8', '660D', '6681C8', '0C', '80C8', '83C8')
+				elsif modrmimm(asm, 'or', '80', '1')		
+				elsif modrmmodrm(asm, '08')			
+				else nasm(asm) end
+			when asm.match(/^outsb$/i)
+				#Output String to Port (Byte)
+				printf("%-34s%-15s\n\n", '6E', 'outsb')
+			when asm.match(/^outsw$/i)
+				#Output String to Port (Word)
+				printf("%-34s%-15s\n\n", '666F', 'outsw')
+			when asm.match(/^outsd$/i)
+				#Output String to Port (Doubleword)
+				printf("%-34s%-15s\n\n", '6F', 'outsd') 
+			when asm.match(/^pause$/i)
+				#Spin Loop Hint
+				printf("%-34s%-15s\n\n", 'F390', 'pause')
+			when asm.match(/^pop\s/i)
+				#Compare Two Operands
+				if opmodrm(asm, '8F', '0')		
+				else nasm(asm) end
+			when asm.match(/^popaw$/i)
+				#Pop All General-Purpose Registers (Word)
+				printf("%-34s%-15s\n\n", '6661', 'popaw')
+			when asm.match(/^popad?$/i)
+				#Pop All General-Purpose Registers
+				printf("%-34s%-15s\n\n", '61', asm) 
+			when asm.match(/^popcnt/i)
+				#Return the Count of Number of Bits set to 1
+				if modrmmodrm(asm, 'F30FB8')		
+				else nasm(asm) end
+			when asm.match(/^popfw$/i)
+				#Pop Stack into EFLAGS Registers (Word)
+				printf("%-34s%-15s\n\n", '669D', 'popfw')
+			when asm.match(/^popfd?$/i)
+				#Pop Stack into EFLAGS Registers
+				printf("%-34s%-15s\n\n", '9D', asm)
+			when asm.match(/^prefetch0\s/i)
+				#Compare Two Operands
+				if opmodrm(asm, '0F18', '1')		
+				else nasm(asm) end
+			when asm.match(/^prefetch1\s/i)
+				#Compare Two Operands
+				if opmodrm(asm, '0F18', '2')		
+				else nasm(asm) end
+			when asm.match(/^prefetch2\s/i)
+				#Compare Two Operands
+				if opmodrm(asm, '0F18', '3')		
+				else nasm(asm) end
+			when asm.match(/^prefetchnta\s/i)
+				#Compare Two Operands
+				if opmodrm(asm, '0F18', '0')		
+				else nasm(asm) end 
+			when asm.match(/^prefetchw\s/i)
+				#Compare Two Operands
+				if opmodrm(asm, '0F0D', '1')		
+				else nasm(asm) end
+			when asm.match(/^prefetchwt1\s/i)
+				#Compare Two Operands
+				if opmodrm(asm, '0F0D', '2')		
+				else nasm(asm) end
+			when asm.match(/^push\s/i)
+				#Push data to the stack
+				if opmodrm(asm, 'FE', '6')		#Actually FF, but gets converted just fine
+				elsif pushimm(asm)	
+				else nasm(asm) end
+			when asm.match(/^pushaw$/i)
+				#Push All General-Purpose Registers (Word)
+				printf("%-34s%-15s\n\n", '6660', 'pushaw')
+			when asm.match(/^pushad?$/i)
+				#Push All General-Purpose Registers
+				printf("%-34s%-15s\n\n", '60', asm)
+			when asm.match(/^pushfw$/i)
+				#Push EFLAGS Register onto the Stack (Word)
+				printf("%-34s%-15s\n\n", '669C', 'pushfw')
+			when asm.match(/^pushfd?$/i)
+				#Push EFLAGS Register onto the Stack
+				printf("%-34s%-15s\n\n", '9C', asm)
+			when asm.match(/^rcl/i)
+				#Rotate with Carry to the Left
+				if modrmimm(asm, 'rcl', 'C0', '2')		
+				else nasm(asm) end
+			when asm.match(/^rcr/i)
+				#Rotate with Carry to the Right
+				if modrmimm(asm, 'rcr', 'C0', '3')
+				else nasm(asm) end
+			when asm.match(/^rdmsr$/i)
+				#Read from Model Specific Register
+				printf("%-34s%-15s\n\n", '0F32', 'rdmsr')
+			when asm.match(/^rdpmc$/i)
+				#Read Performance-Monitoring Counters
+				printf("%-34s%-15s\n\n", '0F33', 'rdpmc')
+			when asm.match(/^rdrand\s/i)
+				#Random
+				if plusreg(asm, '0FC7F0')		
+				else nasm(asm) end
+			when asm.match(/^rdseed\s/i)
+				#Create Seed for Random
+				if plusreg(asm, '0FC7F8')		
+				else nasm(asm) end
+			when asm.match(/^rdtsc$/i)
+				#Read Time-Stamp Counter
+				printf("%-34s%-15s\n\n", '0F31', 'rdtsc')
+			when asm.match(/^rdtscp$/i)
+				#Read Time-Stamp Counter and Processor ID
+				printf("%-34s%-15s\n\n", '0F01F9', 'rdtscp')
+			when asm.match(/^ret$/i)
+				#Return from Procedure
+				printf("%-34s%-15s\n\n", 'C3', 'ret')
+			when asm.match(/^retf$/i)
+				#Return from Procedure (Far)
+				printf("%-34s%-15s\n\n", 'CB', 'retf')
+			when asm.match(/^rep\sinsb$/i)
+				#Return from Procedure (Far)
+				printf("%-34s%-15s\n\n", 'F36C', 'rep insb')
+			when asm.match(/^rep\sinsw$/i)
+				#Return from Procedure (Far)
+				printf("%-34s%-15s\n\n", 'F3666D', 'rep insw')
+				printf("%-34s%-15s (prefix swap)\n\n", '66F36D', 'rep insw')
+			when asm.match(/^rep\sinsd$/i)
+				#Return from Procedure (Far)
+				printf("%-34s%-15s\n\n", 'F36D', 'rep insd')
+			when asm.match(/^rep\smovsb$/i)
+				#Return from Procedure (Far)
+				printf("%-34s%-15s\n\n", 'F3A4', 'rep movsb')
+			when asm.match(/^rep\smovsw$/i)
+				#Return from Procedure (Far)
+				printf("%-34s%-15s\n\n", 'F366A5', 'rep movsw')
+				printf("%-34s%-15s (prefix swap)\n\n", '66F3A5', 'rep movsw')
+			when asm.match(/^rep\smovsd$/i)
+				#Return from Procedure (Far)
+				printf("%-34s%-15s\n\n", 'F3A5', 'rep movsd')
+			when asm.match(/^rep\soutsb$/i)
+				#Return from Procedure (Far)
+				printf("%-34s%-15s\n\n", 'F36E', 'rep outsb')
+			when asm.match(/^rep\soutsw$/i)
+				#Return from Procedure (Far)
+				printf("%-34s%-15s\n\n", 'F3666F', 'rep outsw')
+				printf("%-34s%-15s (prefix swap)\n\n", '66F36F', 'rep outsw')
+			when asm.match(/^rep\soutsd$/i)
+				#Return from Procedure (Far)
+				printf("%-34s%-15s\n\n", 'F36F', 'rep outsd')
+			when asm.match(/^rep\slodsb$/i)
+				#Return from Procedure (Far)
+				printf("%-34s%-15s\n\n", 'F3AC', 'rep lodsb')
+			when asm.match(/^rep\slodsw$/i)
+				#Return from Procedure (Far)
+				printf("%-34s%-15s\n\n", 'F366AD', 'rep lodsw')
+				printf("%-34s%-15s (prefix swap)\n\n", '66F3AD', 'rep lodsw')
+			when asm.match(/^rep\slodsd$/i)
+				#Return from Procedure (Far)
+				printf("%-34s%-15s\n\n", 'F3AD', 'rep lodsd')
+			when asm.match(/^rep\sstosb$/i)
+				#Return from Procedure (Far)
+				printf("%-34s%-15s\n\n", 'F3AA', 'rep stosb')
+			when asm.match(/^rep\sstosw$/i)
+				#Return from Procedure (Far)
+				printf("%-34s%-15s\n\n", 'F366AB', 'rep stosw')
+				printf("%-34s%-15s (prefix swap)\n\n", '66F3AB', 'rep stosw')
+			when asm.match(/^rep\sstosd$/i)
+				#Return from Procedure (Far)
+			printf("%-34s%-15s\n\n", 'F3AB', 'rep lodsd')
+			when asm.match(/^repe\scmpsb$/i)
+				#Return from Procedure (Far)
+				printf("%-34s%-15s\n\n", 'F3A6', 'repe cmpsb')
+			when asm.match(/^repe\scmpsw$/i)
+				#Return from Procedure (Far)
+				printf("%-34s%-15s\n\n", 'F366A7', 'repe cmpsw')
+				printf("%-34s%-15s (prefix swap)\n\n", '66F3A7', 'repe cmpsw')
+			when asm.match(/^repe\scmpsd$/i)
+				#Return from Procedure (Far)
+				printf("%-34s%-15s\n\n", 'F3A7', 'repe cmpsd')
+			when asm.match(/^repz\scmpsb$/i)
+				#Return from Procedure (Far)
+				printf("%-34s%-15s\n\n", 'F3A6', 'repe cmpsb')
+			when asm.match(/^repz\scmpsw$/i)
+				#Return from Procedure (Far)
+				printf("%-34s%-15s\n\n", 'F366A7', 'repe cmpsw')
+				printf("%-34s%-15s (prefix swap)\n\n", '66F3A7', 'repe cmpsw')
+			when asm.match(/^repz\scmpsd$/i)
+				#Return from Procedure (Far)
+				printf("%-34s%-15s\n\n", 'F3A7', 'repe cmpsd')
+			when asm.match(/^repe\sscasb$/i)
+				#Return from Procedure (Far)
+				printf("%-34s%-15s\n\n", 'F3AE', 'repe scasb')
+			when asm.match(/^repe\sscasw$/i)
+				#Return from Procedure (Far)
+				printf("%-34s%-15s\n\n", 'F366AF', 'repe scasw')
+				printf("%-34s%-15s (prefix swap)\n\n", '66F3AF', 'repe scasw')
+			when asm.match(/^repe\sscasd$/i)
+				#Return from Procedure (Far)
+				printf("%-34s%-15s\n\n", 'F3AF', 'repe scasd')
+			when asm.match(/^repz\sscasb$/i)
+				#Return from Procedure (Far)
+				printf("%-34s%-15s\n\n", 'F3AE', 'repe scasb')
+			when asm.match(/^repz\sscasw$/i)
+				#Return from Procedure (Far)
+				printf("%-34s%-15s\n\n", 'F366AF', 'repe scasw')
+				printf("%-34s%-15s (prefix swap)\n\n", '66F3AF', 'repe scasw')
+			when asm.match(/^repz\sscasd$/i)
+				#Return from Procedure (Far)
+				printf("%-34s%-15s\n\n", 'F3AF', 'repe scasd')
+			when asm.match(/^repne\scmpsb$/i)
+				#Return from Procedure (Far)
+				printf("%-34s%-15s\n\n", 'F2A6', 'repne cmpsb') 
+			when asm.match(/^repne\scmpsw$/i)
+				#Return from Procedure (Far)
+				printf("%-34s%-15s\n\n", 'F266A7', 'repne cmpsw')
+				printf("%-34s%-15s (prefix swap)\n\n", '66F2A7', 'repne cmpsw')
+			when asm.match(/^repne\scmpsd$/i)
+				#Return from Procedure (Far)
+				printf("%-34s%-15s\n\n", 'F2A7', 'repne cmpsd')
+			when asm.match(/^repnz\scmpsb$/i)
+				#Return from Procedure (Far)
+				printf("%-34s%-15s\n\n", 'F2A6', 'repne cmpsb') 
+			when asm.match(/^repnz\scmpsw$/i)
+				#Return from Procedure (Far)
+				printf("%-34s%-15s\n\n", 'F266A7', 'repne cmpsw')
+				printf("%-34s%-15s (prefix swap)\n\n", '66F2A7', 'repne cmpsw')
+			when asm.match(/^repnz\scmpsd$/i)
+				#Return from Procedure (Far)
+				printf("%-34s%-15s\n\n", 'F2A7', 'repne cmpsd')
+			when asm.match(/^repne\sscasb$/i)
+				#Return from Procedure (Far)
+				printf("%-34s%-15s\n\n", 'F2AE', 'repne scasb')
+			when asm.match(/^repne\sscasw$/i)
+				#Return from Procedure (Far)
+				printf("%-34s%-15s\n\n", 'F266AF', 'repne scasw')
+				printf("%-34s%-15s (prefix swap)\n\n", '66F3AF', 'repne scasw')
+			when asm.match(/^repne\sscasd$/i)
+				#Return from Procedure (Far)
+				printf("%-34s%-15s\n\n", 'F2AF', 'repne scasd')
+			when asm.match(/^repnz\sscasb$/i)
+				#Return from Procedure (Far)
+				printf("%-34s%-15s\n\n", 'F2AE', 'repne scasb')
+			when asm.match(/^repnz\sscasw$/i)
+				#Return from Procedure (Far)
+				printf("%-34s%-15s\n\n", 'F266AF', 'repne scasw')
+				printf("%-34s%-15s (prefix swap)\n\n", '66F3AF', 'repne scasw')
+			when asm.match(/^repnz\sscasd$/i)
+				#Return from Procedure (Far)
+				printf("%-34s%-15s\n\n", 'F2AF', 'repne scasd')
+			when asm.match(/^rol/i)
+				#Rotate to the Left
+				if modrmimm(asm, 'rol', 'C0', '0')
+				else nasm(asm) end
+			when asm.match(/^ror/i)
+				#Rotate to the Right
+				if modrmimm(asm, 'ror', 'C0', '1')
+				else nasm(asm) end
+			when asm.match(/^rsm$/i)
+				#Resume from System Management Mode
+				printf("%-34s%-15s\n\n", '0FAA', 'rsm')
+			when asm.match(/^sahf$/i)
+				#Store AH into Flags
+				printf("%-34s%-15s\n\n", '9E', 'sahf')
+			when asm.match(/^sal/i)
+				#Shift Arithmetic Left (SHL is the official for this)
+				if modrmimm(asm, 'sal', 'C0', '6')
+				else nasm(asm) end
+			when asm.match(/^sar/i)
+				#Shift Arithmetic Right
+				if modrmimm(asm, 'sar', 'C0', '7')
+				else nasm(asm) end
+			when asm.match(/^sbb/i)
+				#Integer Subtraction with Borrow
+				if alimm8(asm, '1C', '80D8')
+				elsif aximm16(asm, '661D', '6681D8', '6683D8')
+				elsif eaximm32(asm, '1D', '81D8', '83D8')	
+				elsif modrmimm(asm, 'sbb', '80', '3')	
+				elsif modrmmodrm(asm, '18')			
+				else nasm(asm) end
+			when asm.match(/^scasb$/i)
+				#Scan String (Byte)
+				printf("%-34s%-15s\n\n", 'AE', 'scasb')
+			when asm.match(/^scasw$/i)
+				#Scan String (Word)
+				printf("%-34s%-15s\n\n", '66AF', 'scasw')
+			when asm.match(/^scasd$/i)
+				#Scan String (Doubleword)
+				printf("%-34s%-15s\n\n", 'AF', 'scasd')
+			when asm.match(/^sfence$/i)
+				#Store Fence
+				fence('sfence', '0FAE', 'F8')
+			when asm.match(/^sgdt\s/i)
+				#Store Global Descriptor Table Register
+				if opmodrm(asm, '0F01', '0')		
+				else nasm(asm) end
+			when asm.match(/^shl/i)
+				#Shift Left
+				if modrmimm(asm, 'shl', 'C0', '4')
+				else nasm(asm) end
+			when asm.match(/^sidt\s/i)
+				#Store Interrupt Descriptor Table
+				if opmodrm(asm, '0F01', '1')		
+				else nasm(asm) end
+			when asm.match(/^shr/i)
+				#Shift Right
+				if modrmimm(asm, 'shr', 'C0', '5')
+				else nasm(asm) end
+			when asm.match(/^smsw\s/i)
+				#Store Machine Status Word r32/m16
+				if opmodrm(asm, '0F01', '4')
+				else nasm(asm) end
+			when asm.match(/^stac$/i)
+				#Set AC Flag in EFLAGS Register
+				printf("%-34s%-15s\n\n", '0F01CB', 'stac')
+			when asm.match(/^stc$/i)
+				#Set Carry Flag
+				printf("%-34s%-15s\n\n", 'F9', 'stc')
+			when asm.match(/^std$/i)
+				#Set Direction Flag
+				printf("%-34s%-15s\n\n", 'FD', 'std')
+			when asm.match(/^sti$/i)
+				#Set Interrupt Flag
+				printf("%-34s%-15s\n\n", 'FB', 'sti')
+			when asm.match(/^stosb$/i)
+				#Store String (Byte)
+				printf("%-34s%-15s\n\n", 'AA', 'stosb')
+			when asm.match(/^stosw$/i)
+				#Store String (Word)
+				printf("%-34s%-15s\n\n", '66AB', 'stosw')
+			when asm.match(/^stosd$/i)
+				#Store String (Doubleword)
+				printf("%-34s%-15s\n\n", 'AB', 'stosd')
+			when asm.match(/^str\s/i)
+				#Store Task Register
+				if opmodrm(asm, '0F00', '1')
+				else nasm(asm) end
+			when asm.match(/^sub/i)
+				#Subtract
+				if alimm8(asm, '2C', '80E8')
+				elsif aximm16(asm, '662D', '6681E8', '6683E8')
+				elsif eaximm32(asm, '2D', '81E8', '83E8')
+				elsif modrmimm(asm, 'sub', '80', '5')	
+				elsif modrmmodrm(asm, '28')			
+				else nasm(asm) end
+			when asm.match(/^swapgs/i)
+				#Swap GS Base Register
+				printf("%-34s%-15s\n\n", '0F01F8', 'swapgs') 
+			when asm.match(/^syscall/i)
+				#Fast System Call
+				printf("%-34s%-15s\n\n", '0F05', 'syscall')
+			when asm.match(/^sysenter/i)
+				#Fast System Call
+				printf("%-34s%-15s\n\n", '0F34', 'sysenter')
+			when asm.match(/^sysexit/i)
+				#Fast Return from Fast System Call
+				printf("%-34s%-15s\n\n", '0F35', 'sysexit')
+			when asm.match(/^sysret/i)
+				#Return From Fast System Call
+				printf("%-34s%-15s\n\n", '0F07', 'sysret')
+			when asm.match(/^test/i)
+				#Logical Compare
+				if alimm8_c(asm, 'A8', 'F6C0')
+				elsif aximm16_c(asm, '66A9', '66F7C0', 'invalid')
+				elsif eaximm32_c(asm, 'A9', 'F7C0', 'invalid')		
+				elsif modrmimm(asm, 'test', 'F6', '0')	
+				elsif modrmmodrm(asm, '84')			
+				else nasm(asm) end
+			when asm.match(/^tzcnt/i)
+				#Count the number of trailing zero bits
+				if modrmmodrm(asm, 'F30FBC')		
+				else nasm(asm) end
+			when asm.match(/^ud2$/i)
+				#Undefined asm
+				printf("%-34s%-15s\n\n", '0F0B', 'ud2')
+			when asm.match(/^verr\s/i)
+				#Store Task Register
+				if opmodrm(asm, '0F00', '4')
+				else nasm(asm) end
+			when asm.match(/^verw\s/i)
+				#Store Task Register
+				if opmodrm(asm, '0F00', '5')
+				else nasm(asm) end
+			when asm.match(/^vmwrite/i)
+				#VMWrite
+				if modrmmodrm(asm, '0F79')		
+				else nasm(asm) end
+			when asm.match(/^vmread/i)
+				#VMRead
+				if modrmmodrm(asm, '0F78')		
+				else nasm(asm) end
+			when asm.match(/^f?wait$/i)
+				#Wait
+				printf("%-34s%-15s\n\n", '9B', 'wait')
+			when asm.match(/^wbinvd$/i)
+				#Write Back and Invalidate Cache
+				printf("%-34s%-15s\n\n", '0F09', 'wbinvd')
+			when asm.match(/^wrmsr$/i)
+				#Write to Model Specific Register
+				printf("%-34s%-15s\n\n", '0F30', 'wrmsr')
+			when asm.match(/^xabort\s/i)
+				#Transactional Abort
+				if opimm8(asm, 'C6F8')		
+				else nasm(asm) end
+			when asm.match(/^xbegin/i)
+				#Transactional Begin
+				if jcc(asm, 'C7F8')		
+				else nasm(asm) end
+			when asm.match(/^xchg/i)
+				#Exchange two registers
+				if plusreg(asm, '90')	
+				elsif modrmmodrm(asm, '86')
+				else nasm(asm) end
+			when asm.match(/^xgetbv$/i)
+				#Get Value of Extended Control Register
+				printf("%-34s%-15s\n\n", '0F01D0', 'xgetbv')
+			when asm.match(/^xlat$/i)
+				#Table Look-up Translation
+				printf("%-34s%-15s\n\n", 'D7', 'xlat (BYTE PTR ds:[ebx])')
+			when asm.match(/^xor/i)
+				#Logical Exlusive OR
+				if alimm8_c(asm, '34', '80F0')
+				elsif aximm16_c(asm, '6635', '6681F0', '6683F0')
+				elsif eaximm32_c(asm, '35', '81F0', '83F0')	
+				elsif modrmimm(asm, 'xor', '80', '6')	
+				elsif modrmmodrm(asm, '30')		
+				else nasm(asm) end
+			when asm.match(/^xsetbv/i)
+				#Set Extended Control Register
+				printf("%-34s%-15s\n\n", '0F01D1', 'xsetbv')
+			when asm.match(/^xtest/i)
+				#Test If in Transactional Execution
+				printf("%-34s%-15s\n\n", '0F01D6', 'xtest')																																																																																																																																																																				
+			else 
+				nasm(asm) 
+		end
+	end
+end
 
 #------------------------------------
 # 	Format Operand Data Subs  		#
@@ -4217,16 +3958,5 @@ def objdump (data)
 end
 
 main
-# Added encoding for OP r/m instructions of various byte sizes and limitations
-# This includes the following instructions as completely finished:
-	#CALL, CLFLUSH, DEC, DIV, IDIV, INC, INVLPG, LLDT, LMSW, LTR, NOP, POP, PREFETCH0, 
-	#PREFETCH1, PREFETCH2, PREFETCHNTA, PREFETCHW, PREFETCHWT1, PUSH, SGDT, SIDT,
-	#SMSW, STR, VERR, and VERW
-# This added partial support for the following instructions:
-	#CRC32
-	#IMUL
-	#JMP
-# This is NOT a stable release, have not bug tested many possibilities. This instruction
-# is a bug: push dword [ebx + ecx + 0x33], there are MANY more new bugs
-
 # The most stable recent release was on May 3, 2017
+#LOCK  needs support

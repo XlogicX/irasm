@@ -1633,15 +1633,16 @@ def modrmimm (instruction, op, m1, num)
 	#		f. Add displacements (of appropriate size) if they exist
 
 	#GateKeeper Parse
-	if /(\]|[abcd][hl])\s*,\s*(\d+|0x[0-9a-f]+$)/i.match(instruction) then
+	if /(\]|e?[acdbsbd][lhxpi])\s*,\s*(\d+|0x[0-9a-f]+$)/i.match(instruction) then
 		#We are good to parse and process
 	else return false end
 
 	###############################
 	#           PARSING           #
 	###############################	
+
 	#Parse if dest operand is byte, word, or dword
-	if extracted = /(byte|word|dword)/i.match(instruction)
+	if extracted = /(byte|word|dword)|(e?[acdbsbd][lhxpi])/i.match(instruction)
 		datasize = extracted.captures[0]
 		if datasize == 'dword' or datasize == 'word' then	#modify the instruction to be 16/32 bit from 8bit default
 			if m1 == '80' then m1 = '83' end	#adc, add, and, cmp, or, sbb, sub, xor
@@ -1658,24 +1659,137 @@ def modrmimm (instruction, op, m1, num)
 	end
 
 	#If it's just the register, then process it and leave
-	if extracted = /([abcd][hl])\s*,\s*((0x)?[a-f0-9]+)$/i.match(instruction)
+	if extracted = /(e?[acdbsbd][lhxpi])\s*,\s*((0x)?[a-f0-9]+)$/i.match(instruction)
 		#mod = 2 (11xxxxxx) / 192
 		#op = num (xxoooxxx) / num * 8
 		#register = (xxxxxrrr)
 		modrm = 192 + (num.to_i * 8)
 		register = extracted.captures[0]
-		s_operand = imm8(extracted.captures[1])	
-		if register == 'cl' then modrm = modrm + 1
-		elsif register == 'dl' then modrm = modrm + 2
-		elsif register == 'bl' then modrm = modrm + 3
-		elsif register == 'ah' then modrm = modrm + 4
-		elsif register == 'ch' then modrm = modrm + 5
-		elsif register == 'dh' then modrm = modrm + 6
-		elsif register == 'bh' then modrm = modrm + 7	
-		end									
-		modrm = modrm.to_s(16)	
+		s_operand = extracted.captures[1]
+
+		#Get Register numbers for MOV instructions if needed
+		if m1 == 'C6' then
+			if /al/i.match(instruction) then regnum = '0' end
+			if /cl/i.match(instruction) then regnum = '1' end
+			if /dl/i.match(instruction) then regnum = '2' end
+			if /bl/i.match(instruction) then regnum = '3' end
+			if /ah/i.match(instruction) then regnum = '4' end
+			if /ch/i.match(instruction) then regnum = '5' end
+			if /dh/i.match(instruction) then regnum = '6' end
+			if /bh/i.match(instruction) then regnum = '7' end					
+			if /e?a[x]/i.match(instruction) then regnum = '8' end
+			if /e?c[x]/i.match(instruction) then regnum = '9' end
+			if /e?d[x]/i.match(instruction) then regnum = 'A' end
+			if /e?b[x]/i.match(instruction) then regnum = 'B' end
+			if /e?sp/i.match(instruction) then regnum = 'C' end
+			if /e?bp/i.match(instruction) then regnum = 'D' end
+			if /e?si/i.match(instruction) then regnum = 'E' end
+			if /e?di/i.match(instruction) then regnum = 'F' end																						
+		end
+
+		#Need to dynamically handle different source operand sizes and change the machine code accordingly
+		#Redundancies HERE!!!
+		#NO #rcl, rcr, rol, ror, sal, sar, shl, shr, or mov
+		m1_backup = m1
+		s_operand_backup = s_operand
+		mov_inst = 0
+		#If the register is 8 bit and the imm operand is 8bits or less
+		if disp_to_dec(s_operand) > -1 and disp_to_dec(s_operand) < 256 and /[acdb][lh]/i.match(instruction) then
+			if m1 == 'C6' then
+				mov_inst = 'B' + regnum + imm8(s_operand)
+			end
+			s_operand = imm8(s_operand)
+		#If the register is 16 bit and the imm operand is 16 bits or less
+		elsif disp_to_dec(s_operand) > -1 and disp_to_dec(s_operand) < 65536  and /[^e][acdbs][xpi]/i.match(instruction) then	
+			if m1 == '80' and disp_to_dec(s_operand) > -1 and disp_to_dec(s_operand) < 256 then 
+				s_operand = littleend(imm8(s_operand))	
+				m1 = '6683' #adc, add, and, cmp, or, sbb, sub, xor	
+			end	
+			if m1 == '80' and disp_to_dec(s_operand) > 255 and disp_to_dec(s_operand) < 65536 then 
+				s_operand = littleend(imm16(s_operand))				
+				m1 = '6681' #adc, add, and, cmp, or, sbb, sub, xor
+			end
+			if m1 == 'F6' and disp_to_dec(s_operand) > -1 and disp_to_dec(s_operand) < 65536 then 
+				s_operand = littleend(imm16(s_operand))	
+				m1 = '66F7' #test
+			end		
+			if m1 == 'C6' and disp_to_dec(s_operand) > -1 and disp_to_dec(s_operand) < 65536 then 
+				s_operand = littleend(imm16(s_operand))	
+				m1 = '66C7' #mov
+				mov_inst = '66B' + regnum + s_operand
+			end					
+		#If the register is 32 bit and the imm operand is 32 bits or less	
+		elsif disp_to_dec(s_operand) > -1 and disp_to_dec(s_operand) < 4294967296 and /e[acdbs][xpi]/i.match(instruction) then	
+			if m1 == '80' and disp_to_dec(s_operand) > -1 and disp_to_dec(s_operand) < 256 then 
+				s_operand = littleend(imm8(s_operand))	
+				m1 = '83' #adc, add, and, cmp, or, sbb, sub, xor	
+			end	
+			if m1 == '80' and disp_to_dec(s_operand) > 255 and disp_to_dec(s_operand) < 65536 then 
+				s_operand = littleend(imm32(s_operand))				
+				m1 = '81' #adc, add, and, cmp, or, sbb, sub, xor
+			end			
+			if m1 == '80' and disp_to_dec(s_operand) > 65535 and disp_to_dec(s_operand) < 4294967296 then 
+				s_operand = littleend(imm32(s_operand))				
+				m1 = '81' #adc, add, and, cmp, or, sbb, sub, xor
+			end
+			if m1 == 'F6' and disp_to_dec(s_operand) > -1 and disp_to_dec(s_operand) < 4294967296 then 
+				s_operand = littleend(imm32(s_operand))	
+				m1 = 'F7' #test	
+			end			
+			if m1 == 'C6' and disp_to_dec(s_operand) > -1 and disp_to_dec(s_operand) < 4294967296 then 
+				s_operand = littleend(imm32(s_operand))	
+				m1 = 'C7' #mov
+				mov_inst = 'B' + regnum + s_operand					
+			end						
+		else
+			puts "Value exceeds bounds or some other error\n\n"	
+			return 1					
+		end
+
+		if /e?c[lx]/i.match(register) then modrm = modrm + 1
+		elsif /e?d[lx]/i.match(register) then modrm = modrm + 2
+		elsif /e?b[lx]/i.match(register) then modrm = modrm + 3
+		elsif /e?[as][hp]/i.match(register) then modrm = modrm + 4
+		elsif /e?[cb][hp]/i.match(register) then modrm = modrm + 5
+		elsif /e?[ds][hi]/i.match(register) then modrm = modrm + 6
+		elsif /e?[bd][hi]/i.match(register) then modrm = modrm + 7	
+		end		
+
+		if mov_inst != 0 then
+			instruction_alt = objdump(mov_inst)
+			printf("%-34s%-15s\n\n", mov_inst, instruction_alt)
+			sanity_check(mov_inst, instruction)	#See if this output matches nasms
+			
+			modrm = (modrm.to_s(16)).upcase
+			instruction_alt = objdump(m1 + modrm + s_operand)
+			printf("%-34s%-15s (rm/imm)\n\n", m1 + modrm + s_operand, instruction_alt)
+			return 1
+		end
+
+		modrm = (modrm.to_s(16)).upcase
 		instruction_alt = objdump(m1 + modrm + s_operand)
 		printf("%-34s%-15s\n\n", m1 + modrm + s_operand, instruction_alt)
+		sanity_check(m1 + modrm + s_operand, instruction)	#See if this output matches nasms
+
+		#Alternates?
+		m1 = m1_backup
+		s_operand = s_operand_backup
+		if disp_to_dec(s_operand) > -1 and disp_to_dec(s_operand) < 255 and /[^e][acdbs][xpi]/i.match(instruction) then	
+			if m1 == '80' and disp_to_dec(s_operand) > -1 and disp_to_dec(s_operand) < 255 then 
+				s_operand = littleend(imm16(s_operand))				
+				m1 = '6681' #adc, add, and, cmp, or, sbb, sub, xor
+				instruction_alt = objdump(m1 + modrm + s_operand)
+				printf("%-34s%-15s (r/m16, imm16)\n\n", m1 + modrm + s_operand, instruction_alt)				
+			end
+		elsif disp_to_dec(s_operand) > -1 and disp_to_dec(s_operand) < 255 and /e[acdbs][xpi]/i.match(instruction) then	
+			if m1 == '80' and disp_to_dec(s_operand) > -1 and disp_to_dec(s_operand) < 255 then 
+				s_operand = littleend(imm32(s_operand))	
+				m1 = '81' #adc, add, and, cmp, or, sbb, sub, xor
+				instruction_alt = objdump(m1 + modrm + s_operand)
+				printf("%-34s%-15s (r/m32, imm32)\n\n", m1 + modrm + s_operand, instruction_alt)					
+			end					
+		end		
+
 		return 1
 	end	
 
@@ -3927,7 +4041,7 @@ def sanity_check (code, data)
 		machine_code = machine_code.chomp
 		if machine_code.length > 0 then
 			if machine_code.upcase != code.upcase then
-				puts "My output doesn't match that of nasm, something may be wrong here\n\n"
+				puts "My output ( #{machine_code.upcase} ) doesn't match that of nasm, something may be wrong here\n\n"
 			end
 			system('rm tmp tmp.asm 2>/dev/null')
 		end
@@ -3958,5 +4072,3 @@ def objdump (data)
 end
 
 main
-# The most stable recent release was on May 3, 2017
-#LOCK  needs support

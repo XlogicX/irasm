@@ -2,7 +2,7 @@
 Interactive Redundant Assembler (shell)
 
 # Description
-The irasm shell takes an assembly instruction as input, and gives the corresponding machine code as output.<br>
+The irasm shell takes an x86 (32-bit) assembly instruction as input, and gives the corresponding machine code as output.<br>
 The main distinction between this tool and something like nasm_shell, is that the output not only gives an official machine code output, but it also gives alternative machine-code, including some machine-code that no assembler would output (valid machine code)<br>
 Not every instruction format is supported. For those that aren't, this script gracefully falls back on using nasm to assemble some machine code<br>
 Some instruction formats that may never get support are ones with xmm registers and VEX prefixes

@@ -1124,6 +1124,10 @@ def main
 			end
 		end
 	end
+
+rescue TypeError
+	nasm(asm)
+	main
 end
 
 #------------------------------------
@@ -4024,7 +4028,19 @@ def nasm (data)
 			printf("%-34s%-15s(Provided by Nasm)\n\n", machine_code, objdump(machine_code))
 			system('rm tmp tmp.asm')
 		else
-			puts "There was an error with your Assembly (or I couldn't parse it)\n\n"
+			file = File.open("tmp.asm", "w")
+			file.write("[BITS 64]\n" + data + "\n")
+			file.close
+			cmd = 'nasm -f bin tmp.asm 2>/dev/null'
+			system(cmd)	
+			machine_code = `xxd -ps -g 16 tmp 2>/dev/null`
+			machine_code = (machine_code.chomp).upcase
+			if machine_code.length > 0 then
+				printf("%-34s%-15s(Provided by Nasm)\n\n", machine_code, objdump64(machine_code))
+				system('rm tmp tmp.asm 2> /dev/null')
+			else
+				puts "There was an error with your Assembly (or I couldn't parse it)\n\n"			
+			end
 		end
 	else
 		puts "I don't know this instruction, NASM might, but it's not installed\n\n"
@@ -4068,6 +4084,29 @@ def objdump (data)
 			return extracted[2]
 		end
 	system('rm tmp tmp.m')
+	else
+		return "[need objdump for asm output]"
+	end
+end
+
+def objdump64 (data)
+	cmd = `objdump -v 2> /dev/null`
+	cmd2 = `gobjdump -v 2> /dev/null`
+	if /objdump/i.match(cmd) or /objdump/i.match(cmd2) then
+		file = File.open("tmp.m", "w")
+		file.write(data)
+		file.close
+		cmd3 = 'cat tmp.m | xxd -r -p > tmp'
+		system(cmd3)
+		if /objdump/i.match(cmd)
+			cmd = `objdump -M intel -D -b binary -ml1om tmp`
+		else
+			cmd = `gobjdump -M intel -D -b binary -ml1om tmp`	
+		end
+		if extracted = /^.+?<\.data>:\n\s+\S+\s+([0-9a-f]{2}\s)+\s+(.+)$/s.match(cmd) then
+			return extracted[2]
+		end
+	system('rm tmp tmp.m 2> /dev/null')
 	else
 		return "[need objdump for asm output]"
 	end

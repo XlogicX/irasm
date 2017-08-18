@@ -1,5 +1,7 @@
 #!/usr/bin/ruby
 
+require 'readline'
+
 $debug = 0
 #--------------------------------------------
 # 	Process for each instruction			#
@@ -14,11 +16,11 @@ def main
 # 	Read Each Instruction From Input		#
 #--------------------------------------------
 	while 1 do
-		print 'irasm > '						#Prompt
-		asm = gets.chomp						#Get assembly instruction
-		if /(quit|(?<!s)exit)/i.match(asm)		#If it's quit or exit
-			exit								#	Exit the script
-		end										#Otherwise start looking for instruction names
+		while asm = Readline.readline('irasm > ', true)
+			asm = asm.chomp						#Get assembly instruction
+			if /(quit|(?<!s)exit)/i.match(asm)		#If it's quit or exit
+				exit								#	Exit the script
+			end										#Otherwise start looking for instruction names
 
 #--------------------------------------------
 # 	Routines for Each Instruction			#
@@ -1119,6 +1121,7 @@ def main
 				printf("%-34s%-15s\n\n", '0F01D6', 'xtest')																																																																																																																																																																				
 			else 
 				nasm(asm) 
+			end
 		end
 	end
 end

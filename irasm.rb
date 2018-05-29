@@ -2492,12 +2492,18 @@ def pushimm(instruction)
 		printf("%-34s%-15s\n\n", m1 + ammount, instruction_alt)	
 		sanity_check(m1 + ammount, instruction)	#See if this output matches nasms
 		return 1
-	elsif extracted = /^push\s0x([a-f0-9]+)$/i.match(instruction) then
+	elsif extracted = /^push\s(0x[a-f0-9]+)$/i.match(instruction) then
 		ammount = (extracted.captures[0])
 		if disp_to_dec(ammount) > -1 and disp_to_dec(ammount) < 256 then
+			if extracted = /^0x(.+)$/s.match(ammount) then
+				ammount = extracted.captures[0]
+			end
 			ammount = zeropad(ammount, 2)
 			m1 = '6A' 
 		elsif disp_to_dec(ammount) > 255 and disp_to_dec(ammount) < 65536 then
+			if extracted = /^0x(.+)$/s.match(ammount) then
+				ammount = extracted.captures[0]
+			end
 			ammount1 = littleend(zeropad(ammount, 8))
 			m1 = '68'
 			instruction_alt = objdump(m1 + ammount1)
@@ -2509,6 +2515,9 @@ def pushimm(instruction)
 			printf("%-34s%-15s (WORD Sized Alternate)\n\n", m1 + ammount2, instruction_alt)	
 			return 1
 		elsif disp_to_dec(ammount) > 65535 and disp_to_dec(ammount) < 4294836226 then
+			if extracted = /^0x(.+)$/s.match(ammount) then
+				ammount = extracted.captures[0]
+			end
 			ammount = littleend(zeropad(ammount, 8))
 			m1 = '68'
 		end 

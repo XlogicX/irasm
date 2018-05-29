@@ -2484,7 +2484,7 @@ def pushimm(instruction)
 			instruction_alt = objdump(m1 + ammount2)
 			printf("%-34s%-15s (WORD Sized Alternate)\n\n", m1 + ammount2, instruction_alt)	
 			return 1
-		elsif ammount > 65535 and ammount < 4294836226 then
+		elsif ammount > 65535 and ammount < 4294967296 then
 			ammount = littleend(zeropad(ammount.to_s(16), 8))
 			m1 = '68'
 		end 
@@ -2514,7 +2514,7 @@ def pushimm(instruction)
 			instruction_alt = objdump(m1 + ammount2)
 			printf("%-34s%-15s (WORD Sized Alternate)\n\n", m1 + ammount2, instruction_alt)	
 			return 1
-		elsif disp_to_dec(ammount) > 65535 and disp_to_dec(ammount) < 4294836226 then
+		elsif disp_to_dec(ammount) > 65535 and disp_to_dec(ammount) < 4294967296 then
 			if extracted = /^0x(.+)$/s.match(ammount) then
 				ammount = extracted.captures[0]
 			end

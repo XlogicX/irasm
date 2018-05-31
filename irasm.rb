@@ -2468,64 +2468,43 @@ end
 
 def pushimm(instruction)
 	#GateKeeper Parse
-	if extracted = /^push\s(\d+)$/i.match(instruction) then
-		ammount = (extracted.captures[0]).to_i
-		if ammount > -1 and ammount < 256 then
-			ammount = zeropad(ammount.to_s(16), 2)
-			m1 = '6A' 
-		elsif ammount > 255 and ammount < 65536 then
-			ammount1 = littleend(zeropad(ammount.to_s(16), 8))
-			m1 = '68'
-			instruction_alt = objdump(m1 + ammount1)
-			printf("%-34s%-15s\n\n", m1 + ammount1, instruction_alt)	
-			sanity_check(m1 + ammount1, instruction)	#See if this output matches nasms
-			ammount2 = littleend(zeropad(ammount.to_s(16), 4))
-			m1 = '6668'
-			instruction_alt = objdump(m1 + ammount2)
-			printf("%-34s%-15s (WORD Sized Alternate)\n\n", m1 + ammount2, instruction_alt)	
-			return 1
-		elsif ammount > 65535 and ammount < 4294967296 then
-			ammount = littleend(zeropad(ammount.to_s(16), 8))
-			m1 = '68'
-		end 
-		instruction_alt = objdump(m1 + ammount)
-		printf("%-34s%-15s\n\n", m1 + ammount, instruction_alt)	
-		sanity_check(m1 + ammount, instruction)	#See if this output matches nasms
-		return 1
-	elsif extracted = /^push\s(0x[a-f0-9]+)$/i.match(instruction) then
-		ammount = (extracted.captures[0])
-		if disp_to_dec(ammount) > -1 and disp_to_dec(ammount) < 256 then
-			if extracted = /^0x(.+)$/s.match(ammount) then
-				ammount = extracted.captures[0]
-			end
-			ammount = zeropad(ammount, 2)
-			m1 = '6A' 
-		elsif disp_to_dec(ammount) > 255 and disp_to_dec(ammount) < 65536 then
-			if extracted = /^0x(.+)$/s.match(ammount) then
-				ammount = extracted.captures[0]
-			end
-			ammount1 = littleend(zeropad(ammount, 8))
-			m1 = '68'
-			instruction_alt = objdump(m1 + ammount1)
-			printf("%-34s%-15s\n\n", m1 + ammount1, instruction_alt)	
-			sanity_check(m1 + ammount1, instruction)	#See if this output matches nasms
-			ammount2 = littleend(zeropad(ammount, 4))
-			m1 = '6668'
-			instruction_alt = objdump(m1 + ammount2)
-			printf("%-34s%-15s (WORD Sized Alternate)\n\n", m1 + ammount2, instruction_alt)	
-			return 1
-		elsif disp_to_dec(ammount) > 65535 and disp_to_dec(ammount) < 4294967296 then
-			if extracted = /^0x(.+)$/s.match(ammount) then
-				ammount = extracted.captures[0]
-			end
-			ammount = littleend(zeropad(ammount, 8))
-			m1 = '68'
-		end 
-		instruction_alt = objdump(m1 + ammount)
-		printf("%-34s%-15s\n\n", m1 + ammount, instruction_alt)	
-		sanity_check(m1 + ammount, instruction)	#See if this output matches nasms
-		return 1
+	if extracted = /^push\s((\d{1,10})|(0x[a-f0-9]{1,8}))$/i.match(instruction) then
+		ammount_unsigned = disp_to_dec(extracted.captures[0])
+		if ammount_unsigned < 0 or 0xffffffff < ammount_unsigned then # shouldn't be negative, but decimal number could be too large
+			return false
+		end
+		if ammount_unsigned < 0x80000000 then
+			ammount_int = ammount_unsigned
+		else
+			ammount_int = ammount_unsigned - 0x100000000
+		end
 	else return false end
+	
+	if -128 <= ammount_int and ammount_int < 128 then
+		ammount = littleend(zeropad((ammount_unsigned & 0xff).to_s(16), 2))
+		m1 = '6A'
+		instruction_alt = objdump(m1 + ammount)
+		printf("%-34s%-15s\n\n", m1 + ammount, instruction_alt)	
+		sanity_check(m1 + ammount, instruction)	#See if this output matches nasms
+	end
+
+	if -32768 <= ammount_int and ammount_int < 32768 then 
+		ammount = littleend(zeropad((ammount_unsigned & 0xffff).to_s(16), 4))
+		m1 = '6668'
+		instruction_alt = objdump(m1 + ammount)
+		printf("%-34s%-15s (WORD Sized Alternate)\n\n", m1 + ammount, instruction_alt)
+	end
+
+	ammount = littleend(zeropad(ammount_unsigned.to_s(16), 8))
+	m1 = '68'
+	instruction_alt = objdump(m1 + ammount)
+	printf("%-34s%-15s\n\n", m1 + ammount, instruction_alt)	
+	# nasm will use the 6A opcode whenever possible, so the sanity check will fail for single byte operands
+	if ammount_int < -128 or 128 <= ammount_int then 
+		sanity_check(m1 + ammount, instruction)	#See if this output matches nasms
+	end
+	return 1
+
 end
 
 def ptr(instruction, m1)
